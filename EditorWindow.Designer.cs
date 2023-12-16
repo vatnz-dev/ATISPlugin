@@ -100,6 +100,7 @@
             // comboBoxAirport
             // 
             this.comboBoxAirport.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.comboBoxAirport.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxAirport.FormattingEnabled = true;
             this.comboBoxAirport.Location = new System.Drawing.Point(114, 63);
             this.comboBoxAirport.Name = "comboBoxAirport";
@@ -493,6 +494,7 @@
             // comboBoxVoice
             // 
             this.comboBoxVoice.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.comboBoxVoice.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxVoice.Enabled = false;
             this.comboBoxVoice.FormattingEnabled = true;
             this.comboBoxVoice.Location = new System.Drawing.Point(114, 94);
@@ -504,6 +506,7 @@
             // comboBoxRate
             // 
             this.comboBoxRate.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.comboBoxRate.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxRate.Enabled = false;
             this.comboBoxRate.FormattingEnabled = true;
             this.comboBoxRate.Items.AddRange(new object[] {

@@ -46,7 +46,7 @@ namespace ATISPlugin
             RefreshEvent += OnRefeshEvent;
         }
 
-        private void Change(int number)
+        public void Change(int number)
         {
             Number = number;
 

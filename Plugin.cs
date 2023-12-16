@@ -27,7 +27,7 @@ namespace ATISPlugin
         public static readonly string ServerSweatbox = "sweatbox01-training.vatpac.org";
         private static readonly string MetarUri = "https://metar.vatsim.net/metar.php?id=";
 
-        private static readonly Version _version = new Version(1, 4);
+        private static readonly Version _version = new Version(1, 5);
         private static readonly string _versionUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Version.json";
 
         private static readonly HttpClient Client = new HttpClient();
@@ -186,7 +186,7 @@ namespace ATISPlugin
             {
                 var atis1Updated = await ATIS1.UpdateMetar();
 
-                if (atis1Updated) OnMETARUpdate();
+                if (atis1Updated) OnMETARUpdate(1);
             }
             catch { }
 
@@ -194,7 +194,7 @@ namespace ATISPlugin
             {
                 var atis2Updated = await ATIS2.UpdateMetar();
 
-                if (atis2Updated) OnMETARUpdate();
+                if (atis2Updated) OnMETARUpdate(2);
             }
             catch { }
 
@@ -202,7 +202,7 @@ namespace ATISPlugin
             {
                 var atis3Updated = await ATIS3.UpdateMetar();
 
-                if (atis3Updated) OnMETARUpdate();
+                if (atis3Updated) OnMETARUpdate(3);
             }
             catch { }
 
@@ -210,7 +210,7 @@ namespace ATISPlugin
             {
                 var atis4Updated = await ATIS4.UpdateMetar();
 
-                if (atis4Updated) OnMETARUpdate();
+                if (atis4Updated) OnMETARUpdate(4);
             }
             catch { }
 
@@ -240,7 +240,7 @@ namespace ATISPlugin
             Editor?.RefreshEvent.Invoke(this, null);
         }
 
-        private void OnMETARUpdate()
+        private void OnMETARUpdate(int number)
         {
             var sound = Path.Combine(Helpers.GetProgramFolder(), "wav", "AIS.wav");
 
@@ -249,6 +249,8 @@ namespace ATISPlugin
             SoundPlayer.Play();
 
             ShowEditorWindow();
+
+            Editor.Change(number);
 
             Editor?.RefreshEvent.Invoke(this, null);
         }
