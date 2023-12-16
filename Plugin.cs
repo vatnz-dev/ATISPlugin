@@ -6,12 +6,9 @@ using System.IO;
 using System.Linq;
 using System.Media;
 using System.Net.Http;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
-using System.Xml;
 using System.Xml.Serialization;
 using vatsys;
 using vatsys.Plugin;
@@ -30,7 +27,7 @@ namespace ATISPlugin
         public static readonly string ServerSweatbox = "sweatbox01-training.vatpac.org";
         private static readonly string MetarUri = "https://metar.vatsim.net/metar.php?id=";
 
-        private static readonly Version _version = new Version(1, 3);
+        private static readonly Version _version = new Version(1, 4);
         private static readonly string _versionUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Version.json";
 
         private static readonly HttpClient Client = new HttpClient();
@@ -49,6 +46,7 @@ namespace ATISPlugin
         public static ATIS ATISData { get; set; }
         public static Sectors Sectors { get; set; }
         public static Airspace Airspace { get; set; }
+        public static bool StandardATISRunning { get; set; }
 
         public static SoundPlayer SoundPlayer { get; set; } = new SoundPlayer();
         private Timer PositionTimer { get; set; } = new Timer();
@@ -117,6 +115,26 @@ namespace ATISPlugin
             }
 
             _ = CheckVersion();
+
+            vatsys.ATIS.Updated += ATIS_Updated;
+        }
+
+        private async void ATIS_Updated(object sender, EventArgs e)
+        {
+            if (vatsys.ATIS.IsBroadcasting)
+            {
+                StandardATISRunning = true;
+
+                if (!ATIS4.Broadcasting) return; 
+
+                Errors.Add(new Exception("ATIS 4 has been deleted."), Plugin.DisplayName);
+
+                await ATIS4.Delete();
+            }
+            else
+            {
+                StandardATISRunning = false;
+            }
         }
 
         private static async Task CheckVersion()

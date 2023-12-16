@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Speech.Synthesis;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using vatsys;
@@ -23,9 +24,14 @@ namespace ATISPlugin
         private char ID { get; set; }
         private int Number { get; set; } = 1;
         private Dictionary<string, string> Saves { get; set; } = new Dictionary<string, string>();
-        private bool Edits => Saves.Any() || TimeCheck != Control.TimeCheck || ID != Control.ID;
+        private bool Edits => Saves.Any() || 
+            TimeCheck != Control.TimeCheck || 
+            ID != Control.ID || Control.PromptRate != Rate || 
+            Control.InstalledVoice != Voice;
         private bool TimeCheck { get; set; }
         public EventHandler RefreshEvent { get; set; }  
+        public InstalledVoice Voice { get; set; }
+        public PromptRate Rate { get; set; } 
 
         public EditorWindow()
         {
@@ -47,6 +53,12 @@ namespace ATISPlugin
             ID = Control.ID;
 
             TimeCheck = Control.TimeCheck;
+
+            comboBoxVoice.SelectedIndex = comboBoxVoice.FindStringExact(Control.InstalledVoice.VoiceInfo.Name);
+            Voice = Control.InstalledVoice;
+
+            comboBoxRate.SelectedIndex = comboBoxRate.FindStringExact(Control.PromptRate.ToString());
+            Rate = Control.PromptRate;
 
             Saves.Clear();
 
@@ -84,10 +96,6 @@ namespace ATISPlugin
         {
             labelMETAR.Text = string.Empty;
             
-            comboBoxVoice.SelectedIndex = comboBoxVoice.FindStringExact(Control.InstalledVoice.VoiceInfo.Name);
-            
-            comboBoxRate.SelectedIndex = comboBoxRate.FindStringExact(Control.PromptRate.ToString());
-
             if (Plugin.ATIS1.ICAO != null)
             {
                 buttonATIS1.Text = Plugin.ATIS1.ICAO;
@@ -219,6 +227,7 @@ namespace ATISPlugin
                 buttonGetMetar.Enabled = true;
                 buttonNext.Enabled = true;
                 comboBoxVoice.Enabled = true;
+                comboBoxRate.Enabled = true;
 
                 labelCode.Text = Control.ICAO;
 
@@ -413,6 +422,7 @@ namespace ATISPlugin
                 buttonBroadcast.Enabled = false;
                 buttonNext.Enabled = false;
                 comboBoxVoice.Enabled = false;
+                comboBoxRate.Enabled = false;
                 buttonListen.Enabled = false;
                 buttonListen.BackColor = Color.FromName("Control");
                 buttonListen.ForeColor = default;
@@ -459,7 +469,7 @@ namespace ATISPlugin
             RefreshForm();
         }
 
-        private async void buttonCreate_Click(object sender, EventArgs e)
+        private async void ButtonCreate_Click(object sender, EventArgs e)
         {
             if (ICAO == null) return;
 
@@ -478,34 +488,29 @@ namespace ATISPlugin
 
         private string ICAO { get; set; }
 
-        private void comboBoxAirport_TextChanged(object sender, EventArgs e)
+        private void ComboBoxAirport_TextChanged(object sender, EventArgs e)
         {
             ICAO = comboBoxAirport.Text;
         }
 
-        private void comboBoxAirport_SelectedIndexChanged(object sender, EventArgs e)
+        private void ComboBoxAirport_SelectedIndexChanged(object sender, EventArgs e)
         {
             ICAO = comboBoxAirport.GetItemText(comboBoxAirport.SelectedItem);
         }
 
-        private async void buttonDelete_Click(object sender, EventArgs e)
+        private async void ButtonDelete_Click(object sender, EventArgs e)
         {
             await Control.Delete();
-
-            if (Number == 1) Plugin.ATIS1 = new ATISControl();
-            else if (Number == 2) Plugin.ATIS2 = new ATISControl();
-            else if (Number == 3) Plugin.ATIS3 = new ATISControl();
-            else Plugin.ATIS4 = new ATISControl();
 
             Change(Number);
         }
 
-        private async void buttonGetMetar_Click(object sender, EventArgs e)
+        private async void ButtonGetMetar_Click(object sender, EventArgs e)
         {
             await GetMetar();
         }
 
-        private void buttonCancel_Click(object sender, EventArgs e)
+        private void ButtonCancel_Click(object sender, EventArgs e)
         {
             ID = Control.ID;
 
@@ -525,18 +530,21 @@ namespace ATISPlugin
             RefreshForm();
         }
 
-        private void buttonNext_Click(object sender, EventArgs e)
+        private void ButtonNext_Click(object sender, EventArgs e)
         {
             IncreaseID();
         }
 
-        private async void buttonSave_Click(object sender, EventArgs e)
+        private async void ButtonSave_Click(object sender, EventArgs e)
         {
             await SaveATIS();
         }
 
         private async Task SaveATIS()
         {
+            Control.InstalledVoice = Voice;
+            Control.PromptRate = Rate;
+
             await Control.Save(ID, Saves, TimeCheck);
 
             Saves.Clear();
@@ -551,8 +559,15 @@ namespace ATISPlugin
             RefreshForm();
         }
 
-        private async void buttonBroadcast_Click(object sender, EventArgs e)
+        private async void ButtonBroadcast_Click(object sender, EventArgs e)
         {
+            if (Number == 4 && Plugin.StandardATISRunning)
+            {
+                Errors.Add(new Exception("You already have four ATIS running."), Plugin.DisplayName);
+
+                return;
+            }
+
             if (!Control.Broadcasting)
             {
                 buttonBroadcast.BackColor = Color.FromName("ControlDarkDark");
@@ -573,11 +588,9 @@ namespace ATISPlugin
             RefreshForm();
         }
 
-        private void textBox_TextChanged(object sender, EventArgs e)
+        private void TextBox_TextChanged(object sender, EventArgs e)
         {
-            var textBox = sender as TextBox;
-
-            if (textBox == null) return;
+            if (!(sender is TextBox textBox)) return;
 
             var lineName = string.Empty;
 
@@ -644,11 +657,9 @@ namespace ATISPlugin
             }
         }
 
-        private void comboBoxLetter_SelectedIndexChanged(object sender, EventArgs e)
+        private void ComboBoxLetter_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var comboBox = sender as ComboBox;
-
-            if (comboBox == null) return;
+            if (!(sender is ComboBox comboBox)) return;
 
             string selectedLetter = (string)comboBox.SelectedItem;
 
@@ -663,11 +674,9 @@ namespace ATISPlugin
             RefreshForm();
         }
 
-        private void comboBoxVoice_SelectedIndexChanged(object sender, EventArgs e)
+        private void ComboBoxVoice_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var comboBox = sender as ComboBox;
-
-            if (comboBox == null) return;
+            if (!(sender is ComboBox comboBox)) return;
 
             string selectedVoice = (string)comboBox.SelectedItem;
 
@@ -675,12 +684,42 @@ namespace ATISPlugin
 
             if (voice == null) return;  
 
-            Control.InstalledVoice = voice;
+            Voice =  voice;
 
             RefreshForm();
         }
 
-        private void buttonListen_Click(object sender, EventArgs e)
+        private void ComboBoxRate_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!(sender is ComboBox comboBox)) return;
+
+            string rate = (string)comboBox.SelectedItem;
+
+            switch (rate)
+            {
+                case "Extra Fast":
+                    Rate = PromptRate.ExtraFast;
+                    break;
+                case "Fast":
+                    Rate = PromptRate.Fast;
+                    break;
+                case "Medium":
+                    Rate = PromptRate.Medium;
+                    break;
+                case "Slow":
+                    Rate = PromptRate.Slow;
+                    break;
+                case "Extra Slow":
+                    Rate = PromptRate.ExtraSlow;
+                    break;
+                default:
+                    break;
+            }
+
+            RefreshForm();
+        }
+
+        private void ButtonListen_Click(object sender, EventArgs e)
         {
             if (Control.Listening)
             {
@@ -695,22 +734,22 @@ namespace ATISPlugin
             RefreshForm();
         }
 
-        private void buttonATIS1_Click(object sender, EventArgs e)
+        private void ButtonATIS1_Click(object sender, EventArgs e)
         {
             Change(1);
         }
 
-        private void buttonATIS2_Click(object sender, EventArgs e)
+        private void ButtonATIS2_Click(object sender, EventArgs e)
         {
             Change(2);
         }
 
-        private void buttonATIS3_Click(object sender, EventArgs e)
+        private void ButtonATIS3_Click(object sender, EventArgs e)
         {
             Change(3);
         }
 
-        private void buttonATIS4_Click(object sender, EventArgs e)
+        private void ButtonATIS4_Click(object sender, EventArgs e)
         {
             Change(4);
         }

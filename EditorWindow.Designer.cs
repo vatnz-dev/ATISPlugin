@@ -95,7 +95,7 @@
             this.buttonCreate.TabIndex = 4;
             this.buttonCreate.Text = "Create";
             this.buttonCreate.UseVisualStyleBackColor = true;
-            this.buttonCreate.Click += new System.EventHandler(this.buttonCreate_Click);
+            this.buttonCreate.Click += new System.EventHandler(this.ButtonCreate_Click);
             // 
             // comboBoxAirport
             // 
@@ -105,8 +105,8 @@
             this.comboBoxAirport.Name = "comboBoxAirport";
             this.comboBoxAirport.Size = new System.Drawing.Size(264, 25);
             this.comboBoxAirport.TabIndex = 1;
-            this.comboBoxAirport.SelectedIndexChanged += new System.EventHandler(this.comboBoxAirport_SelectedIndexChanged);
-            this.comboBoxAirport.TextChanged += new System.EventHandler(this.comboBoxAirport_TextChanged);
+            this.comboBoxAirport.SelectedIndexChanged += new System.EventHandler(this.ComboBoxAirport_SelectedIndexChanged);
+            this.comboBoxAirport.TextChanged += new System.EventHandler(this.ComboBoxAirport_TextChanged);
             // 
             // textBoxAPCH
             // 
@@ -116,7 +116,7 @@
             this.textBoxAPCH.Name = "textBoxAPCH";
             this.textBoxAPCH.Size = new System.Drawing.Size(370, 25);
             this.textBoxAPCH.TabIndex = 5;
-            this.textBoxAPCH.TextChanged += new System.EventHandler(this.textBox_TextChanged);
+            this.textBoxAPCH.TextChanged += new System.EventHandler(this.TextBox_TextChanged);
             // 
             // textBoxRWY
             // 
@@ -126,7 +126,7 @@
             this.textBoxRWY.Name = "textBoxRWY";
             this.textBoxRWY.Size = new System.Drawing.Size(370, 25);
             this.textBoxRWY.TabIndex = 6;
-            this.textBoxRWY.TextChanged += new System.EventHandler(this.textBox_TextChanged);
+            this.textBoxRWY.TextChanged += new System.EventHandler(this.TextBox_TextChanged);
             // 
             // textBoxSFCCOND
             // 
@@ -136,7 +136,7 @@
             this.textBoxSFCCOND.Name = "textBoxSFCCOND";
             this.textBoxSFCCOND.Size = new System.Drawing.Size(370, 25);
             this.textBoxSFCCOND.TabIndex = 7;
-            this.textBoxSFCCOND.TextChanged += new System.EventHandler(this.textBox_TextChanged);
+            this.textBoxSFCCOND.TextChanged += new System.EventHandler(this.TextBox_TextChanged);
             // 
             // labelAPCH
             // 
@@ -179,7 +179,7 @@
             this.textBoxWIND.Name = "textBoxWIND";
             this.textBoxWIND.Size = new System.Drawing.Size(370, 25);
             this.textBoxWIND.TabIndex = 9;
-            this.textBoxWIND.TextChanged += new System.EventHandler(this.textBox_TextChanged);
+            this.textBoxWIND.TextChanged += new System.EventHandler(this.TextBox_TextChanged);
             // 
             // textBoxVIS
             // 
@@ -189,7 +189,7 @@
             this.textBoxVIS.Name = "textBoxVIS";
             this.textBoxVIS.Size = new System.Drawing.Size(370, 25);
             this.textBoxVIS.TabIndex = 10;
-            this.textBoxVIS.TextChanged += new System.EventHandler(this.textBox_TextChanged);
+            this.textBoxVIS.TextChanged += new System.EventHandler(this.TextBox_TextChanged);
             // 
             // textBoxCLD
             // 
@@ -199,7 +199,7 @@
             this.textBoxCLD.Name = "textBoxCLD";
             this.textBoxCLD.Size = new System.Drawing.Size(370, 25);
             this.textBoxCLD.TabIndex = 11;
-            this.textBoxCLD.TextChanged += new System.EventHandler(this.textBox_TextChanged);
+            this.textBoxCLD.TextChanged += new System.EventHandler(this.TextBox_TextChanged);
             // 
             // textBoxWX
             // 
@@ -209,7 +209,7 @@
             this.textBoxWX.Name = "textBoxWX";
             this.textBoxWX.Size = new System.Drawing.Size(370, 25);
             this.textBoxWX.TabIndex = 12;
-            this.textBoxWX.TextChanged += new System.EventHandler(this.textBox_TextChanged);
+            this.textBoxWX.TextChanged += new System.EventHandler(this.TextBox_TextChanged);
             // 
             // textBoxTMP
             // 
@@ -219,7 +219,7 @@
             this.textBoxTMP.Name = "textBoxTMP";
             this.textBoxTMP.Size = new System.Drawing.Size(370, 25);
             this.textBoxTMP.TabIndex = 13;
-            this.textBoxTMP.TextChanged += new System.EventHandler(this.textBox_TextChanged);
+            this.textBoxTMP.TextChanged += new System.EventHandler(this.TextBox_TextChanged);
             // 
             // textBoxQNH
             // 
@@ -229,7 +229,7 @@
             this.textBoxQNH.Name = "textBoxQNH";
             this.textBoxQNH.Size = new System.Drawing.Size(370, 25);
             this.textBoxQNH.TabIndex = 14;
-            this.textBoxQNH.TextChanged += new System.EventHandler(this.textBox_TextChanged);
+            this.textBoxQNH.TextChanged += new System.EventHandler(this.TextBox_TextChanged);
             // 
             // textBoxSIGWX
             // 
@@ -239,7 +239,7 @@
             this.textBoxSIGWX.Name = "textBoxSIGWX";
             this.textBoxSIGWX.Size = new System.Drawing.Size(370, 25);
             this.textBoxSIGWX.TabIndex = 15;
-            this.textBoxSIGWX.TextChanged += new System.EventHandler(this.textBox_TextChanged);
+            this.textBoxSIGWX.TextChanged += new System.EventHandler(this.TextBox_TextChanged);
             // 
             // textBoxOFCW
             // 
@@ -249,7 +249,7 @@
             this.textBoxOFCW.Name = "textBoxOFCW";
             this.textBoxOFCW.Size = new System.Drawing.Size(370, 25);
             this.textBoxOFCW.TabIndex = 16;
-            this.textBoxOFCW.TextChanged += new System.EventHandler(this.textBox_TextChanged);
+            this.textBoxOFCW.TextChanged += new System.EventHandler(this.TextBox_TextChanged);
             // 
             // comboBoxTimecheck
             // 
@@ -282,7 +282,7 @@
             this.textBoxOPRINFO.Name = "textBoxOPRINFO";
             this.textBoxOPRINFO.Size = new System.Drawing.Size(370, 25);
             this.textBoxOPRINFO.TabIndex = 8;
-            this.textBoxOPRINFO.TextChanged += new System.EventHandler(this.textBox_TextChanged);
+            this.textBoxOPRINFO.TextChanged += new System.EventHandler(this.TextBox_TextChanged);
             // 
             // labelWIND
             // 
@@ -391,7 +391,7 @@
             this.comboBoxLetter.Name = "comboBoxLetter";
             this.comboBoxLetter.Size = new System.Drawing.Size(121, 25);
             this.comboBoxLetter.TabIndex = 4;
-            this.comboBoxLetter.SelectedIndexChanged += new System.EventHandler(this.comboBoxLetter_SelectedIndexChanged);
+            this.comboBoxLetter.SelectedIndexChanged += new System.EventHandler(this.ComboBoxLetter_SelectedIndexChanged);
             // 
             // buttonNext
             // 
@@ -401,7 +401,7 @@
             this.buttonNext.TabIndex = 34;
             this.buttonNext.Text = "Next";
             this.buttonNext.UseVisualStyleBackColor = true;
-            this.buttonNext.Click += new System.EventHandler(this.buttonNext_Click);
+            this.buttonNext.Click += new System.EventHandler(this.ButtonNext_Click);
             // 
             // label11
             // 
@@ -444,7 +444,7 @@
             this.buttonSave.TabIndex = 18;
             this.buttonSave.Text = "Save";
             this.buttonSave.UseVisualStyleBackColor = true;
-            this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
+            this.buttonSave.Click += new System.EventHandler(this.ButtonSave_Click);
             // 
             // buttonCancel
             // 
@@ -455,7 +455,7 @@
             this.buttonCancel.TabIndex = 19;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            this.buttonCancel.Click += new System.EventHandler(this.ButtonCancel_Click);
             // 
             // buttonListen
             // 
@@ -466,7 +466,7 @@
             this.buttonListen.TabIndex = 40;
             this.buttonListen.Text = "Listen";
             this.buttonListen.UseVisualStyleBackColor = false;
-            this.buttonListen.Click += new System.EventHandler(this.buttonListen_Click);
+            this.buttonListen.Click += new System.EventHandler(this.ButtonListen_Click);
             // 
             // buttonGetMetar
             // 
@@ -477,7 +477,7 @@
             this.buttonGetMetar.TabIndex = 41;
             this.buttonGetMetar.Text = "Load METAR";
             this.buttonGetMetar.UseVisualStyleBackColor = false;
-            this.buttonGetMetar.Click += new System.EventHandler(this.buttonGetMetar_Click);
+            this.buttonGetMetar.Click += new System.EventHandler(this.ButtonGetMetar_Click);
             // 
             // buttonBroadcast
             // 
@@ -488,7 +488,7 @@
             this.buttonBroadcast.TabIndex = 42;
             this.buttonBroadcast.Text = "Broadcast";
             this.buttonBroadcast.UseVisualStyleBackColor = true;
-            this.buttonBroadcast.Click += new System.EventHandler(this.buttonBroadcast_Click);
+            this.buttonBroadcast.Click += new System.EventHandler(this.ButtonBroadcast_Click);
             // 
             // comboBoxVoice
             // 
@@ -499,7 +499,7 @@
             this.comboBoxVoice.Name = "comboBoxVoice";
             this.comboBoxVoice.Size = new System.Drawing.Size(264, 25);
             this.comboBoxVoice.TabIndex = 2;
-            this.comboBoxVoice.SelectedIndexChanged += new System.EventHandler(this.comboBoxVoice_SelectedIndexChanged);
+            this.comboBoxVoice.SelectedIndexChanged += new System.EventHandler(this.ComboBoxVoice_SelectedIndexChanged);
             // 
             // comboBoxRate
             // 
@@ -516,6 +516,7 @@
             this.comboBoxRate.Name = "comboBoxRate";
             this.comboBoxRate.Size = new System.Drawing.Size(100, 25);
             this.comboBoxRate.TabIndex = 3;
+            this.comboBoxRate.SelectedIndexChanged += new System.EventHandler(this.ComboBoxRate_SelectedIndexChanged);
             // 
             // buttonDelete
             // 
@@ -525,7 +526,7 @@
             this.buttonDelete.TabIndex = 45;
             this.buttonDelete.Text = "Delete";
             this.buttonDelete.UseVisualStyleBackColor = true;
-            this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
+            this.buttonDelete.Click += new System.EventHandler(this.ButtonDelete_Click);
             // 
             // label12
             // 
@@ -546,7 +547,7 @@
             this.buttonATIS1.TabIndex = 47;
             this.buttonATIS1.Text = "ATIS #1";
             this.buttonATIS1.UseVisualStyleBackColor = true;
-            this.buttonATIS1.Click += new System.EventHandler(this.buttonATIS1_Click);
+            this.buttonATIS1.Click += new System.EventHandler(this.ButtonATIS1_Click);
             // 
             // buttonATIS2
             // 
@@ -557,7 +558,7 @@
             this.buttonATIS2.TabIndex = 48;
             this.buttonATIS2.Text = "ATIS #2";
             this.buttonATIS2.UseVisualStyleBackColor = true;
-            this.buttonATIS2.Click += new System.EventHandler(this.buttonATIS2_Click);
+            this.buttonATIS2.Click += new System.EventHandler(this.ButtonATIS2_Click);
             // 
             // buttonATIS3
             // 
@@ -568,7 +569,7 @@
             this.buttonATIS3.TabIndex = 49;
             this.buttonATIS3.Text = "ATIS #3";
             this.buttonATIS3.UseVisualStyleBackColor = true;
-            this.buttonATIS3.Click += new System.EventHandler(this.buttonATIS3_Click);
+            this.buttonATIS3.Click += new System.EventHandler(this.ButtonATIS3_Click);
             // 
             // buttonATIS4
             // 
@@ -579,7 +580,7 @@
             this.buttonATIS4.TabIndex = 50;
             this.buttonATIS4.Text = "ATIS #4";
             this.buttonATIS4.UseVisualStyleBackColor = true;
-            this.buttonATIS4.Click += new System.EventHandler(this.buttonATIS4_Click);
+            this.buttonATIS4.Click += new System.EventHandler(this.ButtonATIS4_Click);
             // 
             // EditorWindow
             // 

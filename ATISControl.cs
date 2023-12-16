@@ -15,7 +15,6 @@ using Vnet.PDU;
 using vatsys;
 using System.Security.Cryptography;
 using System.Text;
-using System.Xml.Linq;
 
 namespace ATISPlugin
 {
@@ -67,7 +66,7 @@ namespace ATISPlugin
         private SpeechAudioFormatInfo SpeechFormat { get; set; }
         private WaveFormat WaveForm { get; set; } = new WaveFormat(44100, 1);
         public string METARRaw { get; set; }
-        public METAR METAR => new METAR().Process(METARRaw);
+        // public METAR METAR => new METAR().Process(METARRaw);
         public string METARLastRaw { get; set; }
         public AFV AFV { get; set; } = new AFV();
         private readonly Timer LoopTimer;
@@ -163,6 +162,9 @@ namespace ATISPlugin
             Callsign = null;
             Latitude = 0;
             Longitude = 0;
+
+            METARLastRaw = null;
+            METARRaw = null;
 
             Network.NetworkConnected -= Network_NetworkConnected;
             Network.NetworkDisconnected -= Network_NetworkDisconnected;
@@ -315,7 +317,6 @@ namespace ATISPlugin
                 if (updatedLine == currentLine.Value) continue;
 
                 var suggestLine = new ATISLine(currentLine.Name, currentLine.Type, currentLine.NameSpoken, currentLine.NumbersGrouped, updatedLine, currentLine.METARField);
-
 
                 suggestedLines.Add(suggestLine);
             }
