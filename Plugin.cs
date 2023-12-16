@@ -27,7 +27,7 @@ namespace ATISPlugin
         public static readonly string ServerSweatbox = "sweatbox01-training.vatpac.org";
         private static readonly string MetarUri = "https://metar.vatsim.net/metar.php?id=";
 
-        private static readonly Version _version = new Version(1, 5);
+        private static readonly Version _version = new Version(1, 6);
         private static readonly string _versionUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Version.json";
 
         private static readonly HttpClient Client = new HttpClient();
@@ -182,11 +182,17 @@ namespace ATISPlugin
 
         private async void METARTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
+            var changes = false;
+
             try
             {
                 var atis1Updated = await ATIS1.UpdateMetar();
 
-                if (atis1Updated) OnMETARUpdate(1);
+                if (atis1Updated)
+                {
+                    changes = true;
+                    OnMETARUpdate(1);
+                }
             }
             catch { }
 
@@ -194,7 +200,11 @@ namespace ATISPlugin
             {
                 var atis2Updated = await ATIS2.UpdateMetar();
 
-                if (atis2Updated) OnMETARUpdate(2);
+                if (atis2Updated)
+                {
+                    changes = true;
+                    OnMETARUpdate(2);
+                }
             }
             catch { }
 
@@ -202,7 +212,11 @@ namespace ATISPlugin
             {
                 var atis3Updated = await ATIS3.UpdateMetar();
 
-                if (atis3Updated) OnMETARUpdate(3);
+                if (atis3Updated)
+                {
+                    changes = true;
+                    OnMETARUpdate(3);
+                }
             }
             catch { }
 
@@ -210,9 +224,15 @@ namespace ATISPlugin
             {
                 var atis4Updated = await ATIS4.UpdateMetar();
 
-                if (atis4Updated) OnMETARUpdate(4);
+                if (atis4Updated)
+                {
+                    changes = true;
+                    OnMETARUpdate(4);
+                }
             }
             catch { }
+
+            if (changes) PlayUpdateSound();
 
             METARTimer.Start();
         }
@@ -240,14 +260,17 @@ namespace ATISPlugin
             Editor?.RefreshEvent.Invoke(this, null);
         }
 
-        private void OnMETARUpdate(int number)
+        private void PlayUpdateSound()
         {
             var sound = Path.Combine(Helpers.GetProgramFolder(), "wav", "AIS.wav");
 
             SoundPlayer.SoundLocation = sound;
 
             SoundPlayer.Play();
+        }
 
+        private void OnMETARUpdate(int number)
+        {
             ShowEditorWindow();
 
             Editor.Change(number);
