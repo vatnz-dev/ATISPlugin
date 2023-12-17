@@ -27,8 +27,8 @@ namespace ATISPlugin
         public static readonly string ServerSweatbox = "sweatbox01-training.vatpac.org";
         private static readonly string MetarUri = "https://metar.vatsim.net/metar.php?id=";
 
-        private static readonly Version _version = new Version(1, 6);
-        private static readonly string _versionUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Version.json";
+        public static readonly Version Version = new Version(1, 7);
+        private static readonly string VersionUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Version.json";
 
         private static readonly HttpClient Client = new HttpClient();
 
@@ -59,7 +59,7 @@ namespace ATISPlugin
                 Network.Connected += Network_Connected;
                 Network.Disconnected += Network_Disconnected;
 
-                ATISMenu = new CustomToolStripMenuItem(CustomToolStripMenuItemWindowType.Main, CustomToolStripMenuItemCategory.Windows, new ToolStripMenuItem("More ATIS"));
+                ATISMenu = new CustomToolStripMenuItem(CustomToolStripMenuItemWindowType.Main, CustomToolStripMenuItemCategory.Windows, new ToolStripMenuItem(DisplayName));
                 ATISMenu.Item.Click += ATISMenu_Click;
                 MMI.AddCustomMenuItem(ATISMenu);
 
@@ -127,7 +127,7 @@ namespace ATISPlugin
 
                 if (!ATIS4.Broadcasting) return; 
 
-                Errors.Add(new Exception("ATIS 4 has been deleted."), Plugin.DisplayName);
+                Errors.Add(new Exception("ATIS 4 has been deleted."), DisplayName);
 
                 await ATIS4.Delete();
             }
@@ -141,12 +141,12 @@ namespace ATISPlugin
         {
             try
             {
-                var response = await Client.GetStringAsync(_versionUrl);
+                var response = await Client.GetStringAsync(VersionUrl);
 
                 var version = JsonConvert.DeserializeObject<Version>(response);
-                if (version.Major == _version.Major && version.Minor == _version.Minor) return;
+                if (version.Major == Version.Major && version.Minor == Version.Minor) return;
 
-                Errors.Add(new Exception("A new version of the plugin is available."), "ATIS Plugin");
+                Errors.Add(new Exception("A new version of the plugin is available."), DisplayName);
             }
             catch { }
         }

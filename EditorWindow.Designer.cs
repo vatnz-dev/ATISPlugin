@@ -75,6 +75,7 @@
             this.buttonATIS2 = new System.Windows.Forms.Button();
             this.buttonATIS3 = new System.Windows.Forms.Button();
             this.buttonATIS4 = new System.Windows.Forms.Button();
+            this.labelVersion = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // labelICAO
@@ -102,7 +103,7 @@
             this.comboBoxAirport.BackColor = System.Drawing.SystemColors.ControlDark;
             this.comboBoxAirport.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxAirport.FormattingEnabled = true;
-            this.comboBoxAirport.Location = new System.Drawing.Point(114, 63);
+            this.comboBoxAirport.Location = new System.Drawing.Point(114, 62);
             this.comboBoxAirport.Name = "comboBoxAirport";
             this.comboBoxAirport.Size = new System.Drawing.Size(264, 25);
             this.comboBoxAirport.TabIndex = 1;
@@ -255,6 +256,7 @@
             // comboBoxTimecheck
             // 
             this.comboBoxTimecheck.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.comboBoxTimecheck.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxTimecheck.FormattingEnabled = true;
             this.comboBoxTimecheck.Items.AddRange(new object[] {
             "True",
@@ -387,6 +389,7 @@
             // comboBoxLetter
             // 
             this.comboBoxLetter.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.comboBoxLetter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxLetter.FormattingEnabled = true;
             this.comboBoxLetter.Location = new System.Drawing.Point(114, 188);
             this.comboBoxLetter.Name = "comboBoxLetter";
@@ -585,12 +588,23 @@
             this.buttonATIS4.UseVisualStyleBackColor = true;
             this.buttonATIS4.Click += new System.EventHandler(this.ButtonATIS4_Click);
             // 
+            // labelVersion
+            // 
+            this.labelVersion.AutoSize = true;
+            this.labelVersion.Location = new System.Drawing.Point(444, 633);
+            this.labelVersion.Name = "labelVersion";
+            this.labelVersion.Size = new System.Drawing.Size(40, 17);
+            this.labelVersion.TabIndex = 51;
+            this.labelVersion.Text = "v0.0";
+            this.labelVersion.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
             // EditorWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.Disable;
             this.ClientSize = new System.Drawing.Size(496, 672);
+            this.Controls.Add(this.labelVersion);
             this.Controls.Add(this.buttonATIS4);
             this.Controls.Add(this.buttonATIS3);
             this.Controls.Add(this.buttonATIS2);
@@ -703,5 +717,6 @@
         private System.Windows.Forms.Button buttonATIS2;
         private System.Windows.Forms.Button buttonATIS3;
         private System.Windows.Forms.Button buttonATIS4;
+        private System.Windows.Forms.Label labelVersion;
     }
 }

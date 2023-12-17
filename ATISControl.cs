@@ -208,10 +208,10 @@ namespace ATISPlugin
 
             SuggestedLines.Clear();
 
-            GenerateSpoken(GenerateSpokenStrings());
+            GenerateSpoken();
 
             if (ATISStream != null) ATISStream.SetLength(0L);
-            else ATISStream = new MemoryStream(20000000);
+            else ATISStream = new MemoryStream();
 
             ATISDuration = SetContent(ATISSpoken, ref ATISStream);
 
@@ -328,34 +328,7 @@ namespace ATISPlugin
             return true;
         }
 
-        private List<string> GenerateSpokenStrings()
-        {
-            List<string> stringList = new List<string>();
-
-            var replacements = DoReplacements($"{ICAO} ATIS {ID}", false);
-
-            stringList.Add(string.Join(" ", replacements));
-
-            foreach (var line in Lines)
-            {
-                if (string.IsNullOrWhiteSpace(line.Value)) continue;
-
-                if (line.Name == "OFCW_NOTIFY")
-                {
-                    replacements = DoReplacements($"On first contact with {ICAO} {line.Value}, notify receipt of information {ID}", line.NumbersGrouped);
-                }
-                else
-                {
-                    replacements = DoReplacements(line.NameSpoken ? $"{line.Name} {line.Value}" : line.Value, line.NumbersGrouped);
-                }
-
-                stringList.Add(string.Join(" ", replacements));
-            }
-
-            return stringList;
-        }
-
-        private static List<string> DoReplacements(string text, bool groupNumbers = false)
+        private PromptBuilder DoReplacements(PromptBuilder promptBuilder, string text, bool groupNumbers = false)
         {
             if (text == null) return null;
 
@@ -384,16 +357,50 @@ namespace ATISPlugin
                     input = Regex.Replace(Regex.Replace(input, "(\\d{1,2})([0]{3})", "$1 thousand"), "(\\d{1,2})(\\d)([0]{2})", "$1 thousand $2 hundred");
                 }
 
-                foreach (var stringReplacement in Plugin.ATISData.Translations.Where(x => !string.IsNullOrWhiteSpace(x.String)))
+                foreach (var stringReplacement in Plugin.ATISData.Translations.Where(x => !string.IsNullOrWhiteSpace(x.String) && string.IsNullOrWhiteSpace(x.Alphabet)))
                     input = Regex.Replace(input, "\\b" + Regex.Escape(stringReplacement.String) + "\\b", stringReplacement.Spoken);
-
-                // if (input == key && !Generator.ATISData.Translations.SelectMany(x => x..phonemeReplacements.ContainsKey(key))
-                //    input = key.ToLowerInvariant();
 
                 output.Add(input);
             }
 
-            return output;
+            foreach (var word in output)
+            {
+                var phonemeReplacement = Plugin.ATISData.Translations.Where(x => !string.IsNullOrWhiteSpace(x.String) && !string.IsNullOrWhiteSpace(x.Alphabet)).FirstOrDefault(x => x.String == word);
+
+                if (phonemeReplacement == null)
+                {
+                    promptBuilder.AppendText(word + " ");
+                    continue;
+                }
+
+                if (phonemeReplacement.Alphabet != "Text" && !InstalledVoice.VoiceInfo.Name.Contains("Microsoft"))
+                {
+                    promptBuilder.AppendText(phonemeReplacement.FallbackSpoken + " ");
+                }
+                else
+                {
+                    var temp = $"<phoneme alphabet=";
+                    switch (phonemeReplacement.Alphabet)
+                    {
+                        case "Text":
+                            promptBuilder.AppendText(phonemeReplacement.Spoken + " ");
+                            continue;
+                        case "IPA":
+                            promptBuilder.AppendTextWithPronunciation(word, phonemeReplacement.Spoken);
+                            continue;
+                        case "SAPI":
+                            temp += "\"x-microsoft-sapi\"";
+                            break;
+                        case "UPS":
+                            temp += "\"x-microsoft-ups\"";
+                            break;
+                    }
+                    string ssmlMarkup = temp + " ph=\"" + phonemeReplacement.Spoken + "\">" + word + "</phoneme>";
+                    promptBuilder.AppendSsmlMarkup(ssmlMarkup);
+                }
+            }
+
+            return promptBuilder;
         }
 
         private double SetContent(PromptBuilder speech, ref MemoryStream stream)
@@ -406,16 +413,33 @@ namespace ATISPlugin
             return (double)stream.Length / (double)WaveForm.AverageBytesPerSecond * 1000.0;
         }
 
-        private void GenerateSpoken(List<string> lines)
+        private void GenerateSpoken()
         {
             var speech = new PromptBuilder(CultureInfo);
             speech.StartVoice(InstalledVoice.VoiceInfo.Name);
             speech.StartStyle(new PromptStyle(PromptRate));
             speech.AppendBreak(TimeSpan.FromSeconds(0.5));
-            foreach (var line in lines)
+
+            speech.StartSentence();
+            speech = DoReplacements(speech, $"{ICAO} ATIS {ID}", false);
+            speech.EndSentence();
+            speech.AppendBreak(TimeSpan.FromSeconds(1.0));
+
+            foreach (var line in Lines)
             {
+                if (string.IsNullOrWhiteSpace(line.Value)) continue;
+
                 speech.StartSentence();
-                speech.AppendText(line);
+
+                if (line.Name == "OFCW_NOTIFY")
+                {
+                    speech = DoReplacements(speech, $"On first contact with {ICAO} {line.Value}, notify receipt of information {ID}", line.NumbersGrouped);
+                }
+                else
+                {
+                    speech = DoReplacements(speech, line.NameSpoken ? $"{line.Name} {line.Value}" : line.Value, line.NumbersGrouped);
+                }
+
                 speech.EndSentence();
                 speech.AppendBreak(TimeSpan.FromSeconds(1.0));
             }
@@ -451,13 +475,13 @@ namespace ATISPlugin
             if (TimeCheckStream != null)
                 TimeCheckStream.SetLength(0L);
             else
-                TimeCheckStream = new MemoryStream(5000000);
+                TimeCheckStream = new MemoryStream();
             return SetContent(speech, ref TimeCheckStream);
         }
 
         private double GenerateCompleteStream()
         {
-            if (CompleteStream == null) CompleteStream = new MemoryStream(20000000);
+            if (CompleteStream == null) CompleteStream = new MemoryStream();
             CompleteStream.Write(ATISStream.GetBuffer(), 0, (int)ATISStream.Length);
             CompleteStream.Seek(ATISStream.Length, SeekOrigin.Begin);
             if (TimeCheck)

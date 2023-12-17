@@ -37,6 +37,8 @@ namespace ATISPlugin
         {
             InitializeComponent();
 
+            labelVersion.Text = $"v{Plugin.Version.Major}.{Plugin.Version.Minor}";
+
             BackColor = Colours.GetColour(Colours.Identities.WindowBackground);
             ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
 
