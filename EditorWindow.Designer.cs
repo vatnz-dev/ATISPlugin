@@ -217,7 +217,7 @@
             // 
             this.textBoxTMP.BackColor = System.Drawing.SystemColors.ControlDark;
             this.textBoxTMP.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.textBoxTMP.Location = new System.Drawing.Point(114, 498);
+            this.textBoxTMP.Location = new System.Drawing.Point(114, 467);
             this.textBoxTMP.Name = "textBoxTMP";
             this.textBoxTMP.Size = new System.Drawing.Size(370, 25);
             this.textBoxTMP.TabIndex = 13;
@@ -227,7 +227,7 @@
             // 
             this.textBoxQNH.BackColor = System.Drawing.SystemColors.ControlDark;
             this.textBoxQNH.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.textBoxQNH.Location = new System.Drawing.Point(114, 467);
+            this.textBoxQNH.Location = new System.Drawing.Point(114, 498);
             this.textBoxQNH.Name = "textBoxQNH";
             this.textBoxQNH.Size = new System.Drawing.Size(370, 25);
             this.textBoxQNH.TabIndex = 14;
@@ -335,7 +335,7 @@
             // 
             this.labelQNH.AutoSize = true;
             this.labelQNH.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.labelQNH.Location = new System.Drawing.Point(76, 470);
+            this.labelQNH.Location = new System.Drawing.Point(76, 501);
             this.labelQNH.Name = "labelQNH";
             this.labelQNH.Size = new System.Drawing.Size(32, 17);
             this.labelQNH.TabIndex = 28;
@@ -346,7 +346,7 @@
             // 
             this.labelTMP.AutoSize = true;
             this.labelTMP.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.labelTMP.Location = new System.Drawing.Point(76, 501);
+            this.labelTMP.Location = new System.Drawing.Point(76, 470);
             this.labelTMP.Name = "labelTMP";
             this.labelTMP.Size = new System.Drawing.Size(32, 17);
             this.labelTMP.TabIndex = 29;
