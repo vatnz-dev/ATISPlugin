@@ -24,7 +24,7 @@ namespace ATISPlugin
         public static string DisplayName => "More ATIS";
 
         public static readonly string ServerVatsim = "fsd.connect.vatsim.net";
-        // public static readonly string ServerSweatbox = "sweatbox01-training.vatpac.org";
+        public static readonly string ServerSweatbox = "sweatbox01-training.vatpac.org";
         private static readonly string MetarUri = "https://metar.vatsim.net/metar.php?id=";
 
         public static readonly Version Version = new Version(1, 8);
@@ -249,8 +249,8 @@ namespace ATISPlugin
 
         private void Network_Connected(object sender, EventArgs e)
         {
-            Server = ServerVatsim;
-
+            if (Network.IsOfficialServer) Server = ServerVatsim;
+            else Server = ServerSweatbox;
             Editor?.RefreshEvent.Invoke(this, null);
         }
 
