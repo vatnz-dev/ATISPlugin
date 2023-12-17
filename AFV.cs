@@ -1,5 +1,7 @@
 ﻿using GeoVR.Connection;
 using System;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using vatsys;
 
@@ -20,8 +22,10 @@ namespace ATISPlugin
         {
             if (!apiServerConnection.Authenticated)
             {
-                await apiServerConnection.Connect(Plugin.Settings.CID, Plugin.Settings.Password, "vatSys 1.0.0");
+                var password = Encoding.UTF8.GetString(ProtectedData.Unprotect(Convert.FromBase64String(Plugin.Settings.Password), Encoding.UTF8.GetBytes(Plugin.Settings.Entropy), DataProtectionScope.CurrentUser));
+                await apiServerConnection.Connect(Plugin.Settings.CID, password, "vatSys 1.0.0");
             }
+
 
             var addBotRequestDto = BotClient.AddBotRequest(audio, frequency, lat, lon, 100.0);
 

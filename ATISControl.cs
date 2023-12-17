@@ -550,7 +550,7 @@ namespace ATISPlugin
 
                 CompleteATISDuration = GenerateCompleteStream();
 
-                CompleteATISDuration = Math.Max(60000.0, CompleteATISDuration);
+                // CompleteATISDuration = Math.Max(60000.0, CompleteATISDuration);
 
                 byte[] audio = new byte[CompleteStream.Length];
                 CompleteStream.Seek(0L, SeekOrigin.Begin);
@@ -568,7 +568,7 @@ namespace ATISPlugin
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Could not start voice ATIS: {ex.Message}";
+                Errors.Add(new Exception($"Could not start voice ATIS: {ex.Message}"), Plugin.DisplayName); ;
             }
         }
 
