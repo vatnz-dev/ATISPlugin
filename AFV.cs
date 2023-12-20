@@ -20,20 +20,24 @@ namespace ATISPlugin
 
         public async Task AddOrUpdateBot(byte[] audio, string callsign, uint frequency, double lat, double lon, bool timeCheck, double duration)
         {
-            if (!apiServerConnection.Authenticated)
+            if (Plugin.Server == "fsd.connect.vatsim.net" && !apiServerConnection.Authenticated)
             {
                 var password = Encoding.UTF8.GetString(ProtectedData.Unprotect(Convert.FromBase64String(Plugin.Settings.Password), Encoding.UTF8.GetBytes(Plugin.Settings.Entropy), DataProtectionScope.CurrentUser));
                 await apiServerConnection.Connect(Plugin.Settings.CID, password, "vatSys 1.0.0");
             }
 
-
             var addBotRequestDto = BotClient.AddBotRequest(audio, frequency, lat, lon, 100.0);
+
+            if (addBotRequestDto == null) return;
 
             var interval = timeCheck ? TimeSpan.FromMilliseconds(duration + 60000.0) : TimeSpan.Zero;
 
             if (interval != TimeSpan.Zero) addBotRequestDto.Interval = interval;
 
-            await apiServerConnection.AddOrUpdateBot(callsign, addBotRequestDto).AwaitTimeout(15000);
+            if (Plugin.Server == "fsd.connect.vatsim.net")
+            {
+                await apiServerConnection.AddOrUpdateBot(callsign, addBotRequestDto).AwaitTimeout(15000);
+            }
 
             Broadcasting = true;
         }

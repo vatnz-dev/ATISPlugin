@@ -27,7 +27,7 @@ namespace ATISPlugin
         public static readonly string ServerSweatbox = "sweatbox01-training.vatpac.org";
         private static readonly string MetarUri = "https://metar.vatsim.net/metar.php?id=";
 
-        public static readonly Version Version = new Version(1, 8);
+        public static readonly Version Version = new Version(1, 9);
         private static readonly string VersionUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Version.json";
 
         private static readonly HttpClient Client = new HttpClient();
@@ -46,7 +46,6 @@ namespace ATISPlugin
         public static ATIS ATISData { get; set; }
         public static Sectors Sectors { get; set; }
         public static Airspace Airspace { get; set; }
-        public static bool StandardATISRunning { get; set; }
 
         public static SoundPlayer SoundPlayer { get; set; } = new SoundPlayer();
         private Timer PositionTimer { get; set; } = new Timer();
@@ -65,7 +64,31 @@ namespace ATISPlugin
 
                 GetSettings();
 
+                if (Settings == null)
+                {
+                    Errors.Add(new Exception("Could not load vatSys settings."), DisplayName);
+                    return;
+                }
+
                 GetData();
+
+                if (Airspace == null)
+                {
+                    Errors.Add(new Exception("Could not load Airspace data."), DisplayName);
+                    return;
+                }
+
+                if (Sectors == null)
+                {
+                    Errors.Add(new Exception("Could not load Sectors data."), DisplayName);
+                    return;
+                }
+
+                if (ATISData == null)
+                {
+                    Errors.Add(new Exception("Could not load ATIS data."), DisplayName);
+                    return;
+                }
 
                 var directory = Path.Combine(Settings.DatasetPath, "Temp");
 
@@ -115,26 +138,6 @@ namespace ATISPlugin
             }
 
             _ = CheckVersion();
-
-            vatsys.ATIS.Updated += ATIS_Updated;
-        }
-
-        private async void ATIS_Updated(object sender, EventArgs e)
-        {
-            if (vatsys.ATIS.IsBroadcasting)
-            {
-                StandardATISRunning = true;
-
-                if (!ATIS4.Broadcasting) return; 
-
-                Errors.Add(new Exception("ATIS 4 has been deleted."), DisplayName);
-
-                await ATIS4.Delete();
-            }
-            else
-            {
-                StandardATISRunning = false;
-            }
         }
 
         private static async Task CheckVersion()
@@ -329,6 +332,13 @@ namespace ATISPlugin
 
         private static void ShowEditorWindow()
         {
+            if (ATISData == null || Settings == null || Sectors == null || Airspace == null)
+            {
+                Errors.Add(new Exception("Plugin was not started due to missing data."), DisplayName);
+
+                return;
+            }
+
             MMI.InvokeOnGUI((MethodInvoker)delegate ()
             {
                 if (Editor == null || Editor.IsDisposed)

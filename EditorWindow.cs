@@ -563,13 +563,6 @@ namespace ATISPlugin
 
         private async void ButtonBroadcast_Click(object sender, EventArgs e)
         {
-            if (Number == 4 && Plugin.StandardATISRunning)
-            {
-                Errors.Add(new Exception("You already have four ATIS running."), Plugin.DisplayName);
-
-                return;
-            }
-
             if (!Control.Broadcasting)
             {
                 buttonBroadcast.BackColor = Color.FromName("ControlDarkDark");

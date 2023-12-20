@@ -3,6 +3,7 @@ using Concentus.Structs;
 using GeoVR.Shared;
 using System;
 using System.Collections.Generic;
+using vatsys;
 
 namespace ATISPlugin
 {
@@ -18,44 +19,53 @@ namespace ATISPlugin
           double lonDeg,
           double altM)
         {
-            short[] numArray1 = ConvertBytesTo16BitPCM(audioData);
-            opusEncoder.Bitrate = 8192;
-            Array.Clear((Array)encodedBuffer, 0, encodedBuffer.Length);
-            int num1 = (int)Math.Floor((double)numArray1.Length / 960.0);
-            int num2 = 0;
-            List<byte[]> numArrayList = new List<byte[]>();
-            for (int index = 0; index < num1; ++index)
+            try
             {
-                int count = opusEncoder.Encode(numArray1, num2, 960, encodedBuffer, 0, encodedBuffer.Length);
-                byte[] dst = new byte[count];
-                Buffer.BlockCopy((Array)encodedBuffer, 0, (Array)dst, 0, count);
-                numArrayList.Add(dst);
-                num2 += 960;
-            }
-            short[] numArray2 = new short[960];
-            int count1 = numArray1.Length - num1 * 960;
-            Buffer.BlockCopy((Array)numArray1, num2, (Array)numArray2, 0, count1);
-            int count2 = opusEncoder.Encode(numArray2, 0, 960, encodedBuffer, 0, encodedBuffer.Length);
-            byte[] dst1 = new byte[count2];
-            Buffer.BlockCopy((Array)encodedBuffer, 0, (Array)dst1, 0, count2);
-            numArrayList.Add(dst1);
-            return new PutBotRequestDto()
-            {
-                Transceivers = new List<TransceiverDto>()
+                short[] numArray1 = ConvertBytesTo16BitPCM(audioData);
+                opusEncoder.Bitrate = 8192;
+                Array.Clear((Array)encodedBuffer, 0, encodedBuffer.Length);
+                int num1 = (int)Math.Floor((double)numArray1.Length / 960.0);
+                int num2 = 0;
+                List<byte[]> numArrayList = new List<byte[]>();
+                for (int index = 0; index < num1; ++index)
                 {
-                    new TransceiverDto()
+                    // TODO: Figure out why the next line fails occasionally.
+                    int count = opusEncoder.Encode(numArray1, num2, 960, encodedBuffer, 0, encodedBuffer.Length);
+                    byte[] dst = new byte[count];
+                    Buffer.BlockCopy((Array)encodedBuffer, 0, (Array)dst, 0, count);
+                    numArrayList.Add(dst);
+                    num2 += 960;
+                }
+                short[] numArray2 = new short[960];
+                int count1 = numArray1.Length - num1 * 960;
+                Buffer.BlockCopy((Array)numArray1, num2, (Array)numArray2, 0, count1);
+                int count2 = opusEncoder.Encode(numArray2, 0, 960, encodedBuffer, 0, encodedBuffer.Length);
+                byte[] dst1 = new byte[count2];
+                Buffer.BlockCopy((Array)encodedBuffer, 0, (Array)dst1, 0, count2);
+                numArrayList.Add(dst1);
+
+                return new PutBotRequestDto()
+                {
+                    Transceivers = new List<TransceiverDto>()
                     {
-                    ID = (ushort) 0,
-                    Frequency = frequency,
-                    LatDeg = latDeg,
-                    LonDeg = lonDeg,
-                    HeightMslM = altM,
-                    HeightAglM = altM
-                    }
-                },
-                Interval = TimeSpan.FromSeconds((double)audioData.Length / 96000.0 + 3.0),
-                OpusData = numArrayList
-            };
+                        new TransceiverDto()
+                        {
+                        ID = (ushort) 0,
+                        Frequency = frequency,
+                        LatDeg = latDeg,
+                        LonDeg = lonDeg,
+                        HeightMslM = altM,
+                        HeightAglM = altM
+                        }
+                    },
+                    Interval = TimeSpan.FromSeconds((double)audioData.Length / 96000.0 + 3.0),
+                    OpusData = numArrayList
+                };
+            }
+            catch 
+            {
+                return null;
+            }
         }
 
         private static short[] ConvertBytesTo16BitPCM(byte[] input)
