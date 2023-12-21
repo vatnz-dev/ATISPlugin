@@ -402,7 +402,7 @@ namespace ATISPlugin
             }
             else
             {
-                if (Network.IsConnected)
+                if (Network.IsConnected && Network.IsValidATC)
                 {
                     comboBoxAirport.Enabled = true;
                     buttonCreate.Enabled = true;
@@ -473,6 +473,15 @@ namespace ATISPlugin
 
         private async void ButtonCreate_Click(object sender, EventArgs e)
         {
+            if (!Network.IsConnected || !Network.IsValidATC) return;
+
+            if (Number == 4 && vatsys.ATIS.IsBroadcasting)
+            {
+                Errors.Add(new Exception("Cannot start ATIS as you already have 4 running."), Plugin.DisplayName);
+
+                return;
+            }
+
             if (ICAO == null) return;
 
             var frequency = Plugin.ATISData.Frequencies.FirstOrDefault(x => x.Airport == ICAO);

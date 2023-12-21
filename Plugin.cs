@@ -27,7 +27,7 @@ namespace ATISPlugin
         public static readonly string ServerSweatbox = "sweatbox01-training.vatpac.org";
         private static readonly string MetarUri = "https://metar.vatsim.net/metar.php?id=";
 
-        public static readonly Version Version = new Version(1, 9);
+        public static readonly Version Version = new Version(1, 10);
         private static readonly string VersionUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Version.json";
 
         private static readonly HttpClient Client = new HttpClient();
@@ -57,6 +57,7 @@ namespace ATISPlugin
             {
                 Network.Connected += Network_Connected;
                 Network.Disconnected += Network_Disconnected;
+                Network.ValidATCChanged += OnUpdate;
 
                 ATISMenu = new CustomToolStripMenuItem(CustomToolStripMenuItemWindowType.Main, CustomToolStripMenuItemCategory.Windows, new ToolStripMenuItem(DisplayName));
                 ATISMenu.Item.Click += ATISMenu_Click;
@@ -137,7 +138,18 @@ namespace ATISPlugin
                 if (ex.InnerException != null) Errors.Add(new Exception(ex.InnerException.Message), DisplayName);
             }
 
+            vatsys.ATIS.Updated += ATIS_Updated;
+
             _ = CheckVersion();
+        }
+
+        private async void ATIS_Updated(object sender, EventArgs e)
+        {
+            if (!vatsys.ATIS.IsBroadcasting || !ATIS4.Broadcasting) return;
+
+            await ATIS4.Delete();
+
+            Errors.Add(new Exception("ATIS 4 has been deleted."), DisplayName);
         }
 
         private static async Task CheckVersion()

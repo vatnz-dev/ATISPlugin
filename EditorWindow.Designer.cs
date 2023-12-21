@@ -591,7 +591,7 @@
             // labelVersion
             // 
             this.labelVersion.AutoSize = true;
-            this.labelVersion.Location = new System.Drawing.Point(444, 633);
+            this.labelVersion.Location = new System.Drawing.Point(437, 633);
             this.labelVersion.Name = "labelVersion";
             this.labelVersion.Size = new System.Drawing.Size(40, 17);
             this.labelVersion.TabIndex = 51;
