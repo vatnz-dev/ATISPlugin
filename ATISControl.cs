@@ -170,14 +170,17 @@ namespace ATISPlugin
             Network.NetworkDisconnected -= Network_NetworkDisconnected;
             Network.NetworkError -= Network_NetworkError;
 
-            Lines.Clear();
+            foreach (var line in Lines)
+            {
+                line.Value = null;
+                line.Changed = false;
+            }
+
             SuggestedLines.Clear();
 
             SoundPlayer.Stop();
 
             if (IsNetworkConnected) NetworkDisconnect();
-
-            Init();
         }
 
         public async Task Save(char id, Dictionary<string, string> items, bool timeCheck)
@@ -210,8 +213,7 @@ namespace ATISPlugin
 
             GenerateSpoken();
 
-            if (ATISStream != null) ATISStream.SetLength(0L);
-            else ATISStream = new MemoryStream();
+            ATISStream = new MemoryStream();
 
             ATISDuration = SetContent(ATISSpoken, ref ATISStream);
 
