@@ -160,7 +160,7 @@ namespace ATISPlugin
 
                 var version = JsonConvert.DeserializeObject<Version>(response);
 
-                if (version == Version) return;
+                if (version.Major == Version.Major && version.Minor == Version.Minor) return;
 
                 Errors.Add(new Exception("A new version of the plugin is available."), DisplayName);
             }
