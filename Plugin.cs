@@ -27,7 +27,7 @@ namespace ATISPlugin
         public static readonly string ServerSweatbox = "sweatbox01-training.vatpac.org";
         private static readonly string MetarUri = "https://metar.vatsim.net/metar.php?id=";
 
-        public static readonly Version Version = new Version(1, 11);
+        public static readonly Version Version = new Version(1, 12);
         private static readonly string VersionUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Version.json";
 
         private static readonly HttpClient Client = new HttpClient();
@@ -159,7 +159,8 @@ namespace ATISPlugin
                 var response = await Client.GetStringAsync(VersionUrl);
 
                 var version = JsonConvert.DeserializeObject<Version>(response);
-                if (version.Major == Version.Major && version.Minor == Version.Minor) return;
+
+                if (version == Version) return;
 
                 Errors.Add(new Exception("A new version of the plugin is available."), DisplayName);
             }

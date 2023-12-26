@@ -359,9 +359,7 @@ namespace ATISPlugin
                     input = Regex.Replace(Regex.Replace(input, "(\\d{1,2})([0]{3})", "$1 thousand"), "(\\d{1,2})(\\d)([0]{2})", "$1 thousand $2 hundred");
                 }
 
-                var stringReplacement = Plugin.ATISData.Translations.Where(x => !string.IsNullOrWhiteSpace(x.String) && string.IsNullOrWhiteSpace(x.Alphabet)).FirstOrDefault(x => x.String == input);
-
-                if (stringReplacement != null) 
+                foreach (var stringReplacement in Plugin.ATISData.Translations.Where(x => !string.IsNullOrWhiteSpace(x.String)))
                     input = Regex.Replace(input, "\\b" + Regex.Escape(stringReplacement.String) + "\\b", stringReplacement.Spoken);
 
                 output.Add(input);
