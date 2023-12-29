@@ -23,10 +23,13 @@ namespace ATISPlugin
             if (Plugin.Server == "fsd.connect.vatsim.net" && !apiServerConnection.Authenticated)
             {
                 var password = Encoding.UTF8.GetString(ProtectedData.Unprotect(Convert.FromBase64String(Plugin.Settings.Password), Encoding.UTF8.GetBytes(Plugin.Settings.Entropy), DataProtectionScope.CurrentUser));
+                
                 await apiServerConnection.Connect(Plugin.Settings.CID, password, "vatSys 1.0.0");
             }
 
-            var addBotRequestDto = BotClient.AddBotRequest(audio, frequency, lat, lon, 100.0);
+            var botClient = new BotClient();
+
+            var addBotRequestDto = botClient.AddBotRequest(audio, frequency, lat, lon, 100.0);
 
             if (addBotRequestDto == null) return;
 

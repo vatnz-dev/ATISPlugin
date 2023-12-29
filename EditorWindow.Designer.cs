@@ -118,7 +118,6 @@
             this.textBoxAPCH.Name = "textBoxAPCH";
             this.textBoxAPCH.Size = new System.Drawing.Size(370, 25);
             this.textBoxAPCH.TabIndex = 5;
-            this.textBoxAPCH.TextChanged += new System.EventHandler(this.TextBox_TextChanged);
             // 
             // textBoxRWY
             // 
@@ -128,7 +127,6 @@
             this.textBoxRWY.Name = "textBoxRWY";
             this.textBoxRWY.Size = new System.Drawing.Size(370, 25);
             this.textBoxRWY.TabIndex = 6;
-            this.textBoxRWY.TextChanged += new System.EventHandler(this.TextBox_TextChanged);
             // 
             // textBoxSFCCOND
             // 
@@ -138,7 +136,6 @@
             this.textBoxSFCCOND.Name = "textBoxSFCCOND";
             this.textBoxSFCCOND.Size = new System.Drawing.Size(370, 25);
             this.textBoxSFCCOND.TabIndex = 7;
-            this.textBoxSFCCOND.TextChanged += new System.EventHandler(this.TextBox_TextChanged);
             // 
             // labelAPCH
             // 
@@ -181,7 +178,6 @@
             this.textBoxWIND.Name = "textBoxWIND";
             this.textBoxWIND.Size = new System.Drawing.Size(370, 25);
             this.textBoxWIND.TabIndex = 9;
-            this.textBoxWIND.TextChanged += new System.EventHandler(this.TextBox_TextChanged);
             // 
             // textBoxVIS
             // 
@@ -191,7 +187,6 @@
             this.textBoxVIS.Name = "textBoxVIS";
             this.textBoxVIS.Size = new System.Drawing.Size(370, 25);
             this.textBoxVIS.TabIndex = 10;
-            this.textBoxVIS.TextChanged += new System.EventHandler(this.TextBox_TextChanged);
             // 
             // textBoxCLD
             // 
@@ -201,7 +196,6 @@
             this.textBoxCLD.Name = "textBoxCLD";
             this.textBoxCLD.Size = new System.Drawing.Size(370, 25);
             this.textBoxCLD.TabIndex = 11;
-            this.textBoxCLD.TextChanged += new System.EventHandler(this.TextBox_TextChanged);
             // 
             // textBoxWX
             // 
@@ -211,7 +205,6 @@
             this.textBoxWX.Name = "textBoxWX";
             this.textBoxWX.Size = new System.Drawing.Size(370, 25);
             this.textBoxWX.TabIndex = 12;
-            this.textBoxWX.TextChanged += new System.EventHandler(this.TextBox_TextChanged);
             // 
             // textBoxTMP
             // 
@@ -221,7 +214,6 @@
             this.textBoxTMP.Name = "textBoxTMP";
             this.textBoxTMP.Size = new System.Drawing.Size(370, 25);
             this.textBoxTMP.TabIndex = 13;
-            this.textBoxTMP.TextChanged += new System.EventHandler(this.TextBox_TextChanged);
             // 
             // textBoxQNH
             // 
@@ -231,7 +223,6 @@
             this.textBoxQNH.Name = "textBoxQNH";
             this.textBoxQNH.Size = new System.Drawing.Size(370, 25);
             this.textBoxQNH.TabIndex = 14;
-            this.textBoxQNH.TextChanged += new System.EventHandler(this.TextBox_TextChanged);
             // 
             // textBoxSIGWX
             // 
@@ -241,7 +232,6 @@
             this.textBoxSIGWX.Name = "textBoxSIGWX";
             this.textBoxSIGWX.Size = new System.Drawing.Size(370, 25);
             this.textBoxSIGWX.TabIndex = 15;
-            this.textBoxSIGWX.TextChanged += new System.EventHandler(this.TextBox_TextChanged);
             // 
             // textBoxOFCW
             // 
@@ -251,7 +241,6 @@
             this.textBoxOFCW.Name = "textBoxOFCW";
             this.textBoxOFCW.Size = new System.Drawing.Size(370, 25);
             this.textBoxOFCW.TabIndex = 16;
-            this.textBoxOFCW.TextChanged += new System.EventHandler(this.TextBox_TextChanged);
             // 
             // comboBoxTimecheck
             // 
@@ -285,7 +274,6 @@
             this.textBoxOPRINFO.Name = "textBoxOPRINFO";
             this.textBoxOPRINFO.Size = new System.Drawing.Size(370, 25);
             this.textBoxOPRINFO.TabIndex = 8;
-            this.textBoxOPRINFO.TextChanged += new System.EventHandler(this.TextBox_TextChanged);
             // 
             // labelWIND
             // 

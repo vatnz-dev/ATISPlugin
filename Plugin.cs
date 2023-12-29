@@ -27,7 +27,7 @@ namespace ATISPlugin
         public static readonly string ServerSweatbox = "sweatbox01-training.vatpac.org";
         private static readonly string MetarUri = "https://metar.vatsim.net/metar.php?id=";
 
-        public static readonly Version Version = new Version(1, 12);
+        public static readonly Version Version = new Version(1, 13);
         private static readonly string VersionUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Version.json";
 
         private static readonly HttpClient Client = new HttpClient();
@@ -91,7 +91,7 @@ namespace ATISPlugin
                     return;
                 }
 
-                var directory = Path.Combine(Settings.DatasetPath, "Temp");
+                var directory = Path.Combine(Plugin.Settings.DatasetPath, "Temp");
 
                 if (!Directory.Exists(directory))
                 {
@@ -256,9 +256,9 @@ namespace ATISPlugin
         private async void Network_Disconnected(object sender, EventArgs e)
         {
             if (ATIS1 != null) await ATIS1.Delete();
-            else if (ATIS2 != null) await ATIS2.Delete();
-            else if (ATIS3 != null) await ATIS3.Delete();
-            else await ATIS4.Delete();
+            if (ATIS2 != null) await ATIS2.Delete();
+            if (ATIS3 != null) await ATIS3.Delete();
+            if (ATIS4 != null) await ATIS4.Delete();
 
             Editor?.RefreshEvent.Invoke(this, null);
         }

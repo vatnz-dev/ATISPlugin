@@ -26,7 +26,8 @@ namespace ATISPlugin
         private Dictionary<string, string> Saves { get; set; } = new Dictionary<string, string>();
         private bool Edits => Saves.Any() || 
             TimeCheck != Control.TimeCheck || 
-            ID != Control.ID || Control.PromptRate != Rate || 
+            ID != Control.ID || 
+            Control.PromptRate != Rate || 
             Control.InstalledVoice != Voice;
         private bool TimeCheck { get; set; }
         public EventHandler RefreshEvent { get; set; }  
@@ -55,6 +56,11 @@ namespace ATISPlugin
             ID = Control.ID;
 
             TimeCheck = Control.TimeCheck;
+            if (TimeCheck) comboBoxTimecheck.SelectedIndex = comboBoxTimecheck.FindStringExact("True");
+            else comboBoxTimecheck.FindStringExact("False");
+
+            comboBoxAirport.SelectedIndex = comboBoxAirport.FindStringExact(Control.ICAO);
+            comboBoxAirport.SelectedValue = Control.ICAO;
 
             comboBoxVoice.SelectedIndex = comboBoxVoice.FindStringExact(Control.InstalledVoice.VoiceInfo.Name);
             Voice = Control.InstalledVoice;
@@ -65,6 +71,11 @@ namespace ATISPlugin
             Saves.Clear();
 
             RefreshForm();
+
+            foreach (var save in Saves)
+            {
+                Errors.Add(new Exception($"{save.Key}: {save.Value}")); 
+            }
         }
 
         private void OnRefeshEvent(object sender, EventArgs e)
@@ -97,7 +108,9 @@ namespace ATISPlugin
         private void RefreshForm()
         {
             labelMETAR.Text = string.Empty;
-            
+
+            comboBoxLetter.SelectedIndex = comboBoxLetter.FindStringExact(ID.ToString());
+
             if (Plugin.ATIS1.ICAO != null)
             {
                 buttonATIS1.Text = Plugin.ATIS1.ICAO;
@@ -174,13 +187,14 @@ namespace ATISPlugin
             {
                 comboBoxAirport.Enabled = true;
                 buttonCreate.Enabled = true;
+                buttonDelete.Visible = false;
+                buttonCreate.Visible = true;
+
+                buttonSave.Enabled = false;
+                buttonCancel.Enabled = false;
                 comboBoxLetter.Enabled = false;
                 comboBoxTimecheck.Enabled = false;
                 labelCode.Text = string.Empty;
-                buttonDelete.Visible = false;
-                buttonCreate.Visible = true;
-                buttonSave.Enabled = false;
-                buttonCancel.Enabled = false;
                 buttonGetMetar.Enabled = false;
                 buttonBroadcast.Enabled = false;
                 buttonNext.Enabled = false;
@@ -190,6 +204,19 @@ namespace ATISPlugin
                 buttonListen.ForeColor = default;
                 buttonBroadcast.BackColor = Color.FromName("Control");
                 buttonBroadcast.ForeColor = default;
+
+                textBoxAPCH.TextChanged -= TextBox_TextChanged;
+                textBoxRWY.TextChanged -= TextBox_TextChanged;
+                textBoxSFCCOND.TextChanged -= TextBox_TextChanged;
+                textBoxOPRINFO.TextChanged -= TextBox_TextChanged;
+                textBoxWIND.TextChanged -= TextBox_TextChanged;
+                textBoxVIS.TextChanged -= TextBox_TextChanged;
+                textBoxCLD.TextChanged -= TextBox_TextChanged;
+                textBoxWX.TextChanged -= TextBox_TextChanged;
+                textBoxTMP.TextChanged -= TextBox_TextChanged;
+                textBoxQNH.TextChanged -= TextBox_TextChanged;
+                textBoxSIGWX.TextChanged -= TextBox_TextChanged;
+                textBoxOFCW.TextChanged -= TextBox_TextChanged;
 
                 textBoxAPCH.Text = string.Empty;
                 textBoxRWY.Text = string.Empty;
@@ -204,6 +231,19 @@ namespace ATISPlugin
                 textBoxSIGWX.Text = string.Empty;
                 textBoxOFCW.Text = string.Empty;
 
+                textBoxAPCH.Enabled = false;
+                textBoxRWY.Enabled = false;
+                textBoxSFCCOND.Enabled = false;
+                textBoxOPRINFO.Enabled = false;
+                textBoxWIND.Enabled = false;
+                textBoxVIS.Enabled = false;
+                textBoxCLD.Enabled = false;
+                textBoxWX.Enabled = false;
+                textBoxTMP.Enabled = false;
+                textBoxQNH.Enabled = false;
+                textBoxSIGWX.Enabled = false;
+                textBoxOFCW.Enabled = false;
+
                 labelWIND.BackColor = default;
                 labelVIS.BackColor = default;
                 labelCLD.BackColor = default;
@@ -213,14 +253,6 @@ namespace ATISPlugin
             }
             else if (Control.IsNetworkConnected && Control?.ICAO != null)
             {
-                comboBoxLetter.SelectedIndex = comboBoxLetter.FindStringExact(ID.ToString());
-
-                if (TimeCheck) comboBoxTimecheck.SelectedIndex = comboBoxTimecheck.FindStringExact("True");
-                else comboBoxTimecheck.FindStringExact("False");
-
-                comboBoxAirport.SelectedIndex = comboBoxAirport.FindStringExact(Control.ICAO);
-                comboBoxAirport.SelectedValue = Control.ICAO;
-
                 comboBoxAirport.Enabled = false;
                 comboBoxLetter.Enabled = true;
                 comboBoxTimecheck.Enabled = true;
@@ -230,6 +262,100 @@ namespace ATISPlugin
                 buttonNext.Enabled = true;
                 comboBoxVoice.Enabled = true;
                 comboBoxRate.Enabled = true;
+
+                textBoxAPCH.TextChanged -= TextBox_TextChanged;
+                textBoxRWY.TextChanged -= TextBox_TextChanged;
+                textBoxSFCCOND.TextChanged -= TextBox_TextChanged;
+                textBoxOPRINFO.TextChanged -= TextBox_TextChanged;
+                textBoxWIND.TextChanged -= TextBox_TextChanged;
+                textBoxVIS.TextChanged -= TextBox_TextChanged;
+                textBoxCLD.TextChanged -= TextBox_TextChanged;
+                textBoxWX.TextChanged -= TextBox_TextChanged;
+                textBoxTMP.TextChanged -= TextBox_TextChanged;
+                textBoxQNH.TextChanged -= TextBox_TextChanged;
+                textBoxSIGWX.TextChanged -= TextBox_TextChanged;
+                textBoxOFCW.TextChanged -= TextBox_TextChanged;
+
+                foreach (var line in Control.Lines)
+                {
+                    var suggestedLine = Control.SuggestedLines.FirstOrDefault(x => x.Name == line.Name);
+
+                    var saveLine = Saves.FirstOrDefault(x => x.Key == line.Name);
+
+                    switch (line.Name)
+                    {
+                        case "APCH":
+                            textBoxAPCH.Text = line.Value;
+                            break;
+                        case "RWY":
+                            textBoxRWY.Text = line.Value;
+                            break;
+                        case "SFC COND":
+                            textBoxSFCCOND.Text = line.Value;
+                            break;
+                        case "OPR INFO":
+                            textBoxOPRINFO.Text = line.Value;
+                            break;
+                        case "WIND":
+                            textBoxWIND.Text = line.Value;
+                            labelWIND.BackColor = default;
+                            break;
+                        case "VIS":
+                            textBoxVIS.Text = line.Value;
+                            labelVIS.BackColor = default;
+                            break;
+                        case "CLD":
+                            textBoxCLD.Text = line.Value;
+                            labelCLD.BackColor = default;
+                            break;
+                        case "WX":
+                            textBoxWX.Text = line.Value;
+                            labelWX.BackColor = default;
+                            break;
+                        case "QNH":
+                            textBoxQNH.Text = line.Value;
+                            labelQNH.BackColor = default;
+                            break;
+                        case "TMP":
+                            textBoxTMP.Text = line.Value;
+                            labelTMP.BackColor = default;
+                            break;
+                        case "SIGWX":
+                            textBoxSIGWX.Text = line.Value;
+                            break;
+                        case "OFCW_NOTIFY":
+                            textBoxOFCW.Text = line.Value;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                textBoxAPCH.TextChanged += TextBox_TextChanged;
+                textBoxRWY.TextChanged += TextBox_TextChanged;
+                textBoxSFCCOND.TextChanged += TextBox_TextChanged;
+                textBoxOPRINFO.TextChanged += TextBox_TextChanged;
+                textBoxWIND.TextChanged += TextBox_TextChanged;
+                textBoxVIS.TextChanged += TextBox_TextChanged;
+                textBoxCLD.TextChanged += TextBox_TextChanged;
+                textBoxWX.TextChanged += TextBox_TextChanged;
+                textBoxTMP.TextChanged += TextBox_TextChanged;
+                textBoxQNH.TextChanged += TextBox_TextChanged;
+                textBoxSIGWX.TextChanged += TextBox_TextChanged;
+                textBoxOFCW.TextChanged += TextBox_TextChanged;
+
+                textBoxAPCH.Enabled = true;
+                textBoxRWY.Enabled = true;
+                textBoxSFCCOND.Enabled = true;
+                textBoxOPRINFO.Enabled = true;
+                textBoxWIND.Enabled = true;
+                textBoxVIS.Enabled = true;
+                textBoxCLD.Enabled = true;
+                textBoxWX.Enabled = true;
+                textBoxTMP.Enabled = true;
+                textBoxQNH.Enabled = true;
+                textBoxSIGWX.Enabled = true;
+                textBoxOFCW.Enabled = true;
 
                 labelCode.Text = Control.ICAO;
 
@@ -246,22 +372,18 @@ namespace ATISPlugin
                         case "APCH":
                             if (!string.IsNullOrWhiteSpace(saveLine.Value)) textBoxAPCH.Text = saveLine.Value;
                             else if (suggestedLine != null) textBoxAPCH.Text = suggestedLine.Value;
-                            else textBoxAPCH.Text = line.Value;
                             break;
                         case "RWY":
                             if (!string.IsNullOrWhiteSpace(saveLine.Value)) textBoxRWY.Text = saveLine.Value;
                             else if (suggestedLine != null) textBoxRWY.Text = suggestedLine.Value;
-                            else textBoxRWY.Text = line.Value;
                             break;
                         case "SFC COND":
                             if (!string.IsNullOrWhiteSpace(saveLine.Value)) textBoxSFCCOND.Text = saveLine.Value;
                             else if (suggestedLine != null) textBoxSFCCOND.Text = suggestedLine.Value;
-                            else textBoxSFCCOND.Text = line.Value;
                             break;
                         case "OPR INFO":
                             if (!string.IsNullOrWhiteSpace(saveLine.Value)) textBoxOPRINFO.Text = saveLine.Value;
                             else if (suggestedLine != null) textBoxOPRINFO.Text = suggestedLine.Value;
-                            else textBoxOPRINFO.Text = line.Value;
                             break;
                         case "WIND":
                             if (!string.IsNullOrWhiteSpace(saveLine.Value)) textBoxWIND.Text = saveLine.Value;
@@ -269,11 +391,6 @@ namespace ATISPlugin
                             {
                                 textBoxWIND.Text = suggestedLine.Value;
                                 labelWIND.BackColor = Color.Yellow;
-                            }
-                            else
-                            {
-                                textBoxWIND.Text = line.Value;
-                                labelWIND.BackColor = default;
                             }
                             break;
                         case "VIS":
@@ -283,11 +400,6 @@ namespace ATISPlugin
                                 textBoxVIS.Text = suggestedLine.Value;
                                 labelVIS.BackColor = Color.Yellow;
                             }
-                            else
-                            {
-                                textBoxVIS.Text = line.Value;
-                                labelVIS.BackColor = default;
-                            }
                             break;
                         case "CLD":
                             if (!string.IsNullOrWhiteSpace(saveLine.Value)) textBoxCLD.Text = saveLine.Value;
@@ -295,11 +407,6 @@ namespace ATISPlugin
                             {
                                 textBoxCLD.Text = suggestedLine.Value;
                                 labelCLD.BackColor = Color.Yellow;
-                            }
-                            else
-                            {
-                                textBoxCLD.Text = line.Value;
-                                labelCLD.BackColor = default;
                             }
                             break;
                         case "WX":
@@ -309,11 +416,6 @@ namespace ATISPlugin
                                 textBoxWX.Text = suggestedLine.Value;
                                 labelWX.BackColor = Color.Yellow;
                             }
-                            else
-                            {
-                                textBoxWX.Text = line.Value;
-                                labelWX.BackColor = default;
-                            }
                             break;
                         case "QNH":
                             if (!string.IsNullOrWhiteSpace(saveLine.Value)) textBoxQNH.Text = saveLine.Value;
@@ -321,11 +423,6 @@ namespace ATISPlugin
                             {
                                 textBoxQNH.Text = suggestedLine.Value;
                                 labelQNH.BackColor = Color.Yellow;
-                            }
-                            else
-                            {
-                                textBoxQNH.Text = line.Value;
-                                labelQNH.BackColor = default;
                             }
                             break;
                         case "TMP":
@@ -335,21 +432,14 @@ namespace ATISPlugin
                                 textBoxTMP.Text = suggestedLine.Value;
                                 labelTMP.BackColor = Color.Yellow;
                             }
-                            else
-                            {
-                                textBoxTMP.Text = line.Value;
-                                labelTMP.BackColor = default;
-                            }
                             break;
                         case "SIGWX":
                             if (!string.IsNullOrWhiteSpace(saveLine.Value)) textBoxSIGWX.Text = saveLine.Value;
                             else if (suggestedLine != null) textBoxSIGWX.Text = suggestedLine.Value;
-                            else textBoxSIGWX.Text = line.Value;
                             break;
                         case "OFCW_NOTIFY":
                             if (!string.IsNullOrWhiteSpace(saveLine.Value)) textBoxOFCW.Text = saveLine.Value;
                             else if (suggestedLine != null) textBoxOFCW.Text = suggestedLine.Value;
-                            else textBoxOFCW.Text = line.Value;
                             break;
                         default:
                             break;
@@ -402,6 +492,9 @@ namespace ATISPlugin
             }
             else
             {
+                buttonSave.Enabled = false;
+                buttonCancel.Enabled = false;
+
                 if (Network.IsConnected && Network.IsValidATC)
                 {
                     comboBoxAirport.Enabled = true;
@@ -418,8 +511,6 @@ namespace ATISPlugin
                 labelCode.Text = string.Empty;
                 buttonCreate.Visible = true;
                 buttonDelete.Visible = false;
-                buttonSave.Enabled = false;
-                buttonCancel.Enabled = false;
                 buttonGetMetar.Enabled = false;
                 buttonBroadcast.Enabled = false;
                 buttonNext.Enabled = false;
@@ -430,6 +521,19 @@ namespace ATISPlugin
                 buttonListen.ForeColor = default;
                 buttonBroadcast.BackColor = Color.FromName("Control");
                 buttonBroadcast.ForeColor = default;
+
+                textBoxAPCH.TextChanged -= TextBox_TextChanged;
+                textBoxRWY.TextChanged -= TextBox_TextChanged;
+                textBoxSFCCOND.TextChanged -= TextBox_TextChanged;
+                textBoxOPRINFO.TextChanged -= TextBox_TextChanged;
+                textBoxWIND.TextChanged -= TextBox_TextChanged;
+                textBoxVIS.TextChanged -= TextBox_TextChanged;
+                textBoxCLD.TextChanged -= TextBox_TextChanged;
+                textBoxWX.TextChanged -= TextBox_TextChanged;
+                textBoxTMP.TextChanged -= TextBox_TextChanged;
+                textBoxQNH.TextChanged -= TextBox_TextChanged;
+                textBoxSIGWX.TextChanged -= TextBox_TextChanged;
+                textBoxOFCW.TextChanged -= TextBox_TextChanged;
 
                 textBoxAPCH.Text = string.Empty;
                 textBoxRWY.Text = string.Empty;
@@ -443,6 +547,19 @@ namespace ATISPlugin
                 textBoxQNH.Text = string.Empty;
                 textBoxSIGWX.Text = string.Empty;
                 textBoxOFCW.Text = string.Empty;
+
+                textBoxAPCH.Enabled = false;
+                textBoxRWY.Enabled = false;
+                textBoxSFCCOND.Enabled = false;
+                textBoxOPRINFO.Enabled = false;
+                textBoxWIND.Enabled = false;
+                textBoxVIS.Enabled = false;
+                textBoxCLD.Enabled = false;
+                textBoxWX.Enabled = false;
+                textBoxTMP.Enabled = false;
+                textBoxQNH.Enabled = false;
+                textBoxSIGWX.Enabled = false;
+                textBoxOFCW.Enabled = false;
 
                 labelWIND.BackColor = default;
                 labelVIS.BackColor = default;
@@ -644,7 +761,9 @@ namespace ATISPlugin
 
             var existing = Control.Lines.FirstOrDefault(x => x.Name == lineName);
 
-            if (existing != null && existing.Value == textBox.Text) return;
+            if (existing == null) return;
+
+            if (existing.Value == textBox.Text) return;
 
             var save = Saves.FirstOrDefault(x => x.Key == lineName);
 

@@ -15,6 +15,7 @@ using Vnet.PDU;
 using vatsys;
 using System.Security.Cryptography;
 using System.Text;
+using GeoVR.Client;
 
 namespace ATISPlugin
 {
@@ -408,11 +409,11 @@ namespace ATISPlugin
         private double SetContent(PromptBuilder speech, ref MemoryStream stream)
         {
             if (SpeechSynth == null) throw new Exception("Text to speech not available.");
-            SpeechSynth.SetOutputToAudioStream((Stream)stream, SpeechFormat);
+            SpeechSynth.SetOutputToAudioStream(stream, SpeechFormat);
             SpeechSynth.Speak(speech);
             SpeechSynth.SetOutputToNull();
             stream.Seek(0L, SeekOrigin.Begin);
-            return (double)stream.Length / (double)WaveForm.AverageBytesPerSecond * 1000.0;
+            return stream.Length / WaveForm.AverageBytesPerSecond * 1000.0;
         }
 
         private void GenerateSpoken()
@@ -480,24 +481,21 @@ namespace ATISPlugin
 
         private double GenerateCompleteStream()
         {
-            try
+            CompleteStream = new MemoryStream();
+
+            ATISStream.Seek(0, SeekOrigin.Begin);
+            ATISStream.CopyTo(CompleteStream);
+
+            CompleteStream.Seek(0, SeekOrigin.End);
+
+            if (TimeCheck)
             {
-                CompleteStream = new MemoryStream();
-                CompleteStream.Write(ATISStream.GetBuffer(), 0, (int)ATISStream.Length);
-                CompleteStream.Seek(ATISStream.Length, SeekOrigin.Begin);
-                if (TimeCheck)
-                {
-                    GenerateTimeCheck();
-                    TimeCheckStream.Seek(0L, SeekOrigin.Begin);
-                    TimeCheckStream.CopyTo((Stream)CompleteStream);
-                }
-                return (double)CompleteStream.Length / (double)WaveForm.AverageBytesPerSecond * 1000.0;
+                GenerateTimeCheck();
+                TimeCheckStream.Seek(0, SeekOrigin.Begin);
+                TimeCheckStream.CopyTo(CompleteStream);
             }
-            catch (Exception ex)
-            {
-                Errors.Add(new Exception($"Could not generate complete stream: {ex.Message}"), Plugin.DisplayName);
-                return 0;
-            }
+
+            return CompleteStream.Length / WaveForm.AverageBytesPerSecond * 1000.0;
         }
 
         private void GenerateFile()
@@ -553,27 +551,32 @@ namespace ATISPlugin
         {
             CompleteATISDuration = GenerateCompleteStream();
 
-            byte[] audio;
+            var audio = ReadMemoryStream(CompleteStream);
 
             try
             {
-                audio = new byte[CompleteStream.Length];
-                CompleteStream.Seek(0L, SeekOrigin.Begin);
-                CompleteStream.Read(audio, 0, audio.Length);
-
                 await AFV.AddOrUpdateBot(audio, Callsign, Frequency, Latitude, Longitude, TimeCheck, CompleteATISDuration);
-
-                // CompleteATISDuration = Math.Max(60000.0, CompleteATISDuration);
-
-                if (!TimeCheck) return;
-
-                LoopTimer.Interval = CompleteATISDuration;
-
-                LoopTimer.Start();
             }
             catch (Exception ex)
             {
                 Errors.Add(new Exception($"Could not start voice ATIS: {ex.Message}"), Plugin.DisplayName);
+            }
+
+            if (!TimeCheck) return;
+
+            LoopTimer.Interval = CompleteATISDuration;
+
+            LoopTimer.Start();
+        }
+
+        public static byte[] ReadMemoryStream(Stream input)
+        {
+            input.Seek(0, SeekOrigin.Begin);
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                input.CopyTo(ms);
+                return ms.ToArray();
             }
         }
 
@@ -589,8 +592,6 @@ namespace ATISPlugin
             if (!Broadcasting) return;
 
             await VoiceStart();
-
-            LoopTimer.Start();
         }
 
         // FSD 
