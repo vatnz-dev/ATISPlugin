@@ -71,11 +71,6 @@ namespace ATISPlugin
             Saves.Clear();
 
             RefreshForm();
-
-            foreach (var save in Saves)
-            {
-                Errors.Add(new Exception($"{save.Key}: {save.Value}")); 
-            }
         }
 
         private void OnRefeshEvent(object sender, EventArgs e)

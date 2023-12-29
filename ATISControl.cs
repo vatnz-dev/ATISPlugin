@@ -15,7 +15,6 @@ using Vnet.PDU;
 using vatsys;
 using System.Security.Cryptography;
 using System.Text;
-using GeoVR.Client;
 
 namespace ATISPlugin
 {
