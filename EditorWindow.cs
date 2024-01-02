@@ -273,10 +273,6 @@ namespace ATISPlugin
 
                 foreach (var line in Control.Lines)
                 {
-                    var suggestedLine = Control.SuggestedLines.FirstOrDefault(x => x.Name == line.Name);
-
-                    var saveLine = Saves.FirstOrDefault(x => x.Key == line.Name);
-
                     switch (line.Name)
                     {
                         case "APCH":
@@ -293,27 +289,21 @@ namespace ATISPlugin
                             break;
                         case "WIND":
                             textBoxWIND.Text = line.Value;
-                            labelWIND.BackColor = default;
                             break;
                         case "VIS":
                             textBoxVIS.Text = line.Value;
-                            labelVIS.BackColor = default;
                             break;
                         case "CLD":
                             textBoxCLD.Text = line.Value;
-                            labelCLD.BackColor = default;
                             break;
                         case "WX":
                             textBoxWX.Text = line.Value;
-                            labelWX.BackColor = default;
                             break;
                         case "QNH":
                             textBoxQNH.Text = line.Value;
-                            labelQNH.BackColor = default;
                             break;
                         case "TMP":
                             textBoxTMP.Text = line.Value;
-                            labelTMP.BackColor = default;
                             break;
                         case "SIGWX":
                             textBoxSIGWX.Text = line.Value;
@@ -387,6 +377,10 @@ namespace ATISPlugin
                                 textBoxWIND.Text = suggestedLine.Value;
                                 labelWIND.BackColor = Color.Yellow;
                             }
+                            else
+                            {
+                                labelWIND.BackColor = default;
+                            }
                             break;
                         case "VIS":
                             if (!string.IsNullOrWhiteSpace(saveLine.Value)) textBoxVIS.Text = saveLine.Value;
@@ -394,6 +388,10 @@ namespace ATISPlugin
                             {
                                 textBoxVIS.Text = suggestedLine.Value;
                                 labelVIS.BackColor = Color.Yellow;
+                            }
+                            else
+                            {
+                                labelVIS.BackColor = default;
                             }
                             break;
                         case "CLD":
@@ -403,6 +401,10 @@ namespace ATISPlugin
                                 textBoxCLD.Text = suggestedLine.Value;
                                 labelCLD.BackColor = Color.Yellow;
                             }
+                            else
+                            {
+                                labelCLD.BackColor = default;
+                            }
                             break;
                         case "WX":
                             if (!string.IsNullOrWhiteSpace(saveLine.Value)) textBoxWX.Text = saveLine.Value;
@@ -410,6 +412,10 @@ namespace ATISPlugin
                             {
                                 textBoxWX.Text = suggestedLine.Value;
                                 labelWX.BackColor = Color.Yellow;
+                            }
+                            else
+                            {
+                                labelWX.BackColor = default;
                             }
                             break;
                         case "QNH":
@@ -419,6 +425,10 @@ namespace ATISPlugin
                                 textBoxQNH.Text = suggestedLine.Value;
                                 labelQNH.BackColor = Color.Yellow;
                             }
+                            else
+                            {
+                                labelQNH.BackColor = default;
+                            }
                             break;
                         case "TMP":
                             if (!string.IsNullOrWhiteSpace(saveLine.Value)) textBoxTMP.Text = saveLine.Value;
@@ -426,6 +436,10 @@ namespace ATISPlugin
                             {
                                 textBoxTMP.Text = suggestedLine.Value;
                                 labelTMP.BackColor = Color.Yellow;
+                            }
+                            else
+                            {
+                                labelTMP.BackColor = default;
                             }
                             break;
                         case "SIGWX":
