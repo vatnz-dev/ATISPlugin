@@ -254,6 +254,7 @@
             this.comboBoxTimecheck.Name = "comboBoxTimecheck";
             this.comboBoxTimecheck.Size = new System.Drawing.Size(121, 25);
             this.comboBoxTimecheck.TabIndex = 17;
+            this.comboBoxTimecheck.SelectedIndexChanged += new System.EventHandler(this.ComboBoxTimecheck_SelectedIndexChanged);
             // 
             // labelOPRINFO
             // 

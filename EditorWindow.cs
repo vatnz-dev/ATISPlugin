@@ -56,17 +56,6 @@ namespace ATISPlugin
             ID = Control.ID;
 
             TimeCheck = Control.TimeCheck;
-            if (TimeCheck) comboBoxTimecheck.SelectedIndex = comboBoxTimecheck.FindStringExact("True");
-            else comboBoxTimecheck.FindStringExact("False");
-
-            comboBoxAirport.SelectedIndex = comboBoxAirport.FindStringExact(Control.ICAO);
-            comboBoxAirport.SelectedValue = Control.ICAO;
-
-            comboBoxVoice.SelectedIndex = comboBoxVoice.FindStringExact(Control.InstalledVoice.VoiceInfo.Name);
-            Voice = Control.InstalledVoice;
-
-            comboBoxRate.SelectedIndex = comboBoxRate.FindStringExact(Control.PromptRate.ToString());
-            Rate = Control.PromptRate;
 
             Saves.Clear();
 
@@ -87,7 +76,7 @@ namespace ATISPlugin
                 comboBoxAirport.Items.Add(freq.Airport);
             }
 
-            for (char c = 'A'; c <= 'Y'; c++)
+            for (char c = 'A'; c <= 'Z'; c++)
             {
                 comboBoxLetter.Items.Add(c.ToString());
             }
@@ -105,6 +94,14 @@ namespace ATISPlugin
             labelMETAR.Text = string.Empty;
 
             comboBoxLetter.SelectedIndex = comboBoxLetter.FindStringExact(ID.ToString());
+
+            comboBoxVoice.SelectedIndex = comboBoxVoice.FindStringExact(Control.InstalledVoice.VoiceInfo.Name);
+            Voice = Control.InstalledVoice;
+
+            comboBoxRate.SelectedIndex = comboBoxRate.FindStringExact(Control.PromptRate.ToString());
+            Rate = Control.PromptRate;
+
+            comboBoxTimecheck.SelectedIndex = comboBoxTimecheck.FindStringExact(TimeCheck.ToString());
 
             if (Plugin.ATIS1.ICAO != null)
             {
@@ -868,22 +865,39 @@ namespace ATISPlugin
 
         private void ButtonATIS1_Click(object sender, EventArgs e)
         {
+            Control.SoundPlayer.Stop();
             Change(1);
         }
 
         private void ButtonATIS2_Click(object sender, EventArgs e)
         {
+            Control.SoundPlayer.Stop();
             Change(2);
         }
 
         private void ButtonATIS3_Click(object sender, EventArgs e)
         {
+            Control.SoundPlayer.Stop();
             Change(3);
         }
 
         private void ButtonATIS4_Click(object sender, EventArgs e)
         {
+            Control.SoundPlayer.Stop();
             Change(4);
+        }
+
+        private void ComboBoxTimecheck_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!(sender is ComboBox comboBox)) return;
+
+            var timecheckOK = bool.TryParse((string)comboBox.SelectedItem, out bool timecheck);
+
+            if (!timecheckOK) return;
+
+            TimeCheck = timecheck;
+
+            RefreshForm();
         }
     }
 }
