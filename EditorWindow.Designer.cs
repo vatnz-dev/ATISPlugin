@@ -108,7 +108,6 @@
             this.comboBoxAirport.Size = new System.Drawing.Size(264, 25);
             this.comboBoxAirport.TabIndex = 1;
             this.comboBoxAirport.SelectedIndexChanged += new System.EventHandler(this.ComboBoxAirport_SelectedIndexChanged);
-            this.comboBoxAirport.TextChanged += new System.EventHandler(this.ComboBoxAirport_TextChanged);
             // 
             // textBoxAPCH
             // 
@@ -648,6 +647,7 @@
             this.MinimumSize = new System.Drawing.Size(500, 700);
             this.Name = "EditorWindow";
             this.Resizeable = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ATIS";
             this.TitleTextColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.TopMost = true;

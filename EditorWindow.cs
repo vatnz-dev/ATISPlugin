@@ -21,6 +21,7 @@ namespace ATISPlugin
                 else return Plugin.ATIS4;
             }
         }
+        private string ICAO { get; set; }
         private char ID { get; set; }
         private int Number { get; set; } = 1;
         private Dictionary<string, string> Saves { get; set; } = new Dictionary<string, string>();
@@ -587,9 +588,12 @@ namespace ATISPlugin
 
         private void IncreaseID()
         {
-            ID = (Char)(Convert.ToUInt16(ID) + 1);
+            if (ID != 'Z')
+            {
+                ID = (Char)(Convert.ToUInt16(ID) + 1);
 
-            if (Convert.ToUInt16(ID) >= 90) ID = 'A';
+                if (Convert.ToUInt16(ID) >= 90) ID = 'A';
+            }
 
             RefreshForm();
         }
@@ -618,13 +622,10 @@ namespace ATISPlugin
             Control.Create(ICAO, frequency.Frequency.ToString(), airport.Position);
 
             await GetMetar();
-        }
 
-        private string ICAO { get; set; }
+            ID = 'A';
 
-        private void ComboBoxAirport_TextChanged(object sender, EventArgs e)
-        {
-            ICAO = comboBoxAirport.Text;
+            comboBoxLetter.SelectedIndex = comboBoxLetter.FindStringExact(ID.ToString());
         }
 
         private void ComboBoxAirport_SelectedIndexChanged(object sender, EventArgs e)
@@ -780,7 +781,7 @@ namespace ATISPlugin
 
             Saves.Add(lineName, textBox.Text);
 
-            if (Edits && ID == Control.ID)
+            if (Edits && ID == Control.ID && ID != 'Z')
             {
                 IncreaseID();
             }

@@ -27,7 +27,7 @@ namespace ATISPlugin
         public static readonly string ServerSweatbox = "sweatbox01-training.vatpac.org";
         private static readonly string MetarUri = "https://metar.vatsim.net/metar.php?id=";
 
-        public static readonly Version Version = new Version(1, 16);
+        public static readonly Version Version = new Version(1, 17);
         private static readonly string VersionUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Version.json";
 
         private static readonly HttpClient Client = new HttpClient();
