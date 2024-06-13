@@ -10,7 +10,7 @@ Can be installed using the [plugin manager](https://github.com/badvectors/Plugin
 
 Alternatively:
 1. Download the plugin [here](https://github.com/badvectors/ATISPlugin/releases).
-2. **Right click on the zip file and select "Properties > Unblock".**
+2. **Right click on the zip file and select "Properties", then select "Unblock".**
 3. Unzip the file and copy to the base vatSys plugins directory: "[...]\Program Files (x86)\vatSys\bin\Plugins".
 4. Verify it has been installed in vatSys by checking "Info > About".
 5. In vatsys, select "Windows > More ATIS".
