@@ -55,8 +55,8 @@
             this.labelQNH = new System.Windows.Forms.Label();
             this.labelTMP = new System.Windows.Forms.Label();
             this.labelSIGWX = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
+            this.labelOFCW = new System.Windows.Forms.Label();
+            this.labelTimeCheck = new System.Windows.Forms.Label();
             this.comboBoxLetter = new System.Windows.Forms.ComboBox();
             this.buttonNext = new System.Windows.Forms.Button();
             this.label11 = new System.Windows.Forms.Label();
@@ -75,7 +75,8 @@
             this.buttonATIS2 = new System.Windows.Forms.Button();
             this.buttonATIS3 = new System.Windows.Forms.Button();
             this.buttonATIS4 = new System.Windows.Forms.Button();
-            this.labelVersion = new System.Windows.Forms.Label();
+            this.textBoxZulu = new System.Windows.Forms.TextBox();
+            this.buttonZulu = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // labelICAO
@@ -352,27 +353,27 @@
             this.labelSIGWX.Text = "SIGWX";
             this.labelSIGWX.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
-            // label9
+            // labelOFCW
             // 
-            this.label9.AutoSize = true;
-            this.label9.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.label9.Location = new System.Drawing.Point(12, 562);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(96, 17);
-            this.label9.TabIndex = 31;
-            this.label9.Text = "OFCW_NOTIFY";
-            this.label9.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.labelOFCW.AutoSize = true;
+            this.labelOFCW.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.labelOFCW.Location = new System.Drawing.Point(12, 562);
+            this.labelOFCW.Name = "labelOFCW";
+            this.labelOFCW.Size = new System.Drawing.Size(96, 17);
+            this.labelOFCW.TabIndex = 31;
+            this.labelOFCW.Text = "OFCW_NOTIFY";
+            this.labelOFCW.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
-            // label10
+            // labelTimeCheck
             // 
-            this.label10.AutoSize = true;
-            this.label10.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.label10.Location = new System.Drawing.Point(20, 594);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(88, 17);
-            this.label10.TabIndex = 32;
-            this.label10.Text = "TIME_CHECK";
-            this.label10.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.labelTimeCheck.AutoSize = true;
+            this.labelTimeCheck.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.labelTimeCheck.Location = new System.Drawing.Point(20, 594);
+            this.labelTimeCheck.Name = "labelTimeCheck";
+            this.labelTimeCheck.Size = new System.Drawing.Size(88, 17);
+            this.labelTimeCheck.TabIndex = 32;
+            this.labelTimeCheck.Text = "TIME_CHECK";
+            this.labelTimeCheck.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // comboBoxLetter
             // 
@@ -432,7 +433,7 @@
             // 
             this.buttonSave.Location = new System.Drawing.Point(114, 627);
             this.buttonSave.Name = "buttonSave";
-            this.buttonSave.Size = new System.Drawing.Size(100, 28);
+            this.buttonSave.Size = new System.Drawing.Size(182, 28);
             this.buttonSave.TabIndex = 18;
             this.buttonSave.Text = "Save";
             this.buttonSave.UseVisualStyleBackColor = true;
@@ -441,9 +442,9 @@
             // buttonCancel
             // 
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(220, 627);
+            this.buttonCancel.Location = new System.Drawing.Point(302, 627);
             this.buttonCancel.Name = "buttonCancel";
-            this.buttonCancel.Size = new System.Drawing.Size(100, 28);
+            this.buttonCancel.Size = new System.Drawing.Size(182, 28);
             this.buttonCancel.TabIndex = 19;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
@@ -452,7 +453,7 @@
             // buttonListen
             // 
             this.buttonListen.BackColor = System.Drawing.SystemColors.Control;
-            this.buttonListen.Location = new System.Drawing.Point(220, 125);
+            this.buttonListen.Location = new System.Drawing.Point(278, 125);
             this.buttonListen.Name = "buttonListen";
             this.buttonListen.Size = new System.Drawing.Size(100, 28);
             this.buttonListen.TabIndex = 40;
@@ -463,7 +464,7 @@
             // buttonGetMetar
             // 
             this.buttonGetMetar.BackColor = System.Drawing.SystemColors.Control;
-            this.buttonGetMetar.Location = new System.Drawing.Point(114, 125);
+            this.buttonGetMetar.Location = new System.Drawing.Point(172, 125);
             this.buttonGetMetar.Name = "buttonGetMetar";
             this.buttonGetMetar.Size = new System.Drawing.Size(100, 28);
             this.buttonGetMetar.TabIndex = 41;
@@ -474,7 +475,7 @@
             // buttonBroadcast
             // 
             this.buttonBroadcast.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonBroadcast.Location = new System.Drawing.Point(326, 125);
+            this.buttonBroadcast.Location = new System.Drawing.Point(384, 125);
             this.buttonBroadcast.Name = "buttonBroadcast";
             this.buttonBroadcast.Size = new System.Drawing.Size(100, 28);
             this.buttonBroadcast.TabIndex = 42;
@@ -576,15 +577,27 @@
             this.buttonATIS4.UseVisualStyleBackColor = true;
             this.buttonATIS4.Click += new System.EventHandler(this.ButtonATIS4_Click);
             // 
-            // labelVersion
+            // textBoxZulu
             // 
-            this.labelVersion.AutoSize = true;
-            this.labelVersion.Location = new System.Drawing.Point(437, 633);
-            this.labelVersion.Name = "labelVersion";
-            this.labelVersion.Size = new System.Drawing.Size(40, 17);
-            this.labelVersion.TabIndex = 51;
-            this.labelVersion.Text = "v0.0";
-            this.labelVersion.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.textBoxZulu.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.textBoxZulu.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            this.textBoxZulu.Location = new System.Drawing.Point(114, 188);
+            this.textBoxZulu.Multiline = true;
+            this.textBoxZulu.Name = "textBoxZulu";
+            this.textBoxZulu.Size = new System.Drawing.Size(370, 428);
+            this.textBoxZulu.TabIndex = 52;
+            this.textBoxZulu.Visible = false;
+            this.textBoxZulu.TextChanged += new System.EventHandler(this.TextBox_TextChanged);
+            // 
+            // buttonZulu
+            // 
+            this.buttonZulu.Location = new System.Drawing.Point(114, 125);
+            this.buttonZulu.Name = "buttonZulu";
+            this.buttonZulu.Size = new System.Drawing.Size(52, 28);
+            this.buttonZulu.TabIndex = 53;
+            this.buttonZulu.Text = "Z";
+            this.buttonZulu.UseVisualStyleBackColor = true;
+            this.buttonZulu.Click += new System.EventHandler(this.ButtonZulu_Click);
             // 
             // EditorWindow
             // 
@@ -592,7 +605,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.Disable;
             this.ClientSize = new System.Drawing.Size(496, 672);
-            this.Controls.Add(this.labelVersion);
+            this.Controls.Add(this.buttonZulu);
+            this.Controls.Add(this.textBoxZulu);
             this.Controls.Add(this.buttonATIS4);
             this.Controls.Add(this.buttonATIS3);
             this.Controls.Add(this.buttonATIS2);
@@ -611,8 +625,8 @@
             this.Controls.Add(this.label11);
             this.Controls.Add(this.buttonNext);
             this.Controls.Add(this.comboBoxLetter);
-            this.Controls.Add(this.label10);
-            this.Controls.Add(this.label9);
+            this.Controls.Add(this.labelTimeCheck);
+            this.Controls.Add(this.labelOFCW);
             this.Controls.Add(this.labelSIGWX);
             this.Controls.Add(this.labelTMP);
             this.Controls.Add(this.labelQNH);
@@ -648,7 +662,7 @@
             this.Name = "EditorWindow";
             this.Resizeable = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "ATIS";
+            this.Text = "ATIS Editor";
             this.TitleTextColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.TopMost = true;
             this.Load += new System.EventHandler(this.EditorWindow_Load);
@@ -686,8 +700,8 @@
         private System.Windows.Forms.Label labelQNH;
         private System.Windows.Forms.Label labelTMP;
         private System.Windows.Forms.Label labelSIGWX;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label labelOFCW;
+        private System.Windows.Forms.Label labelTimeCheck;
         private System.Windows.Forms.ComboBox comboBoxLetter;
         private System.Windows.Forms.Button buttonNext;
         private System.Windows.Forms.Label label11;
@@ -706,6 +720,7 @@
         private System.Windows.Forms.Button buttonATIS2;
         private System.Windows.Forms.Button buttonATIS3;
         private System.Windows.Forms.Button buttonATIS4;
-        private System.Windows.Forms.Label labelVersion;
+        private System.Windows.Forms.TextBox textBoxZulu;
+        private System.Windows.Forms.Button buttonZulu;
     }
 }

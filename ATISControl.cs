@@ -10,42 +10,24 @@ using System.Speech.Synthesis;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Timers;
-using Vnet;
-using Vnet.PDU;
 using vatsys;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace ATISPlugin
 {
     public class ATISControl
     {
-        private FSDSession Network { get; set; }
+        private int ATISIndex { get; set; }
 
-        public event EventHandler Connected;
-
-        public event EventHandler Disconnected;
-
-        public bool IsNetworkConnected => Network.Connected;
-        public string ErrorMessage { get; set; }
-
-        private static int ServerPort => 6809;
         private string Callsign { get; set; }
-
-        private static ClientProperties ClientProperties => Commands.GetClientProperties();
-        private static string SystemId => Commands.GenerateSysUID();
-
-        private readonly CultureInfo CultureInfo = CultureInfo.GetCultureInfo("en");    // TODO: Check if in the ATIS.xml
         public char ID { get; set; } = 'Z';
+        public bool IsZulu { get; set; }
         public string ICAO { get; set; }
+        private Coordinate VisPoint { get; set; }
         public string FrequencyDisplay { get; set; }
         private uint Frequency { get; set; }
         private uint AliasFrequency { get; set; }
         private int FSDFrequency => AliasFrequency != 199998000U ? VSCSFrequencyToFSDFrequency(AliasFrequency) : VSCSFrequencyToFSDFrequency(Frequency);
-        private double Latitude { get; set; }
-        private double Longitude { get; set; }
-        private List<string> Subscriptions { get; set; } = new List<string>();
-        private DateTime LastVisUpdate { get; set; }
+
         public bool Broadcasting { get; set; }
         public bool Listening { get; set; }
         public bool CanListen => !string.IsNullOrWhiteSpace(FileName);
@@ -55,7 +37,6 @@ namespace ATISPlugin
         public List<ATISLine> Lines { get; set; } = new List<ATISLine>();
         private double ATISDuration { get; set; }
         private MemoryStream ATISStream;
-        //private double TimeCheckDuration { get; set; }
         private MemoryStream TimeCheckStream;
         private double CompleteATISDuration { get; set; }
         private MemoryStream CompleteStream;
@@ -64,36 +45,23 @@ namespace ATISPlugin
         public SpeechSynthesizer SpeechSynth { get; set; }
         private PromptBuilder ATISSpoken { get; set; }
         private SpeechAudioFormatInfo SpeechFormat { get; set; }
-        private WaveFormat WaveForm { get; set; } = new WaveFormat(44100, 1);
         public string METARRaw { get; set; }
-        // public METAR METAR => new METAR().Process(METARRaw);
         public string METARLastRaw { get; set; }
-        public AFV AFV { get; set; } = new AFV();
-        private readonly Timer LoopTimer;
+        private WaveFormat WaveForm { get; set; } = new WaveFormat(44100, 1);
         public PromptRate PromptRate { get; set; } = PromptRate.Medium;
         public InstalledVoice InstalledVoice { get; set; }
         public SoundPlayer SoundPlayer { get; set; } = new SoundPlayer();
+        private CultureInfo CultureInfo => CultureInfo.GetCultureInfo("en");    // TODO: Check if in the ATIS.xml
+
+        public event EventHandler StatusChanged;
+        private readonly Timer LoopTimer;
 
         public ATISControl()
         {
-            Init();
-            Network = new FSDSession(Commands.GetClientProperties());
-            NetworkSubscribe();
-            LoopTimer = new Timer
-            {
-                AutoReset = false
-            };
-            LoopTimer.Elapsed += new ElapsedEventHandler(LoopTimer_Elapsed);
-            SpeechSynth = new SpeechSynthesizer()
-            {
-                Rate = 0
-            };
-            SpeechFormat = new SpeechAudioFormatInfo(WaveForm.SampleRate, AudioBitsPerSample.Sixteen, AudioChannel.Mono);
-            InstalledVoice = SpeechSynth.GetInstalledVoices().FirstOrDefault();
-        }
+            Network.Connected += NetworkChanged;
 
-        private void Init()
-        {
+            Network.Disconnected += NetworkChanged;
+
             foreach (var line in Plugin.ATISData.Editor)
             {
                 var atisLine = new ATISLine(line.name, line.InputType, line.NameIsSpoken, line.NumbersSpokenGrouped, line.value, METARField.None);
@@ -122,53 +90,89 @@ namespace ATISPlugin
 
                 Lines.Add(atisLine);
             }
+
+            Lines.Add(new ATISLine("ZULU"));
+
+            LoopTimer = new Timer
+            {
+                AutoReset = false
+            };
+            LoopTimer.Elapsed += new ElapsedEventHandler(LoopTimer_Elapsed);
+
+            SpeechSynth = new SpeechSynthesizer()
+            {
+                Rate = 0
+            };
+            SpeechFormat = new SpeechAudioFormatInfo(WaveForm.SampleRate, AudioBitsPerSample.Sixteen, AudioChannel.Mono);
+
+            InstalledVoice = SpeechSynth.GetInstalledVoices().FirstOrDefault();
         }
 
-        private async void Network_NetworkDisconnected(object sender, NetworkEventArgs e)
+        private void LoopTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            await Delete();
+            if (!Broadcasting) return;
+
+            BroadcastStart();
         }
 
-        private void Network_NetworkConnected(object sender, NetworkEventArgs e)
+        private void NetworkChanged(object sender, EventArgs e)
         {
-            SendPosition();
+            StatusChanged?.Invoke(this, null);
         }
 
-        public void Create(string airport, string frequency, string coordinates)
+        public ATISControl(int atisIndex) : this()
         {
-            ICAO = airport;
-            FrequencyDisplay = Normalize25KhzFrequency(frequency);
-            Frequency = Normalize25KhzFrequency(FrequencyToUInt(frequency));
-            AliasFrequency = Normalize25KhzFrequency(199998000U);
-            Callsign = $"{airport}_ATIS";
-            var coordinate = new Coordinate(coordinates);
-            Latitude = coordinate.Latitude;
-            Longitude = coordinate.Longitude;
-            Network.NetworkConnected += Network_NetworkConnected;
-            Network.NetworkDisconnected += Network_NetworkDisconnected;
-            Network.NetworkError += Network_NetworkError;
-            NetworkConnect();
+            ATISIndex = atisIndex;
+        }
+
+        public async Task Create(string airport, string frequency, string coordinates)
+        {
+            if (!Network.IsConnected || !Network.IsValidATC) return;
+
+            if (Network.GetATISConnected(ATISIndex)) return;
+
+            try
+            {
+                ICAO = airport;
+                FrequencyDisplay = Normalize25KhzFrequency(frequency);
+                Frequency = Normalize25KhzFrequency(FrequencyToUInt(frequency));
+                AliasFrequency = Normalize25KhzFrequency(199998000U);
+                Callsign = $"{airport}_ATIS";
+                VisPoint = new Coordinate(coordinates);
+                IsZulu = false;
+
+                Network.ConnectATIS(ATISIndex, Callsign, ICAO, FSDFrequency, VisPoint);
+
+                MMI.OpenATISWindow(Callsign);
+            }
+            catch 
+            {
+                await Delete();
+            }
+
+            StatusChanged?.Invoke(this, null);
         }
 
         public async Task Delete()
         {
             await BroadcastStop();
 
+            if (Network.GetATISConnected(ATISIndex))
+            {
+                Network.DisconnectATIS(ATISIndex);
+            }
+
             ICAO = null;
-            ID = 'Z';
+            ID = 'Z'; 
             FrequencyDisplay = null;
             Frequency = 0;
             AliasFrequency = 0;
             Callsign = null;
-            Latitude = 0;
-            Longitude = 0;
+            VisPoint = null;
+            IsZulu = false;
 
             METARLastRaw = null;
             METARRaw = null;
-
-            Network.NetworkConnected -= Network_NetworkConnected;
-            Network.NetworkDisconnected -= Network_NetworkDisconnected;
-            Network.NetworkError -= Network_NetworkError;
 
             foreach (var line in Lines)
             {
@@ -180,7 +184,7 @@ namespace ATISPlugin
 
             SoundPlayer.Stop();
 
-            if (IsNetworkConnected) NetworkDisconnect();
+            StatusChanged?.Invoke(this, null);
         }
 
         public async Task Save(char id, Dictionary<string, string> items, bool timeCheck)
@@ -220,6 +224,8 @@ namespace ATISPlugin
             GenerateFile();
 
             Listening = true;
+
+            StatusChanged?.Invoke(this, null);
         }
 
         public void ListenStart()
@@ -228,7 +234,7 @@ namespace ATISPlugin
 
             Listening = true;
 
-            var directory = Path.Combine(Plugin.Settings.DatasetPath, "Temp");
+            var directory = Path.Combine(Plugin.DatasetPath, "Temp");
 
             var file = Path.Combine(directory, FileName);
 
@@ -244,26 +250,49 @@ namespace ATISPlugin
             SoundPlayer.Stop();
         }
 
-        public async Task BroadcastStart()
+        public void BroadcastStart()
         {
-            foreach (var subscriber in Subscriptions)
-            {
-                var pdu = SendATIS(subscriber);
-                if (pdu == null)
-                    continue;
-                Network.SendPDU(pdu);
-            }
-
             Broadcasting = true;
 
-            await VoiceStart();
+            CompleteATISDuration = GenerateCompleteStream();
+
+            Network.UpdateATIS(ATISIndex, ID, GetInfo());
+
+            var audio = ReadMemoryStream(CompleteStream);
+
+            var duration = TimeCheck ? TimeSpan.FromMilliseconds(CompleteATISDuration + 60000.0) : TimeSpan.Zero;
+
+            var atisAudio = new ATISAudio(audio, ATISIndex, Callsign, Frequency, VisPoint, duration);
+
+            Plugin.ToBroadcast.Add(atisAudio);  
+
+            if (!TimeCheck) return;
+
+            LoopTimer.Interval = CompleteATISDuration;
+
+            LoopTimer.Start();
+        }
+
+        public static byte[] ReadMemoryStream(Stream input)
+        {
+            input.Seek(0, SeekOrigin.Begin);
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                input.CopyTo(ms);
+                return ms.ToArray();
+            }
         }
 
         public async Task BroadcastStop()
         {
             Broadcasting = false;
 
-            await VoiceStop();
+            try
+            {
+                await AFV.RemoveATISBot(ATISIndex);
+            }
+            catch { }
         }
 
         public string[] GetInfo()
@@ -272,9 +301,16 @@ namespace ATISPlugin
             {
                 $"ATIS {ICAO} {ID} {DateTimeUtc:ddHHmm}"
             };
+            if (IsZulu)
+            {
+                var zulu = Lines.FirstOrDefault(x => x.Name == "ZULU");
+                if (zulu == null || string.IsNullOrWhiteSpace(zulu.Value)) return output.ToArray();
+                output.Add(zulu.Value);
+                return output.ToArray();
+            }
             foreach (var line in Lines.Where(x => x.Visible).ToList())
             {
-                if (line.Name == "OFCW_NOTIFY") continue;
+                if (line.Name == "OFCW_NOTIFY" || line.Name == "ZULU") continue;
                 var change = " ";
                 if (line.Changed) change = "+";
                 output.Add($"{change}[{line.Name}] {line.Value}");
@@ -290,7 +326,7 @@ namespace ATISPlugin
 
         public async Task<bool> UpdateMetar()
         {
-            if (ICAO == null) return false;
+            if (ICAO == null || IsZulu) return false;
 
             var metar = await Plugin.GetMetar(ICAO);
 
@@ -427,24 +463,39 @@ namespace ATISPlugin
             speech.EndSentence();
             speech.AppendBreak(TimeSpan.FromSeconds(1.0));
 
-            foreach (var line in Lines)
+            if (IsZulu)
             {
-                if (string.IsNullOrWhiteSpace(line.Value)) continue;
-
-                speech.StartSentence();
-
-                if (line.Name == "OFCW_NOTIFY")
+                var zulu = Lines.FirstOrDefault(x => x.Name == "ZULU");
+                if (zulu != null && zulu.Value != null)
                 {
-                    speech = DoReplacements(speech, $"On first contact with {ICAO} {line.Value}, notify receipt of information {ID}", line.NumbersGrouped);
+                    speech.StartSentence();
+                    speech = DoReplacements(speech, zulu.Value);
+                    speech.EndSentence();
+                    speech.AppendBreak(TimeSpan.FromSeconds(1.0));
                 }
-                else
-                {
-                    speech = DoReplacements(speech, line.NameSpoken ? $"{line.Name} {line.Value}" : line.Value, line.NumbersGrouped);
-                }
-
-                speech.EndSentence();
-                speech.AppendBreak(TimeSpan.FromSeconds(1.0));
             }
+            else
+            {
+                foreach (var line in Lines)
+                {
+                    if (string.IsNullOrWhiteSpace(line.Value)) continue;
+
+                    speech.StartSentence();
+
+                    if (line.Name == "OFCW_NOTIFY")
+                    {
+                        speech = DoReplacements(speech, $"On first contact with {ICAO} {line.Value}, notify receipt of information {ID}", line.NumbersGrouped);
+                    }
+                    else
+                    {
+                        speech = DoReplacements(speech, line.NameSpoken ? $"{line.Name} {line.Value}" : line.Value, line.NumbersGrouped);
+                    }
+
+                    speech.EndSentence();
+                    speech.AppendBreak(TimeSpan.FromSeconds(1.0));
+                }
+            }
+
             speech.EndStyle();
             speech.EndVoice();
 
@@ -501,7 +552,7 @@ namespace ATISPlugin
         {
             FileName = $"{ICAO}_{ID}_{DateTime.UtcNow:HHmmss}.wav";
 
-            var directory = Path.Combine(Plugin.Settings.DatasetPath, "Temp");
+            var directory = Path.Combine(Plugin.DatasetPath, "Temp");
 
             var file = Path.Combine(directory, FileName);
 
@@ -512,229 +563,6 @@ namespace ATISPlugin
             SpeechSynth.SetOutputToNull();
 
             ListenStart();
-        }
-
-        // Network
-
-        private void NetworkSubscribe()
-        {
-            Network.NetworkConnected += new EventHandler<NetworkEventArgs>(NetworkConnected);
-            Network.NetworkDisconnected += new EventHandler<NetworkEventArgs>(NetworkDisconnected);
-            Network.ClientQueryReceived += new EventHandler<DataReceivedEventArgs<PDUClientQuery>>(ClientQueryReceived);
-            Network.ServerIdentificationReceived += new EventHandler<DataReceivedEventArgs<PDUServerIdentification>>(ServerIdentificationReceived);
-            Network.KillRequestReceived += new EventHandler<DataReceivedEventArgs<PDUKillRequest>>(KillRequestReceived);
-            Network.ProtocolErrorReceived += new EventHandler<DataReceivedEventArgs<PDUProtocolError>>(ProtocolErrorReceived);
-            Network.IgnoreUnknownPackets = true;
-        }
-
-        private void NetworkConnect() => Network.Connect(Plugin.Server, ServerPort);
-
-        private void NetworkDisconnect()
-        {
-            try
-            {
-                Network.SendPDU((PDUBase)new PDUDeleteATC(Callsign, Plugin.Settings.CID));
-            }
-            catch { }
-
-            try
-            {
-                Network.Disconnect();
-            }
-            catch { }
-        }
-
-        // Voice
-
-        private async Task VoiceStart()
-        {
-            CompleteATISDuration = GenerateCompleteStream();
-
-            var audio = ReadMemoryStream(CompleteStream);
-
-            try
-            {
-                await AFV.AddOrUpdateBot(audio, Callsign, Frequency, Latitude, Longitude, TimeCheck, CompleteATISDuration);
-            }
-            catch (Exception ex)
-            {
-                Errors.Add(new Exception($"Could not start voice ATIS: {ex.Message}"), Plugin.DisplayName);
-            }
-
-            if (!TimeCheck) return;
-
-            LoopTimer.Interval = CompleteATISDuration;
-
-            LoopTimer.Start();
-        }
-
-        public static byte[] ReadMemoryStream(Stream input)
-        {
-            input.Seek(0, SeekOrigin.Begin);
-
-            using (MemoryStream ms = new MemoryStream())
-            {
-                input.CopyTo(ms);
-                return ms.ToArray();
-            }
-        }
-
-        private async Task VoiceStop()
-        {
-            if (Plugin.Server != "fsd.connect.vatsim.net") return;
-
-            await AFV.RemoveBot(Callsign);
-        }
-
-        private async void LoopTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            if (!Broadcasting) return;
-
-            await VoiceStart();
-        }
-
-        // FSD 
-
-        private void NetworkConnected(object sender, NetworkEventArgs e)
-        {
-            ErrorMessage = null;
-            if (Connected == null)
-                return;
-            Connected(this, (EventArgs)e);
-        }
-
-        private async void NetworkDisconnected(object sender, NetworkEventArgs e)
-        {
-            await Delete();
-
-            if (Disconnected == null)
-                return;
-            Disconnected(this, (EventArgs)e);
-        }
-
-        private void Network_NetworkError(object sender, NetworkErrorEventArgs e)
-        {
-            ErrorMessage = e.Error.ToString();
-        }
-
-        private void ServerIdentificationReceived(object sender, DataReceivedEventArgs<PDUServerIdentification> e)
-        {
-            if (!IsNetworkConnected)
-                return;
-
-            Network.SendPDU(new PDUClientIdentification(Callsign, ClientProperties.ClientID, ClientProperties.Name, Commands.NetworkVersion.Major, Commands.NetworkVersion.Minor, Plugin.Settings.CID, SystemId, ""));
-            Network.SendPDU(new PDUAddATC(Callsign, Plugin.Settings.RealName, Plugin.Settings.CID, Encoding.UTF8.GetString(ProtectedData.Unprotect(Convert.FromBase64String(Plugin.Settings.Password), Encoding.UTF8.GetBytes(Plugin.Settings.Entropy), DataProtectionScope.CurrentUser)), Plugin.Settings.NetworkRating, ProtocolRevision.VatsimAuth));
-            SendPosition();
-        }
-
-        private void Subscribe(string callsign)
-        {
-            var sector = Plugin.Sectors.Sector.FirstOrDefault(x => x.Callsign == callsign);
-            if (sector == null) return;
-            if (Subscriptions.Any(x => x == callsign)) return;
-            Subscriptions.Add(callsign);
-        }
-
-        private PDUBase SendATIS(string to)
-        {
-            List<string> payload = new List<string>();
-            PDUBase pdu = (PDUBase)null;
-            int num1 = 0;
-            string[] atisInfo = GetInfo();
-            if (atisInfo.Length != 0)
-            {
-                payload.Add("A");
-                payload.Add(ID.ToString());
-                Network.SendPDU(new PDUClientQueryResponse(Callsign, to, ClientQueryType.ATIS, payload));
-                ++num1;
-
-                foreach (string str in atisInfo)
-                {
-                    payload.Clear();
-                    payload.Add("T");
-                    payload.Add(str);
-                    Network.SendPDU(new PDUClientQueryResponse(Callsign, to, ClientQueryType.ATIS, payload));
-                    ++num1;
-                }
-            }
-            if (num1 > 0)
-            {
-                int num2 = num1 + 1;
-                payload.Clear();
-                payload.Add("E");
-                payload.Add(num2.ToString());
-                Network.SendPDU(new PDUClientQueryResponse(Callsign, to, ClientQueryType.ATIS, payload));
-            }
-
-            return pdu;
-        }
-
-        private void ClientQueryReceived(object sender, DataReceivedEventArgs<PDUClientQuery> e)
-        {
-            if (!IsNetworkConnected)
-                return;
-            List<string> payload = new List<string>();
-            PDUBase pdu = (PDUBase)null;
-            switch (e.PDU.QueryType)
-            {
-                case ClientQueryType.Capabilities:
-                    payload.AddRange((IEnumerable<string>)new string[2]
-                    {
-                        "VERSION=1",
-                        "ATCINFO=1"
-                    });
-                    pdu = new PDUClientQueryResponse(Callsign, e.PDU.From, ClientQueryType.Capabilities, payload);
-                    break;
-                case ClientQueryType.RealName:
-                    payload.Add(Plugin.Settings.RealName);
-                    payload.Add("vatSys VATIS");
-                    payload.Add(((int)Plugin.Settings.NetworkRating).ToString());
-                    pdu = new PDUClientQueryResponse(Callsign, e.PDU.From, ClientQueryType.RealName, payload);
-                    break;
-                case ClientQueryType.ATIS:
-                    Subscribe(e.PDU.From);
-                    if (!Broadcasting) return;
-                    pdu = SendATIS(e.PDU.From);
-                    break;
-            }
-            if (pdu == null)
-                return;
-            Network.SendPDU(pdu);
-        }
-
-        private void KillRequestReceived(object sender, DataReceivedEventArgs<PDUKillRequest> e)
-        {
-            NetworkDisconnect();
-        }
-
-        private async void ProtocolErrorReceived(object sender, DataReceivedEventArgs<PDUProtocolError> e)
-        {
-            switch (e.PDU.ErrorType)
-            {
-                case NetworkError.Ok:
-                    break;
-                case NetworkError.SyntaxError:
-                    break;
-                case NetworkError.PDUSourceInvalid:
-                    break;
-                case NetworkError.NoSuchCallsign:
-                    break;
-                case NetworkError.NoFlightPlan:
-                    break;
-                case NetworkError.NoWeatherProfile:
-                    break;
-                default:
-                    await BroadcastStop();
-                    ErrorMessage = e.PDU.Message;
-                    break;
-            }
-        }
-
-        internal void SendPosition()
-        {
-            if (!IsNetworkConnected || (DateTime.UtcNow - LastVisUpdate).TotalSeconds < 0.5)
-                return;
-            Network.SendPDU(new PDUATCPosition(Callsign, FSDFrequency, NetworkFacility.TWR, 0, Plugin.Settings.NetworkRating, Latitude, Longitude));
         }
 
         private static int VSCSFrequencyToFSDFrequency(uint freq) => (int)(freq / 1000U) - 100000;
@@ -756,10 +584,6 @@ namespace ATISPlugin
             CheckFrequencyValid((uint)freq1);
             return (uint)freq1;
         }
-
-        public static string FSDFrequencyToString(int freq) => "1" + ((double)freq / 1000.0).ToString("00.0##");
-
-        public static string FrequencyToString(uint freq) => ((double)freq / 1000000.0).ToString("0.0##");
 
         public static void CheckFrequencyValid(uint freq)
         {

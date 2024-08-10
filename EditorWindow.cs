@@ -39,15 +39,13 @@ namespace ATISPlugin
         {
             InitializeComponent();
 
-            labelVersion.Text = $"v{Plugin.Version.Major}.{Plugin.Version.Minor}";
-
-            BackColor = Colours.GetColour(Colours.Identities.WindowBackground);
-            ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
-
             Network.Connected += OnRefeshEvent;
             Network.Disconnected += OnRefeshEvent;
 
             RefreshEvent += OnRefeshEvent;
+
+            BackColor = Colours.GetColour(Colours.Identities.WindowBackground);
+            ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
         }
 
         public void Change(int number)
@@ -60,6 +58,8 @@ namespace ATISPlugin
 
             Saves.Clear();
 
+            LoadOptions();
+
             RefreshForm();
         }
 
@@ -70,24 +70,37 @@ namespace ATISPlugin
 
         private void EditorWindow_Load(object sender, EventArgs e)
         {
+            LoadOptions();
+
+            Change(1);
+        }
+
+        private void LoadOptions()
+        {
             comboBoxAirport.Items.Clear();
 
             foreach (var freq in Plugin.ATISData.Frequencies.OrderBy(x => x.Airport))
             {
+                if (Plugin.ATIS1?.ICAO == freq.Airport ||
+                    Plugin.ATIS2?.ICAO == freq.Airport ||
+                    Plugin.ATIS3?.ICAO == freq.Airport ||
+                    Plugin.ATIS4?.ICAO == freq.Airport) continue;
                 comboBoxAirport.Items.Add(freq.Airport);
             }
 
-            for (char c = 'A'; c <= 'Z'; c++)
+            comboBoxLetter.Items.Clear();
+
+            for (char c = 'A'; c <= 'Y'; c++)
             {
                 comboBoxLetter.Items.Add(c.ToString());
             }
+
+            comboBoxVoice.Items.Clear();
 
             foreach (var voice in Control.SpeechSynth.GetInstalledVoices())
             {
                 comboBoxVoice.Items.Add(voice.VoiceInfo.Name);
             }
-
-            Change(1);
         }
 
         private void RefreshForm()
@@ -140,49 +153,185 @@ namespace ATISPlugin
                 buttonATIS4.Text = "ATIS #4";
             }
 
-            if (Plugin.ATIS1.SuggestedLines.Any())
+            if (Number == 1)
             {
-                buttonATIS1.BackColor = Color.Yellow;
+                buttonATIS1.BackColor = Color.FromName("ControlDarkDark");
+
+                if (Plugin.ATIS1.SuggestedLines.Any())
+                {
+                    buttonATIS1.ForeColor = Color.Yellow;
+                }
+                else
+                {
+                    buttonATIS1.ForeColor = Color.FromName("ControlLightLight");
+                }
             }
             else
             {
-                buttonATIS1.BackColor = default;
+                buttonATIS1.ForeColor = default;
+
+                if (Plugin.ATIS1.SuggestedLines.Any())
+                {
+                    buttonATIS1.BackColor = Color.Yellow;
+                }
+                else
+                {
+                    buttonATIS1.BackColor = Color.FromName("Control");
+                }
             }
 
-            if (Plugin.ATIS2.SuggestedLines.Any())
+            if (Number == 2)
             {
-                buttonATIS2.BackColor = Color.Yellow;
+                buttonATIS2.BackColor = Color.FromName("ControlDarkDark");
+
+                if (Plugin.ATIS2.SuggestedLines.Any())
+                {
+                    buttonATIS2.ForeColor = Color.Yellow;
+                }
+                else
+                {
+                    buttonATIS2.ForeColor = Color.FromName("ControlLightLight");
+                }
             }
             else
             {
-                buttonATIS2.BackColor = default;
+                buttonATIS2.ForeColor = default;
+
+                if (Plugin.ATIS2.SuggestedLines.Any())
+                {
+                    buttonATIS2.BackColor = Color.Yellow;
+                }
+                else
+                {
+                    buttonATIS2.BackColor = Color.FromName("Control");
+                }
             }
 
-            if (Plugin.ATIS3.SuggestedLines.Any())
+            if (Number == 3)
             {
-                buttonATIS3.BackColor = Color.Yellow;
+                buttonATIS3.BackColor = Color.FromName("ControlDarkDark");
+
+                if (Plugin.ATIS3.SuggestedLines.Any())
+                {
+                    buttonATIS3.ForeColor = Color.Yellow;
+                }
+                else
+                {
+                    buttonATIS3.ForeColor = Color.FromName("ControlLightLight");
+                }
             }
             else
             {
-                buttonATIS3.BackColor = default;
+                buttonATIS3.ForeColor = default;
+
+                if (Plugin.ATIS3.SuggestedLines.Any())
+                {
+                    buttonATIS3.BackColor = Color.Yellow;
+                }
+                else
+                {
+                    buttonATIS3.BackColor = Color.FromName("Control");
+                }
             }
 
-            if (Plugin.ATIS4.SuggestedLines.Any())
+            if (Number == 4)
             {
-                buttonATIS4.BackColor = Color.Yellow;
+                buttonATIS4.BackColor = Color.FromName("ControlDarkDark");
+
+                if (Plugin.ATIS4.SuggestedLines.Any())
+                {
+                    buttonATIS4.ForeColor = Color.Yellow;
+                }
+                else
+                {
+                    buttonATIS4.ForeColor = Color.FromName("ControlLightLight");
+                }
             }
             else
             {
-                buttonATIS4.BackColor = default;
+                buttonATIS4.ForeColor = default;
+
+                if (Plugin.ATIS4.SuggestedLines.Any())
+                {
+                    buttonATIS4.BackColor = Color.Yellow;
+                }
+                else
+                {
+                    buttonATIS4.BackColor = Color.FromName("Control");
+                }
             }
 
-            if (Control.IsNetworkConnected && Control?.ICAO == null)
+            if (Control.IsZulu && Network.IsConnected && Control?.ICAO != null)
+            {
+                buttonZulu.BackColor = Color.FromName("ControlDarkDark");
+                buttonZulu.ForeColor = Color.FromName("ControlLightLight");
+                textBoxZulu.Visible = true;
+                textBoxAPCH.Visible = false;
+                textBoxRWY.Visible = false;
+                textBoxSFCCOND.Visible = false;
+                textBoxOPRINFO.Visible = false;
+                textBoxWIND.Visible = false;
+                textBoxVIS.Visible = false;
+                textBoxCLD.Visible = false;
+                textBoxWX.Visible = false;
+                textBoxTMP.Visible = false;
+                textBoxQNH.Visible = false;
+                textBoxSIGWX.Visible = false;
+                textBoxOFCW.Visible = false;
+                labelAPCH.Visible = false;
+                labelRWY.Visible = false;
+                labelSFCCOND.Visible = false;
+                labelOPRINFO.Visible = false;
+                labelWIND.Visible = false;
+                labelVIS.Visible = false;
+                labelCLD.Visible = false;
+                labelWX.Visible = false;
+                labelTMP.Visible = false;
+                labelQNH.Visible = false;
+                labelSIGWX.Visible = false;
+                labelOFCW.Visible = false;
+                labelTimeCheck.Visible = false;
+            }
+            else
+            {
+                buttonZulu.BackColor = Color.FromName("Control");
+                buttonZulu.ForeColor = default;
+                textBoxZulu.Visible = false;
+                textBoxAPCH.Visible = true;
+                textBoxRWY.Visible = true;
+                textBoxSFCCOND.Visible = true;
+                textBoxOPRINFO.Visible = true;
+                textBoxWIND.Visible = true;
+                textBoxVIS.Visible = true;
+                textBoxCLD.Visible = true;
+                textBoxWX.Visible = true;
+                textBoxTMP.Visible = true;
+                textBoxQNH.Visible = true;
+                textBoxSIGWX.Visible = true;
+                textBoxOFCW.Visible = true;
+                labelAPCH.Visible = true;
+                labelRWY.Visible = true;
+                labelSFCCOND.Visible = true;
+                labelOPRINFO.Visible = true;
+                labelWIND.Visible = true;
+                labelVIS.Visible = true;
+                labelCLD.Visible = true;
+                labelWX.Visible = true;
+                labelTMP.Visible = true;
+                labelQNH.Visible = true;
+                labelSIGWX.Visible = true;
+                labelOFCW.Visible = true;
+                labelTimeCheck.Visible = true;
+            }
+
+            if (Network.IsConnected && Control?.ICAO == null)
             {
                 comboBoxAirport.Enabled = true;
                 buttonCreate.Enabled = true;
                 buttonDelete.Visible = false;
                 buttonCreate.Visible = true;
 
+                buttonZulu.Enabled = false;
                 buttonSave.Enabled = false;
                 buttonCancel.Enabled = false;
                 comboBoxLetter.Enabled = false;
@@ -197,6 +346,8 @@ namespace ATISPlugin
                 buttonListen.ForeColor = default;
                 buttonBroadcast.BackColor = Color.FromName("Control");
                 buttonBroadcast.ForeColor = default;
+                buttonZulu.BackColor = Color.FromName("Control");
+                buttonZulu.ForeColor = default;
 
                 textBoxAPCH.TextChanged -= TextBox_TextChanged;
                 textBoxRWY.TextChanged -= TextBox_TextChanged;
@@ -224,6 +375,7 @@ namespace ATISPlugin
                 textBoxSIGWX.Text = string.Empty;
                 textBoxOFCW.Text = string.Empty;
 
+                textBoxZulu.Enabled = false;
                 textBoxAPCH.Enabled = false;
                 textBoxRWY.Enabled = false;
                 textBoxSFCCOND.Enabled = false;
@@ -244,8 +396,9 @@ namespace ATISPlugin
                 labelQNH.BackColor = default;
                 labelTMP.BackColor = default;
             }
-            else if (Control.IsNetworkConnected && Control?.ICAO != null)
+            else if (Network.IsConnected && Control?.ICAO != null)
             {
+                buttonZulu.Enabled = true;
                 comboBoxAirport.Enabled = false;
                 comboBoxLetter.Enabled = true;
                 comboBoxTimecheck.Enabled = true;
@@ -327,6 +480,7 @@ namespace ATISPlugin
                 textBoxSIGWX.TextChanged += TextBox_TextChanged;
                 textBoxOFCW.TextChanged += TextBox_TextChanged;
 
+                textBoxZulu.Enabled = true;
                 textBoxAPCH.Enabled = true;
                 textBoxRWY.Enabled = true;
                 textBoxSFCCOND.Enabled = true;
@@ -499,6 +653,7 @@ namespace ATISPlugin
             }
             else
             {
+                buttonZulu.Enabled = false;
                 buttonSave.Enabled = false;
                 buttonCancel.Enabled = false;
 
@@ -542,6 +697,7 @@ namespace ATISPlugin
                 textBoxSIGWX.TextChanged -= TextBox_TextChanged;
                 textBoxOFCW.TextChanged -= TextBox_TextChanged;
 
+                textBoxZulu.Text = string.Empty;
                 textBoxAPCH.Text = string.Empty;
                 textBoxRWY.Text = string.Empty;
                 textBoxSFCCOND.Text = string.Empty;
@@ -555,6 +711,8 @@ namespace ATISPlugin
                 textBoxSIGWX.Text = string.Empty;
                 textBoxOFCW.Text = string.Empty;
 
+                textBoxZulu.Enabled = false;
+                textBoxZulu.Visible = false;
                 textBoxAPCH.Enabled = false;
                 textBoxRWY.Enabled = false;
                 textBoxSFCCOND.Enabled = false;
@@ -588,12 +746,11 @@ namespace ATISPlugin
 
         private void IncreaseID()
         {
-            if (ID != 'Z')
-            {
-                ID = (Char)(Convert.ToUInt16(ID) + 1);
+            if (Control.IsZulu) return;
 
-                if (Convert.ToUInt16(ID) >= 90) ID = 'A';
-            }
+            ID = (Char)(Convert.ToUInt16(ID) + 1);
+
+            if (Convert.ToUInt16(ID) >= 90) ID = 'A';
 
             RefreshForm();
         }
@@ -601,13 +758,6 @@ namespace ATISPlugin
         private async void ButtonCreate_Click(object sender, EventArgs e)
         {
             if (!Network.IsConnected || !Network.IsValidATC) return;
-
-            if (Number == 4 && vatsys.ATIS.IsBroadcasting)
-            {
-                Errors.Add(new Exception("Cannot start ATIS as you already have 4 running."), Plugin.DisplayName);
-
-                return;
-            }
 
             if (ICAO == null) return;
 
@@ -619,13 +769,9 @@ namespace ATISPlugin
 
             if (airport == null) return;
 
-            Control.Create(ICAO, frequency.Frequency.ToString(), airport.Position);
+            await Control.Create(ICAO, frequency.Frequency.ToString(), airport.Position);
 
             await GetMetar();
-
-            ID = 'A';
-
-            comboBoxLetter.SelectedIndex = comboBoxLetter.FindStringExact(ID.ToString());
         }
 
         private void ComboBoxAirport_SelectedIndexChanged(object sender, EventArgs e)
@@ -703,7 +849,7 @@ namespace ATISPlugin
 
                 if (Saves.Any()) await SaveATIS();
 
-                await Control.BroadcastStart();
+                Control.BroadcastStart();
             }
             else
             {
@@ -760,6 +906,9 @@ namespace ATISPlugin
                 case "textBoxOFCW":
                     lineName = "OFCW_NOTIFY";
                     break;
+                case "textBoxZulu":
+                    lineName = "ZULU";
+                    break;
                 default:
                     break;
             }
@@ -781,7 +930,7 @@ namespace ATISPlugin
 
             Saves.Add(lineName, textBox.Text);
 
-            if (Edits && ID == Control.ID && ID != 'Z')
+            if (Edits && ID == Control.ID && !Control.IsZulu)
             {
                 IncreaseID();
             }
@@ -897,6 +1046,29 @@ namespace ATISPlugin
             if (!timecheckOK) return;
 
             TimeCheck = timecheck;
+
+            RefreshForm();
+        }
+
+        private void ButtonZulu_Click(object sender, EventArgs e)
+        {
+            ID = 'Z';
+
+            if (!Control.IsZulu)
+            {
+                Control.IsZulu = true;
+                var zuluInfo = Plugin.ZuluInfo.FirstOrDefault(x => x.ICAO == ICAO);
+                var zuluLine = Control.Lines.FirstOrDefault(x => x.Name == "ZULU");
+                if (zuluInfo != null && zuluLine != null)
+                {
+                    zuluLine.Value = zuluInfo.Text;
+                    textBoxZulu.Text = zuluInfo.Text;
+                }
+            }
+            else
+            {
+                Control.IsZulu = false;
+            }
 
             RefreshForm();
         }

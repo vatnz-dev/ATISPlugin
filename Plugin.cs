@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Configuration;
 using System.IO;
@@ -9,10 +10,10 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
+using System.Xml;
 using System.Xml.Serialization;
 using vatsys;
 using vatsys.Plugin;
-using Vnet;
 using Timer = System.Timers.Timer;
 
 namespace ATISPlugin
@@ -20,15 +21,14 @@ namespace ATISPlugin
     [Export(typeof(IPlugin))]
     public class Plugin : IPlugin
     {
-        public string Name => "More ATIS";
-        public static string DisplayName => "More ATIS";
+        public string Name => "ATIS Editor";
+        public static string DisplayName => "ATIS Editor";
 
-        public static readonly string ServerVatsim = "fsd.connect.vatsim.net";
-        public static readonly string ServerSweatbox = "sweatbox01-training.vatpac.org";
         private static readonly string MetarUri = "https://metar.vatsim.net/metar.php?id=";
 
-        public static readonly Version Version = new Version(1, 17);
+        public static readonly Version Version = new Version(2, 0);
         private static readonly string VersionUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Version.json";
+        private static readonly string ZuluUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Zulu.json";
 
         private static readonly HttpClient Client = new HttpClient();
 
@@ -41,18 +41,21 @@ namespace ATISPlugin
 
         private static EditorWindow Editor;
 
-        public static string Server { get; set; }
-        public static Settings Settings { get; set; }
+        public static string DatasetPath { get; set; }
         public static ATIS ATISData { get; set; }
         public static Sectors Sectors { get; set; }
         public static Airspace Airspace { get; set; }
+        public static List<ZuluInfo> ZuluInfo { get; set; } = new List<ZuluInfo>();
 
         public static SoundPlayer SoundPlayer { get; set; } = new SoundPlayer();
-        private Timer PositionTimer { get; set; } = new Timer();
-        private Timer METARTimer { get; set; } = new Timer();
+        private static Timer METARTimer { get; set; } = new Timer();
+        private static Timer BroadcastTimer { get; set; } = new Timer();
+        public static List<ATISAudio> ToBroadcast { get; set; } = new List<ATISAudio>();
 
         public Plugin()
         {
+            vatsys.ATIS.Disable();
+
             try
             {
                 Network.Connected += Network_Connected;
@@ -65,7 +68,7 @@ namespace ATISPlugin
 
                 GetSettings();
 
-                if (Settings == null)
+                if (DatasetPath == null)
                 {
                     Errors.Add(new Exception("Could not load vatSys settings."), DisplayName);
                     return;
@@ -91,7 +94,7 @@ namespace ATISPlugin
                     return;
                 }
 
-                var directory = Path.Combine(Plugin.Settings.DatasetPath, "Temp");
+                var directory = Path.Combine(DatasetPath, "Temp");
 
                 if (!Directory.Exists(directory))
                 {
@@ -108,29 +111,25 @@ namespace ATISPlugin
                     File.Delete(file);
                 }
 
-                ATIS1 = new ATISControl();
-                ATIS2 = new ATISControl();
-                ATIS3 = new ATISControl();
-                ATIS4 = new ATISControl();
+                ATIS1 = new ATISControl(0);
+                ATIS2 = new ATISControl(1);
+                ATIS3 = new ATISControl(2);
+                ATIS4 = new ATISControl(3);
 
-                ATIS1.Connected += OnUpdate;
-                ATIS1.Disconnected += OnUpdate;
-                ATIS2.Connected += OnUpdate;
-                ATIS2.Disconnected += OnUpdate;
-                ATIS3.Connected += OnUpdate;
-                ATIS3.Disconnected += OnUpdate;
-                ATIS4.Connected += OnUpdate;
-                ATIS4.Disconnected += OnUpdate;
-
-                PositionTimer.Elapsed += new ElapsedEventHandler(PositionTimer_Elapsed);
-                PositionTimer.Interval = 60000.0;
-                PositionTimer.AutoReset = false;
-                PositionTimer.Start();
+                ATIS1.StatusChanged += OnUpdate;
+                ATIS2.StatusChanged += OnUpdate;
+                ATIS3.StatusChanged += OnUpdate;
+                ATIS4.StatusChanged += OnUpdate;
 
                 METARTimer.Elapsed += new ElapsedEventHandler(METARTimer_Elapsed);
-                METARTimer.Interval = 300000.0;
+                METARTimer.Interval = TimeSpan.FromMinutes(5).TotalMilliseconds;
                 METARTimer.AutoReset = false;
                 METARTimer.Start();
+
+                BroadcastTimer.Elapsed += new ElapsedEventHandler(BroadcastTimer_Elasped);
+                BroadcastTimer.Interval = TimeSpan.FromSeconds(5).TotalMilliseconds;
+                BroadcastTimer.AutoReset = false;
+                BroadcastTimer.Start();
             }
             catch (Exception ex)
             {
@@ -138,18 +137,9 @@ namespace ATISPlugin
                 if (ex.InnerException != null) Errors.Add(new Exception(ex.InnerException.Message), DisplayName);
             }
 
-            vatsys.ATIS.Updated += ATIS_Updated;
+            _ = GetZuluInfo();
 
             _ = CheckVersion();
-        }
-
-        private async void ATIS_Updated(object sender, EventArgs e)
-        {
-            if (!vatsys.ATIS.IsBroadcasting || !ATIS4.Broadcasting) return;
-
-            await ATIS4.Delete();
-
-            Errors.Add(new Exception("ATIS 4 has been deleted."), DisplayName);
         }
 
         private static async Task CheckVersion()
@@ -167,33 +157,46 @@ namespace ATISPlugin
             catch { }
         }
 
-        private void PositionTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private static async Task GetZuluInfo()
         {
             try
             {
-                ATIS1.SendPosition();
-            }
-            catch { }
+                var response = await Client.GetStringAsync(ZuluUrl);
 
-            try
+                var zuluInfo = JsonConvert.DeserializeObject<ZuluInfo[]>(response);
+
+                foreach (var info in zuluInfo)
+                {
+                    ZuluInfo.Add(info);
+                }
+            }
+            catch (Exception ex) 
             {
-                ATIS2.SendPosition();
+                Errors.Add(new Exception(ex.Message), DisplayName);
             }
-            catch { }
+        }
 
-            try
+        private async void BroadcastTimer_Elasped(object sender, ElapsedEventArgs e)
+        {
+            var toBroadcast = ToBroadcast.ToList();
+
+            foreach (var atb in toBroadcast)
             {
-                ATIS3.SendPosition();
-            }
-            catch { }
+                var atis = ToBroadcast.FirstOrDefault(x => x.Id == atb.Id);
 
-            try
-            {
-                ATIS4.SendPosition();
-            }
-            catch { }
+                if (atis != null) ToBroadcast.Remove(atis);
 
-            PositionTimer.Start();
+                try
+                {
+                    await AFV.AddOrUpdateATISBot(atb.Audio, atb.ATISIndex, atb.Callsign, atb.Frequency, atb.VisPoint, atb.Duration);
+                }
+                catch (Exception ex)
+                {
+                    Errors.Add(new Exception($"Could not start voice ATIS: {ex.Message}"), Plugin.DisplayName);
+                }
+            }
+
+            BroadcastTimer.Start();
         }
 
         private async void METARTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -255,6 +258,14 @@ namespace ATISPlugin
 
         private async void Network_Disconnected(object sender, EventArgs e)
         {
+            MMI.InvokeOnGUI((MethodInvoker)delegate ()
+            {
+                if (Editor == null || Editor.IsDisposed) return;
+                Editor.Hide();
+            });
+
+            ToBroadcast.Clear();
+
             if (ATIS1 != null) await ATIS1.Delete();
             if (ATIS2 != null) await ATIS2.Delete();
             if (ATIS3 != null) await ATIS3.Delete();
@@ -265,8 +276,6 @@ namespace ATISPlugin
 
         private void Network_Connected(object sender, EventArgs e)
         {
-            if (Network.IsOfficialServer) Server = ServerVatsim;
-            else Server = ServerSweatbox;
             Editor?.RefreshEvent.Invoke(this, null);
         }
 
@@ -303,14 +312,31 @@ namespace ATISPlugin
 
             var config = File.ReadAllText(configuration.FilePath);
 
-            Settings = Commands.GetSettings(config);
+            XmlDocument doc = new XmlDocument();
+
+            doc.LoadXml(config);
+
+            XmlElement root = doc.DocumentElement;
+
+            var userSettings = root.SelectSingleNode("userSettings");
+
+            var settings = userSettings.SelectSingleNode("vatsys.Properties.Settings");
+
+            foreach (XmlNode node in settings.ChildNodes)
+            {
+                if (node.Attributes.GetNamedItem("name").Value == "DatasetPath")
+                {
+                    DatasetPath = node.InnerText;
+                    break;
+                }
+            }
         }
 
         private void GetData()
         {
-            ATISData = (ATIS)LoadXML(Settings.DatasetPath + "\\ATIS.xml", typeof(ATIS));
-            Sectors = (Sectors)LoadXML(Settings.DatasetPath + "\\Sectors.xml", typeof(Sectors));
-            Airspace = (Airspace)LoadXML(Settings.DatasetPath + "\\Airspace.xml", typeof(Airspace));
+            ATISData = (ATIS)LoadXML(DatasetPath + "\\ATIS.xml", typeof(ATIS));
+            Sectors = (Sectors)LoadXML(DatasetPath + "\\Sectors.xml", typeof(Sectors));
+            Airspace = (Airspace)LoadXML(DatasetPath + "\\Airspace.xml", typeof(Airspace));
         }
 
         public static async Task<string> GetMetar(string icao)
@@ -345,7 +371,7 @@ namespace ATISPlugin
 
         private static void ShowEditorWindow()
         {
-            if (ATISData == null || Settings == null || Sectors == null || Airspace == null)
+            if (ATISData == null || Sectors == null || Airspace == null)
             {
                 Errors.Add(new Exception("Plugin was not started due to missing data."), DisplayName);
 
