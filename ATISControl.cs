@@ -58,10 +58,6 @@ namespace ATISPlugin
 
         public ATISControl()
         {
-            Network.Connected += NetworkChanged;
-
-            Network.Disconnected += NetworkChanged;
-
             foreach (var line in Plugin.ATISData.Editor)
             {
                 var atisLine = new ATISLine(line.name, line.InputType, line.NameIsSpoken, line.NumbersSpokenGrouped, line.value, METARField.None);
@@ -108,21 +104,16 @@ namespace ATISPlugin
             InstalledVoice = SpeechSynth.GetInstalledVoices().FirstOrDefault();
         }
 
+        public ATISControl(int atisIndex) : this()
+        {
+            ATISIndex = atisIndex;
+        }
+
         private void LoopTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             if (!Broadcasting) return;
 
             BroadcastStart();
-        }
-
-        private void NetworkChanged(object sender, EventArgs e)
-        {
-            StatusChanged?.Invoke(this, null);
-        }
-
-        public ATISControl(int atisIndex) : this()
-        {
-            ATISIndex = atisIndex;
         }
 
         public async Task Create(string airport, string frequency, string coordinates)
@@ -142,22 +133,28 @@ namespace ATISPlugin
                 IsZulu = false;
 
                 Network.ConnectATIS(ATISIndex, Callsign, ICAO, FSDFrequency, VisPoint);
-
-                MMI.OpenATISWindow(Callsign);
             }
-            catch 
+            catch (Exception ex)
             {
+                Errors.Add(new Exception($"Could not create ATIS: {ex.Message}"), Plugin.DisplayName);
+
                 await Delete();
             }
+
+            try
+            {
+                MMI.OpenATISWindow(Callsign);
+            }
+            catch { }
 
             StatusChanged?.Invoke(this, null);
         }
 
-        public async Task Delete()
+        public async Task Delete(bool killOnNetwork = true)
         {
-            await BroadcastStop();
+            await BroadcastStop(killOnNetwork);
 
-            if (Network.GetATISConnected(ATISIndex))
+            if (killOnNetwork && Network.GetATISConnected(ATISIndex))
             {
                 Network.DisconnectATIS(ATISIndex);
             }
@@ -284,15 +281,18 @@ namespace ATISPlugin
             }
         }
 
-        public async Task BroadcastStop()
+        public async Task BroadcastStop(bool killOnNetwork = true)
         {
             Broadcasting = false;
 
-            try
+            if (killOnNetwork)
             {
-                await AFV.RemoveATISBot(ATISIndex);
+                try
+                {
+                    await AFV.RemoveATISBot(ATISIndex);
+                }
+                catch { }
             }
-            catch { }
         }
 
         public string[] GetInfo()

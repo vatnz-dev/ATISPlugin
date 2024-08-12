@@ -26,7 +26,7 @@ namespace ATISPlugin
 
         private static readonly string MetarUri = "https://metar.vatsim.net/metar.php?id=";
 
-        public static readonly Version Version = new Version(2, 0);
+        public static readonly Version Version = new Version(2, 1);
         private static readonly string VersionUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Version.json";
         private static readonly string ZuluUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Zulu.json";
 
@@ -186,6 +186,8 @@ namespace ATISPlugin
 
                 if (atis != null) ToBroadcast.Remove(atis);
 
+                if (!Network.GetATISConnected(atb.ATISIndex)) continue;
+
                 try
                 {
                     await AFV.AddOrUpdateATISBot(atb.Audio, atb.ATISIndex, atb.Callsign, atb.Frequency, atb.VisPoint, atb.Duration);
@@ -266,10 +268,10 @@ namespace ATISPlugin
 
             ToBroadcast.Clear();
 
-            if (ATIS1 != null) await ATIS1.Delete();
-            if (ATIS2 != null) await ATIS2.Delete();
-            if (ATIS3 != null) await ATIS3.Delete();
-            if (ATIS4 != null) await ATIS4.Delete();
+            if (ATIS1 != null) await ATIS1.Delete(false);
+            if (ATIS2 != null) await ATIS2.Delete(false);
+            if (ATIS3 != null) await ATIS3.Delete(false);
+            if (ATIS4 != null) await ATIS4.Delete(false);
 
             Editor?.RefreshEvent.Invoke(this, null);
         }

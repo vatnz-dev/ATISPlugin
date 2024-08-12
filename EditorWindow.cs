@@ -39,9 +39,6 @@ namespace ATISPlugin
         {
             InitializeComponent();
 
-            Network.Connected += OnRefeshEvent;
-            Network.Disconnected += OnRefeshEvent;
-
             RefreshEvent += OnRefeshEvent;
 
             BackColor = Colours.GetColour(Colours.Identities.WindowBackground);
