@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Media;
@@ -10,7 +9,6 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
-using System.Xml;
 using System.Xml.Serialization;
 using vatsys;
 using vatsys.Plugin;
@@ -19,14 +17,14 @@ using Timer = System.Timers.Timer;
 namespace ATISPlugin
 {
     [Export(typeof(IPlugin))]
-    public class Plugin : IPlugin
+    public class Plugin : IPlugin, IDisposable
     {
         public string Name => "ATIS Editor";
         public static string DisplayName => "ATIS Editor";
 
         private static readonly string MetarUri = "https://metar.vatsim.net/metar.php?id=";
 
-        public static readonly Version Version = new Version(2, 3);
+        public static readonly Version Version = new Version(2, 4);
         private static readonly string VersionUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Version.json";
         private static readonly string ZuluUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Zulu.json";
 
@@ -41,7 +39,7 @@ namespace ATISPlugin
 
         private static EditorWindow Editor;
 
-        public static string DatasetPath { get; set; }
+        public static string DatasetPath => Path.Combine(Helpers.GetFilesFolder(), "Profiles", "Australia");
         public static ATIS ATISData { get; set; }
         public static Sectors Sectors { get; set; }
         public static Airspace Airspace { get; set; }
@@ -56,6 +54,8 @@ namespace ATISPlugin
 
         public Plugin()
         {
+            if (!Profile.Name.Contains("Australia")) return;
+
             vatsys.ATIS.Disable();
 
             try
@@ -70,8 +70,6 @@ namespace ATISPlugin
                 ATISMenu = new CustomToolStripMenuItem(CustomToolStripMenuItemWindowType.Main, CustomToolStripMenuItemCategory.Windows, new ToolStripMenuItem(DisplayName));
                 ATISMenu.Item.Click += ATISMenu_Click;
                 MMI.AddCustomMenuItem(ATISMenu);
-
-                GetSettings();
 
                 if (DatasetPath == null)
                 {
@@ -190,6 +188,8 @@ namespace ATISPlugin
                 var atis = ToBroadcast.FirstOrDefault(x => x.Id == atb.Id);
 
                 if (atis != null) ToBroadcast.Remove(atis);
+
+                if (!Network.IsOfficialServer) continue;
 
                 if (!Network.GetATISConnected(atb.ATISIndex)) continue;
 
@@ -313,36 +313,6 @@ namespace ATISPlugin
             Editor?.RefreshEvent.Invoke(this, null);
         }
 
-        private void GetSettings()
-        {
-            var configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
-
-            if (!configuration.HasFile) return;
-
-            if (!File.Exists(configuration.FilePath)) return;
-
-            var config = File.ReadAllText(configuration.FilePath);
-
-            XmlDocument doc = new XmlDocument();
-
-            doc.LoadXml(config);
-
-            XmlElement root = doc.DocumentElement;
-
-            var userSettings = root.SelectSingleNode("userSettings");
-
-            var settings = userSettings.SelectSingleNode("vatsys.Properties.Settings");
-
-            foreach (XmlNode node in settings.ChildNodes)
-            {
-                if (node.Attributes.GetNamedItem("name").Value == "DatasetPath")
-                {
-                    DatasetPath = node.InnerText;
-                    break;
-                }
-            }
-        }
-
         private void GetData()
         {
             ATISData = (ATIS)LoadXML(DatasetPath + "\\ATIS.xml", typeof(ATIS));
@@ -409,6 +379,11 @@ namespace ATISPlugin
         public void OnRadarTrackUpdate(RDP.RadarTrack updated)
         {
             return;
+        }
+
+        public void Dispose()
+        {
+            Network_Disconnected(this, null);
         }
     }
 }
