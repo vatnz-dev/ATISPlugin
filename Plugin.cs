@@ -71,9 +71,9 @@ namespace ATISPlugin
                 ATISMenu.Item.Click += ATISMenu_Click;
                 MMI.AddCustomMenuItem(ATISMenu);
 
-                if (DatasetPath == null)
+                if (!Directory.Exists(DatasetPath))
                 {
-                    Errors.Add(new Exception("Could not load vatSys settings."), DisplayName);
+                    Errors.Add(new Exception("Could not find profile."), DisplayName);
                     return;
                 }
 
