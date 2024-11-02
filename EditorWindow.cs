@@ -23,7 +23,7 @@ namespace ATISPlugin
         }
         private string ICAO { get; set; }
         private char ID { get; set; }
-        private int Number { get; set; } = 1;
+        public int Number { get; private set; } = 1;
         private Dictionary<string, string> Saves { get; set; } = new Dictionary<string, string>();
         private bool Edits => Saves.Any() || 
             TimeCheck != Control.TimeCheck || 
@@ -766,13 +766,11 @@ namespace ATISPlugin
             }
         }
 
-        private async Task GetMetar()
+        private void GetMetar()
         {
             labelMETAR.Text = "LOADING";
 
-            await Control.UpdateMetar();
-
-            RefreshForm();
+            MET.Instance.RequestProduct(new MET.ProductRequest(MET.ProductType.VATSIM_METAR, ICAO, true));
         }
 
         private void IncreaseID()
@@ -802,7 +800,7 @@ namespace ATISPlugin
 
             await Control.Create(ICAO, frequency.Frequency.ToString(), airport.Position);
 
-            await GetMetar();
+            GetMetar();
         }
 
         private void ComboBoxAirport_SelectedIndexChanged(object sender, EventArgs e)
@@ -817,9 +815,9 @@ namespace ATISPlugin
             Change(Number);
         }
 
-        private async void ButtonGetMetar_Click(object sender, EventArgs e)
+        private void ButtonGetMetar_Click(object sender, EventArgs e)
         {
-            await GetMetar();
+            GetMetar();
         }
 
         private void ButtonCancel_Click(object sender, EventArgs e)

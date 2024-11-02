@@ -22,10 +22,9 @@ namespace ATISPlugin
         public string Name => "ATIS Editor";
         public static string DisplayName => "ATIS Editor";
 
-        private static readonly string MetarUri = "https://metar.vatsim.net/metar.php?id=";
-
-        public static readonly Version Version = new Version(2, 4);
+        public static readonly Version Version = new Version(2, 5);
         private static readonly string VersionUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Version.json";
+
         private static readonly string ZuluUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Zulu.json";
 
         private static readonly HttpClient Client = new HttpClient();
@@ -114,20 +113,15 @@ namespace ATISPlugin
                     File.Delete(file);
                 }
 
-                ATIS1 = new ATISControl(0);
-                ATIS2 = new ATISControl(1);
-                ATIS3 = new ATISControl(2);
-                ATIS4 = new ATISControl(3);
+                ATIS1 = new ATISControl(1);
+                ATIS2 = new ATISControl(2);
+                ATIS3 = new ATISControl(3);
+                ATIS4 = new ATISControl(4);
 
                 ATIS1.StatusChanged += OnUpdate;
                 ATIS2.StatusChanged += OnUpdate;
                 ATIS3.StatusChanged += OnUpdate;
                 ATIS4.StatusChanged += OnUpdate;
-
-                METARTimer.Elapsed += new ElapsedEventHandler(METARTimer_Elapsed);
-                METARTimer.Interval = TimeSpan.FromMinutes(5).TotalMilliseconds;
-                METARTimer.AutoReset = false;
-                METARTimer.Start();
 
                 BroadcastTimer.Elapsed += new ElapsedEventHandler(BroadcastTimer_Elasped);
                 BroadcastTimer.Interval = TimeSpan.FromSeconds(5).TotalMilliseconds;
@@ -143,6 +137,38 @@ namespace ATISPlugin
             _ = GetZuluInfo();
 
             _ = CheckVersion();
+
+            MET.Instance.ProductsChanged += METARChanged;
+        }
+
+        private void METARChanged(object sender, MET.ProductsChangedEventArgs e)
+        {
+            var products = MET.Instance.GetProducts(e.ProductRequest);
+            
+            if (products == null || products.Count == 0) return;
+            
+            var metar = products[0];
+            
+            if (metar.Type != MET.ProductType.VATSIM_METAR || metar.Text == "No product available.") return;
+
+            var atis = GetATIS(metar.Icao);
+
+            if (atis == null) return;
+
+            var updated = atis.UpdateMetar(metar.Text);
+
+            if (!updated) return;
+
+            OnMETARUpdate(atis.ATISIndex);
+        }
+
+        private ATISControl GetATIS(string icao)
+        {
+            if (ATIS1.ICAO == icao) return ATIS1;
+            if (ATIS2.ICAO == icao) return ATIS3;
+            if (ATIS3.ICAO == icao) return ATIS3;
+            if (ATIS4.ICAO == icao) return ATIS4;
+            return null;
         }
 
         private static async Task CheckVersion()
@@ -206,63 +232,6 @@ namespace ATISPlugin
             BroadcastTimer.Start();
         }
 
-        private async void METARTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            var changes = false;
-
-            try
-            {
-                var atis1Updated = await ATIS1.UpdateMetar();
-
-                if (atis1Updated)
-                {
-                    changes = true;
-                    OnMETARUpdate(1);
-                }
-            }
-            catch { }
-
-            try
-            {
-                var atis2Updated = await ATIS2.UpdateMetar();
-
-                if (atis2Updated)
-                {
-                    changes = true;
-                    OnMETARUpdate(2);
-                }
-            }
-            catch { }
-
-            try
-            {
-                var atis3Updated = await ATIS3.UpdateMetar();
-
-                if (atis3Updated)
-                {
-                    changes = true;
-                    OnMETARUpdate(3);
-                }
-            }
-            catch { }
-
-            try
-            {
-                var atis4Updated = await ATIS4.UpdateMetar();
-
-                if (atis4Updated)
-                {
-                    changes = true;
-                    OnMETARUpdate(4);
-                }
-            }
-            catch { }
-
-            if (changes) PlayUpdateSound();
-
-            METARTimer.Start();
-        }
-
         private void Audio_VSCSFrequenciesChanged(object sender, EventArgs e)
         {
             Frequencies.Clear();
@@ -308,9 +277,16 @@ namespace ATISPlugin
         {
             ShowEditorWindow();
 
-            Editor.Change(number);
+            if (Editor.Number == number)
+            {
+                Editor.RefreshEvent.Invoke(null, null);
+            }
+            else
+            {
+                Editor.Change(number);
+            }
 
-            Editor?.RefreshEvent.Invoke(this, null);
+            PlayUpdateSound();
         }
 
         private void GetData()
@@ -318,17 +294,6 @@ namespace ATISPlugin
             ATISData = (ATIS)LoadXML(DatasetPath + "\\ATIS.xml", typeof(ATIS));
             Sectors = (Sectors)LoadXML(DatasetPath + "\\Sectors.xml", typeof(Sectors));
             Airspace = (Airspace)LoadXML(DatasetPath + "\\Airspace.xml", typeof(Airspace));
-        }
-
-        public static async Task<string> GetMetar(string icao)
-        {
-            var response = await Client.GetAsync($"{MetarUri}{icao}");
-
-            if (!response.IsSuccessStatusCode) return null;
-
-            var content = await response.Content.ReadAsStringAsync();
-
-            return content;
         }
 
         public object LoadXML(string filePath, Type type)

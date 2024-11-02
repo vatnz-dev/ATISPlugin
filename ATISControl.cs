@@ -16,7 +16,7 @@ namespace ATISPlugin
 {
     public class ATISControl
     {
-        private int ATISIndex { get; set; }
+        public int ATISIndex { get; private set; }
 
         private string Callsign { get; set; }
         public char ID { get; set; } = 'Z';
@@ -116,7 +116,7 @@ namespace ATISPlugin
             BroadcastStart();
         }
 
-        public async Task Create(string airport, string frequency, string coordinates)
+        public async Task Create(string icao, string frequency, string coordinates)
         {
             if (!Network.IsConnected || !Network.IsValidATC) return;
 
@@ -124,11 +124,11 @@ namespace ATISPlugin
 
             try
             {
-                ICAO = airport;
+                ICAO = icao;
                 FrequencyDisplay = Normalize25KhzFrequency(frequency);
                 Frequency = Normalize25KhzFrequency(FrequencyToUInt(frequency));
                 AliasFrequency = Normalize25KhzFrequency(199998000U);
-                Callsign = $"{airport}_ATIS";
+                Callsign = $"{icao}_ATIS";
                 VisPoint = new Coordinate(coordinates);
                 IsZulu = false;
 
@@ -324,11 +324,9 @@ namespace ATISPlugin
             SuggestedLines.Clear();
         }
 
-        public async Task<bool> UpdateMetar()
+        public bool UpdateMetar(string metar)
         {
             if (ICAO == null || IsZulu) return false;
-
-            var metar = await Plugin.GetMetar(ICAO);
 
             if (metar == METARRaw) return false;
 
