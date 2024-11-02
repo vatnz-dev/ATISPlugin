@@ -22,7 +22,7 @@ namespace ATISPlugin
         public string Name => "ATIS Editor";
         public static string DisplayName => "ATIS Editor";
 
-        public static readonly Version Version = new Version(2, 5);
+        public static readonly Version Version = new Version(2, 6);
         private static readonly string VersionUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Version.json";
 
         private static readonly string ZuluUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Zulu.json";
@@ -264,7 +264,7 @@ namespace ATISPlugin
             Editor?.RefreshEvent.Invoke(this, null);
         }
 
-        private void PlayUpdateSound()
+        private static void PlayUpdateSound()
         {
             var sound = Path.Combine(Helpers.GetProgramFolder(), "wav", "AIS.wav");
 
@@ -275,7 +275,14 @@ namespace ATISPlugin
 
         private void OnMETARUpdate(int number)
         {
-            ShowEditorWindow();
+            if (!IsEditorOpen())
+            {
+                ShowEditorWindow();
+
+                Editor.Change(number);
+
+                PlayUpdateSound();
+            }
 
             if (Editor.Number == number)
             {
@@ -283,10 +290,8 @@ namespace ATISPlugin
             }
             else
             {
-                Editor.Change(number);
+                PlayUpdateSound();
             }
-
-            PlayUpdateSound();
         }
 
         private void GetData()
@@ -314,6 +319,8 @@ namespace ATISPlugin
         {
             ShowEditorWindow();
         }
+
+        private static bool IsEditorOpen() => Editor.Visible ? true : false;
 
         private static void ShowEditorWindow()
         {
