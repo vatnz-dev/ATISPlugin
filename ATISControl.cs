@@ -17,6 +17,7 @@ namespace ATISPlugin
     public class ATISControl
     {
         public int Number { get; private set; }
+        private int Index => Number - 1;
         private string Callsign { get; set; }
         public char ID { get; set; } = 'Z';
         public bool IsZulu { get; set; }
@@ -119,7 +120,7 @@ namespace ATISPlugin
         {
             if (!Network.IsConnected || !Network.IsValidATC) return;
 
-            if (Network.GetATISConnected(Number)) return;
+            if (Network.GetATISConnected(Index)) return;
 
             try
             {
@@ -131,7 +132,7 @@ namespace ATISPlugin
                 VisPoint = new Coordinate(coordinates);
                 IsZulu = false;
 
-                Network.ConnectATIS(Number, Callsign, ICAO, FSDFrequency, VisPoint);
+                Network.ConnectATIS(Index, Callsign, ICAO, FSDFrequency, VisPoint);
             }
             catch (Exception ex)
             {
@@ -153,9 +154,9 @@ namespace ATISPlugin
         {
             await BroadcastStop(killOnNetwork);
 
-            if (killOnNetwork && Network.GetATISConnected(Number))
+            if (killOnNetwork && Network.GetATISConnected(Index))
             {
-                Network.DisconnectATIS(Number);
+                Network.DisconnectATIS(Index);
             }
 
             ICAO = null;
