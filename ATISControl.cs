@@ -16,8 +16,7 @@ namespace ATISPlugin
 {
     public class ATISControl
     {
-        public int ATISIndex { get; private set; }
-
+        public int Number { get; private set; }
         private string Callsign { get; set; }
         public char ID { get; set; } = 'Z';
         public bool IsZulu { get; set; }
@@ -106,7 +105,7 @@ namespace ATISPlugin
 
         public ATISControl(int atisIndex) : this()
         {
-            ATISIndex = atisIndex;
+            Number = atisIndex;
         }
 
         private void LoopTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -120,7 +119,7 @@ namespace ATISPlugin
         {
             if (!Network.IsConnected || !Network.IsValidATC) return;
 
-            if (Network.GetATISConnected(ATISIndex)) return;
+            if (Network.GetATISConnected(Number)) return;
 
             try
             {
@@ -132,7 +131,7 @@ namespace ATISPlugin
                 VisPoint = new Coordinate(coordinates);
                 IsZulu = false;
 
-                Network.ConnectATIS(ATISIndex, Callsign, ICAO, FSDFrequency, VisPoint);
+                Network.ConnectATIS(Number, Callsign, ICAO, FSDFrequency, VisPoint);
             }
             catch (Exception ex)
             {
@@ -154,9 +153,9 @@ namespace ATISPlugin
         {
             await BroadcastStop(killOnNetwork);
 
-            if (killOnNetwork && Network.GetATISConnected(ATISIndex))
+            if (killOnNetwork && Network.GetATISConnected(Number))
             {
-                Network.DisconnectATIS(ATISIndex);
+                Network.DisconnectATIS(Number);
             }
 
             ICAO = null;
@@ -253,13 +252,13 @@ namespace ATISPlugin
 
             CompleteATISDuration = GenerateCompleteStream();
 
-            Network.UpdateATIS(ATISIndex, ID, GetInfo());
+            Network.UpdateATIS(Number, ID, GetInfo());
 
             var audio = ReadMemoryStream(CompleteStream);
 
             var duration = TimeCheck ? TimeSpan.FromMilliseconds(CompleteATISDuration + 60000.0) : TimeSpan.Zero;
 
-            var atisAudio = new ATISAudio(audio, ATISIndex, Callsign, Frequency, VisPoint, duration);
+            var atisAudio = new ATISAudio(audio, Number, Callsign, Frequency, VisPoint, duration);
 
             Plugin.ToBroadcast.Add(atisAudio);  
 
@@ -289,7 +288,7 @@ namespace ATISPlugin
             {
                 try
                 {
-                    await AFV.RemoveATISBot(ATISIndex);
+                    await AFV.RemoveATISBot(Number - 1);
                 }
                 catch { }
             }
