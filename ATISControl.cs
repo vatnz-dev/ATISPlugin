@@ -104,9 +104,9 @@ namespace ATISPlugin
             InstalledVoice = SpeechSynth.GetInstalledVoices().FirstOrDefault();
         }
 
-        public ATISControl(int atisIndex) : this()
+        public ATISControl(int number) : this()
         {
-            Number = atisIndex;
+            Number = number;
         }
 
         private void LoopTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -253,13 +253,13 @@ namespace ATISPlugin
 
             CompleteATISDuration = GenerateCompleteStream();
 
-            Network.UpdateATIS(Number, ID, GetInfo());
+            Network.UpdateATIS(Index, ID, GetInfo());
 
             var audio = ReadMemoryStream(CompleteStream);
 
             var duration = TimeCheck ? TimeSpan.FromMilliseconds(CompleteATISDuration + 60000.0) : TimeSpan.Zero;
 
-            var atisAudio = new ATISAudio(audio, Number, Callsign, Frequency, VisPoint, duration);
+            var atisAudio = new ATISAudio(audio, Index, Callsign, Frequency, VisPoint, duration);
 
             Plugin.ToBroadcast.Add(atisAudio);  
 
@@ -289,7 +289,7 @@ namespace ATISPlugin
             {
                 try
                 {
-                    await AFV.RemoveATISBot(Number - 1);
+                    await AFV.RemoveATISBot(Index);
                 }
                 catch { }
             }
