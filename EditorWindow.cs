@@ -771,8 +771,6 @@ namespace ATISPlugin
         private void GetMetar()
         {
             labelMETAR.Text = "LOADING";
-
-            Errors.Add(new Exception($"Requested METAR for {ICAO}"));
             
             MET.Instance.RequestProduct(new MET.ProductRequest(MET.ProductType.VATSIM_METAR, ICAO, true));
         }
