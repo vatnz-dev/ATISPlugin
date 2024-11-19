@@ -326,9 +326,11 @@ namespace ATISPlugin
 
         public bool UpdateMetar(string metar)
         {
-            if (ICAO == null || IsZulu) return false;
+            if (ICAO == null) return false;
 
             if (metar == METARRaw) return false;
+
+            if (IsZulu && !string.IsNullOrWhiteSpace(METARRaw)) return false;
 
             METARLastRaw = METARRaw;
 

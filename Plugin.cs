@@ -22,7 +22,7 @@ namespace ATISPlugin
         public string Name => "ATIS Editor";
         public static string DisplayName => "ATIS Editor";
 
-        public static readonly Version Version = new Version(2, 9);
+        public static readonly Version Version = new Version(2, 10);
         private static readonly string VersionUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Version.json";
 
         private static readonly string ZuluUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Zulu.json";
@@ -148,7 +148,7 @@ namespace ATISPlugin
             if (products == null || products.Count == 0) return;
             
             var metar = products[0];
-            
+
             if (metar.Type != MET.ProductType.VATSIM_METAR || metar.Text == "No product available.") return;
 
             var atis = GetATIS(metar.Icao);
@@ -165,7 +165,7 @@ namespace ATISPlugin
         private ATISControl GetATIS(string icao)
         {
             if (ATIS1.ICAO == icao) return ATIS1;
-            if (ATIS2.ICAO == icao) return ATIS3;
+            if (ATIS2.ICAO == icao) return ATIS2;
             if (ATIS3.ICAO == icao) return ATIS3;
             if (ATIS4.ICAO == icao) return ATIS4;
             return null;

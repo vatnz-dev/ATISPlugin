@@ -50,6 +50,8 @@ namespace ATISPlugin
         {
             Number = number;
 
+            ICAO = Control.ICAO;
+
             ID = Control.ID;
 
             TimeCheck = Control.TimeCheck;
@@ -770,6 +772,8 @@ namespace ATISPlugin
         {
             labelMETAR.Text = "LOADING";
 
+            Errors.Add(new Exception($"Requested METAR for {ICAO}"));
+            
             MET.Instance.RequestProduct(new MET.ProductRequest(MET.ProductType.VATSIM_METAR, ICAO, true));
         }
 
