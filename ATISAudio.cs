@@ -10,12 +10,12 @@ namespace ATISPlugin
             Id = Guid.NewGuid();
         }
 
-        public ATISAudio(byte[] audio, int number, string callsign, uint freq, Coordinate location, TimeSpan interval) : this()
+        public ATISAudio(byte[] audio, int atisIndex, string callsign, uint frequency, Coordinate location, TimeSpan interval) : this()
         { 
             Audio = audio;
-            ATISIndex = number - 1;
+            ATISIndex = atisIndex;
             Callsign = callsign;
-            Frequency = freq;
+            Frequency = frequency;
             VisPoint = location;
             Duration = interval;
         }

@@ -22,7 +22,7 @@ namespace ATISPlugin
         public string Name => "ATIS Editor";
         public static string DisplayName => "ATIS Editor";
 
-        public static readonly Version Version = new Version(2, 11);
+        public static readonly Version Version = new Version(2, 12);
         private static readonly string VersionUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Version.json";
 
         private static readonly string ZuluUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Zulu.json";
@@ -225,7 +225,7 @@ namespace ATISPlugin
                 }
                 catch (Exception ex)
                 {
-                    Errors.Add(new Exception($"Could not start voice ATIS: {ex.Message}"), Plugin.DisplayName);
+                    Errors.Add(new Exception($"Could not start voice ATIS: {ex.Message}"), DisplayName);
                 }
             }
 
