@@ -56,6 +56,10 @@ namespace ATISPlugin
 
             TimeCheck = Control.TimeCheck;
 
+            Rate = Control.PromptRate;
+
+            Voice = Control.InstalledVoice;
+
             Saves.Clear();
 
             LoadOptions();
@@ -81,10 +85,10 @@ namespace ATISPlugin
 
             foreach (var freq in Plugin.ATISData.Frequencies.OrderBy(x => x.Airport))
             {
-                if (Plugin.ATIS1?.ICAO == freq.Airport ||
-                    Plugin.ATIS2?.ICAO == freq.Airport ||
-                    Plugin.ATIS3?.ICAO == freq.Airport ||
-                    Plugin.ATIS4?.ICAO == freq.Airport) continue;
+                if (Number != 1 && Plugin.ATIS1?.ICAO == freq.Airport) continue;
+                if (Number != 2 && Plugin.ATIS2?.ICAO == freq.Airport) continue;
+                if (Number != 3 && Plugin.ATIS3?.ICAO == freq.Airport) continue;
+                if (Number != 4 && Plugin.ATIS4?.ICAO == freq.Airport) continue;
                 comboBoxAirport.Items.Add(freq.Airport);
             }
 
@@ -119,13 +123,13 @@ namespace ATISPlugin
         {
             labelMETAR.Text = string.Empty;
 
+            comboBoxAirport.SelectedIndex = comboBoxAirport.FindStringExact(ICAO);
+
             comboBoxLetter.SelectedIndex = comboBoxLetter.FindStringExact(ID.ToString());
 
-            comboBoxVoice.SelectedIndex = comboBoxVoice.FindStringExact(Control.InstalledVoice.VoiceInfo.Name);
-            Voice = Control.InstalledVoice;
+            comboBoxVoice.SelectedIndex = comboBoxVoice.FindStringExact(Voice.VoiceInfo.Name);
 
-            comboBoxRate.SelectedIndex = comboBoxRate.FindStringExact(Control.PromptRate.ToString());
-            Rate = Control.PromptRate;
+            comboBoxRate.SelectedIndex = comboBoxRate.FindStringExact(Rate.ToString());
 
             comboBoxTimecheck.SelectedIndex = comboBoxTimecheck.FindStringExact(TimeCheck.ToString());
 
