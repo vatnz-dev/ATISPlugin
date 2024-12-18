@@ -85,10 +85,6 @@ namespace ATISPlugin
 
             foreach (var freq in Plugin.ATISData.Frequencies.OrderBy(x => x.Airport))
             {
-                if (Number != 1 && Plugin.ATIS1?.ICAO == freq.Airport) continue;
-                if (Number != 2 && Plugin.ATIS2?.ICAO == freq.Airport) continue;
-                if (Number != 3 && Plugin.ATIS3?.ICAO == freq.Airport) continue;
-                if (Number != 4 && Plugin.ATIS4?.ICAO == freq.Airport) continue;
                 comboBoxAirport.Items.Add(freq.Airport);
             }
 
@@ -127,7 +123,10 @@ namespace ATISPlugin
 
             comboBoxLetter.SelectedIndex = comboBoxLetter.FindStringExact(ID.ToString());
 
-            comboBoxVoice.SelectedIndex = comboBoxVoice.FindStringExact(Voice.VoiceInfo.Name);
+            if (Voice != null)
+            {
+                comboBoxVoice.SelectedIndex = comboBoxVoice.FindStringExact(Voice.VoiceInfo.Name);
+            }
 
             comboBoxRate.SelectedIndex = comboBoxRate.FindStringExact(Rate.ToString());
 

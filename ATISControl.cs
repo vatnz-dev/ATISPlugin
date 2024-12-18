@@ -124,6 +124,17 @@ namespace ATISPlugin
 
             try
             {
+                var exists = Network.GetOnlineATCs.FirstOrDefault(x => x.Callsign == $"{icao}_ATIS");
+
+                if (exists != null)
+                {
+                    Errors.Add(new Exception($"ATIS for {icao} already exists."), Plugin.DisplayName);
+
+                    await Delete();
+
+                    return;
+                }
+
                 ICAO = icao;
                 FrequencyDisplay = Normalize25KhzFrequency(frequency);
                 Frequency = Normalize25KhzFrequency(FrequencyToUInt(frequency));
