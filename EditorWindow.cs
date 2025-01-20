@@ -81,699 +81,845 @@ namespace ATISPlugin
 
         private void LoadOptions()
         {
-            comboBoxAirport.Items.Clear();
+            ComboBoxAirport.Items.Clear();
 
             foreach (var freq in Plugin.ATISData.Frequencies.OrderBy(x => x.Airport))
             {
-                comboBoxAirport.Items.Add(freq.Airport);
+                ComboBoxAirport.Items.Add(freq.Airport);
             }
 
-            comboBoxLetter.Items.Clear();
+            ComboBoxLetter.Items.Clear();
 
             for (char c = 'A'; c <= 'Y'; c++)
             {
-                comboBoxLetter.Items.Add(c.ToString());
+                ComboBoxLetter.Items.Add(c.ToString());
             }
 
-            comboBoxVoice.Items.Clear();
+            ComboBoxVoice.Items.Clear();
 
             foreach (var voice in Control.SpeechSynth.GetInstalledVoices())
             {
-                comboBoxVoice.Items.Add(voice.VoiceInfo.Name);
+                ComboBoxVoice.Items.Add(voice.VoiceInfo.Name);
             }
 
-            comboBoxZuluFrequency.Items.Clear();
+            ComboBoxZuluFrequency.Items.Clear();
 
             if (Plugin.Frequencies.Any())
             {
                 foreach (var frequency in Plugin.Frequencies)
                 {
-                    comboBoxZuluFrequency.Items.Add(string.IsNullOrWhiteSpace(frequency.FriendlyName) ? frequency.Name : frequency.FriendlyName);
+                    ComboBoxZuluFrequency.Items.Add(string.IsNullOrWhiteSpace(frequency.FriendlyName) ? frequency.Name : frequency.FriendlyName);
                 }
 
-                comboBoxZuluFrequency.SelectedIndex = 0;
+                ComboBoxZuluFrequency.SelectedIndex = 0;
+            }
+
+            foreach (var line in Control.Lines)
+            {
+                switch (line.Number)
+                {
+                    case 1:
+                        Label1.Text = line.Name;
+                        break;
+                    case 2:
+                        Label2.Text = line.Name;
+                        break;
+                    case 3:
+                        Label3.Text = line.Name;
+                        break;
+                    case 4:
+                        Label4.Text = line.Name;
+                        break;
+                    case 5:
+                        Label5.Text = line.Name;
+                        break;
+                    case 6:
+                        Label6.Text = line.Name;
+                        break;
+                    case 7:
+                        Label7.Text = line.Name;
+                        break;
+                    case 8:
+                        Label8.Text = line.Name;
+                        break;
+                    case 9:
+                        Label9.Text = line.Name;
+                        break;
+                    case 10:
+                        Label10.Text = line.Name;
+                        break;
+                    case 11:
+                        Label11.Text = line.Name;
+                        break;
+                    case 12:
+                        Label12.Text = line.Name;
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
         private void RefreshForm()
         {
-            labelMETAR.Text = string.Empty;
+            LabelMETAR.Text = string.Empty;
 
-            comboBoxAirport.SelectedIndex = comboBoxAirport.FindStringExact(ICAO);
+            ComboBoxAirport.SelectedIndex = ComboBoxAirport.FindStringExact(ICAO);
 
-            comboBoxLetter.SelectedIndex = comboBoxLetter.FindStringExact(ID.ToString());
+            ComboBoxLetter.SelectedIndex = ComboBoxLetter.FindStringExact(ID.ToString());
 
             if (Voice != null)
             {
-                comboBoxVoice.SelectedIndex = comboBoxVoice.FindStringExact(Voice.VoiceInfo.Name);
+                ComboBoxVoice.SelectedIndex = ComboBoxVoice.FindStringExact(Voice.VoiceInfo.Name);
             }
 
-            comboBoxRate.SelectedIndex = comboBoxRate.FindStringExact(Rate.ToString());
+            ComboBoxRate.SelectedIndex = ComboBoxRate.FindStringExact(Rate.ToString());
 
-            comboBoxTimecheck.SelectedIndex = comboBoxTimecheck.FindStringExact(TimeCheck.ToString());
+            ComboBoxTimecheck.SelectedIndex = ComboBoxTimecheck.FindStringExact(TimeCheck.ToString());
 
-            comboBoxZuluFrequency.Items.Clear();
+            ComboBoxZuluFrequency.Items.Clear();
 
             foreach (var frequency in Plugin.Frequencies)
             {
-                comboBoxZuluFrequency.Items.Add(string.IsNullOrWhiteSpace(frequency.FriendlyName) ? frequency.Name : frequency.FriendlyName);
+                ComboBoxZuluFrequency.Items.Add(string.IsNullOrWhiteSpace(frequency.FriendlyName) ? frequency.Name : frequency.FriendlyName);
             }
 
             if (!string.IsNullOrWhiteSpace(ZuluFrequency))
             {
-                comboBoxZuluFrequency.SelectedIndex = comboBoxZuluFrequency.FindStringExact(ZuluFrequency);
+                ComboBoxZuluFrequency.SelectedIndex = ComboBoxZuluFrequency.FindStringExact(ZuluFrequency);
             }
 
-            if (Plugin.ATIS1.ICAO != null)
+            RefeshForm_TopButtons();
+
+            RefreshForm_ZuluATIS();
+
+            if (Network.IsConnected && Control?.ICAO == null)
             {
-                buttonATIS1.Text = Plugin.ATIS1.ICAO;
+                RefreshFrom_NoATIS();
+            }
+            else if (Network.IsConnected && Control?.ICAO != null)
+            {
+                RefreshForm_WithATIS();
             }
             else
             {
-                buttonATIS1.Text = "ATIS #1";
+                RefreshForm_NotConnected();
+            }
+        }
+
+        private void RefeshForm_TopButtons()
+        {
+            if (Plugin.ATIS1.ICAO != null)
+            {
+                ButtonATIS1.Text = Plugin.ATIS1.ICAO;
+            }
+            else
+            {
+                ButtonATIS1.Text = "ATIS #1";
             }
 
             if (Plugin.ATIS2.ICAO != null)
             {
-                buttonATIS2.Text = Plugin.ATIS2.ICAO;
+                ButtonATIS2.Text = Plugin.ATIS2.ICAO;
             }
             else
             {
-                buttonATIS2.Text = "ATIS #2";
+                ButtonATIS2.Text = "ATIS #2";
             }
 
             if (Plugin.ATIS3.ICAO != null)
             {
-                buttonATIS3.Text = Plugin.ATIS3.ICAO;
+                ButtonATIS3.Text = Plugin.ATIS3.ICAO;
             }
             else
             {
-                buttonATIS3.Text = "ATIS #3";
+                ButtonATIS3.Text = "ATIS #3";
             }
 
             if (Plugin.ATIS4.ICAO != null)
             {
-                buttonATIS4.Text = Plugin.ATIS4.ICAO;
+                ButtonATIS4.Text = Plugin.ATIS4.ICAO;
             }
             else
             {
-                buttonATIS4.Text = "ATIS #4";
+                ButtonATIS4.Text = "ATIS #4";
             }
 
             if (Number == 1)
             {
-                buttonATIS1.BackColor = Color.FromName("ControlDarkDark");
+                ButtonATIS1.BackColor = Color.FromName("ControlDarkDark");
 
                 if (Plugin.ATIS1.SuggestedLines.Any())
                 {
-                    buttonATIS1.ForeColor = Color.Yellow;
+                    ButtonATIS1.ForeColor = Color.Yellow;
                 }
                 else
                 {
-                    buttonATIS1.ForeColor = Color.FromName("ControlLightLight");
+                    ButtonATIS1.ForeColor = Color.FromName("ControlLightLight");
                 }
             }
             else
             {
-                buttonATIS1.ForeColor = default;
+                ButtonATIS1.ForeColor = default;
 
                 if (Plugin.ATIS1.SuggestedLines.Any())
                 {
-                    buttonATIS1.BackColor = Color.Yellow;
+                    ButtonATIS1.BackColor = Color.Yellow;
                 }
                 else
                 {
-                    buttonATIS1.BackColor = Color.FromName("Control");
+                    ButtonATIS1.BackColor = Color.FromName("Control");
                 }
             }
 
             if (Number == 2)
             {
-                buttonATIS2.BackColor = Color.FromName("ControlDarkDark");
+                ButtonATIS2.BackColor = Color.FromName("ControlDarkDark");
 
                 if (Plugin.ATIS2.SuggestedLines.Any())
                 {
-                    buttonATIS2.ForeColor = Color.Yellow;
+                    ButtonATIS2.ForeColor = Color.Yellow;
                 }
                 else
                 {
-                    buttonATIS2.ForeColor = Color.FromName("ControlLightLight");
+                    ButtonATIS2.ForeColor = Color.FromName("ControlLightLight");
                 }
             }
             else
             {
-                buttonATIS2.ForeColor = default;
+                ButtonATIS2.ForeColor = default;
 
                 if (Plugin.ATIS2.SuggestedLines.Any())
                 {
-                    buttonATIS2.BackColor = Color.Yellow;
+                    ButtonATIS2.BackColor = Color.Yellow;
                 }
                 else
                 {
-                    buttonATIS2.BackColor = Color.FromName("Control");
+                    ButtonATIS2.BackColor = Color.FromName("Control");
                 }
             }
 
             if (Number == 3)
             {
-                buttonATIS3.BackColor = Color.FromName("ControlDarkDark");
+                ButtonATIS3.BackColor = Color.FromName("ControlDarkDark");
 
                 if (Plugin.ATIS3.SuggestedLines.Any())
                 {
-                    buttonATIS3.ForeColor = Color.Yellow;
+                    ButtonATIS3.ForeColor = Color.Yellow;
                 }
                 else
                 {
-                    buttonATIS3.ForeColor = Color.FromName("ControlLightLight");
+                    ButtonATIS3.ForeColor = Color.FromName("ControlLightLight");
                 }
             }
             else
             {
-                buttonATIS3.ForeColor = default;
+                ButtonATIS3.ForeColor = default;
 
                 if (Plugin.ATIS3.SuggestedLines.Any())
                 {
-                    buttonATIS3.BackColor = Color.Yellow;
+                    ButtonATIS3.BackColor = Color.Yellow;
                 }
                 else
                 {
-                    buttonATIS3.BackColor = Color.FromName("Control");
+                    ButtonATIS3.BackColor = Color.FromName("Control");
                 }
             }
 
             if (Number == 4)
             {
-                buttonATIS4.BackColor = Color.FromName("ControlDarkDark");
+                ButtonATIS4.BackColor = Color.FromName("ControlDarkDark");
 
                 if (Plugin.ATIS4.SuggestedLines.Any())
                 {
-                    buttonATIS4.ForeColor = Color.Yellow;
+                    ButtonATIS4.ForeColor = Color.Yellow;
                 }
                 else
                 {
-                    buttonATIS4.ForeColor = Color.FromName("ControlLightLight");
+                    ButtonATIS4.ForeColor = Color.FromName("ControlLightLight");
                 }
             }
             else
             {
-                buttonATIS4.ForeColor = default;
+                ButtonATIS4.ForeColor = default;
 
                 if (Plugin.ATIS4.SuggestedLines.Any())
                 {
-                    buttonATIS4.BackColor = Color.Yellow;
+                    ButtonATIS4.BackColor = Color.Yellow;
                 }
                 else
                 {
-                    buttonATIS4.BackColor = Color.FromName("Control");
+                    ButtonATIS4.BackColor = Color.FromName("Control");
+                }
+            }
+        }
+
+        private void RefreshForm_NotConnected()
+        {
+            ButtonZulu.Enabled = false;
+            ButtonSave.Enabled = false;
+            ButtonCancel.Enabled = false;
+
+            if (Network.IsConnected && Network.IsValidATC)
+            {
+                ComboBoxAirport.Enabled = true;
+                buttonCreate.Enabled = true;
+            }
+            else
+            {
+                ComboBoxAirport.Enabled = false;
+                buttonCreate.Enabled = false;
+            }
+
+            ComboBoxLetter.Enabled = false;
+            ComboBoxTimecheck.Enabled = false;
+            LabelCode.Text = string.Empty;
+            buttonCreate.Visible = true;
+            buttonDelete.Visible = false;
+            buttonGetMetar.Enabled = false;
+            ButtonBroadcast.Enabled = false;
+            buttonNext.Enabled = false;
+            ComboBoxVoice.Enabled = false;
+            ComboBoxRate.Enabled = false;
+            ButtonListen.Enabled = false;
+            ButtonListen.BackColor = Color.FromName("Control");
+            ButtonListen.ForeColor = default;
+            ButtonBroadcast.BackColor = Color.FromName("Control");
+            ButtonBroadcast.ForeColor = default;
+
+            TextBox1.TextChanged -= TextBox_TextChanged;
+            TextBox2.TextChanged -= TextBox_TextChanged;
+            TextBox3.TextChanged -= TextBox_TextChanged;
+            TextBox4.TextChanged -= TextBox_TextChanged;
+            TextBox5.TextChanged -= TextBox_TextChanged;
+            TextBox6.TextChanged -= TextBox_TextChanged;
+            TextBox7.TextChanged -= TextBox_TextChanged;
+            TextBox8.TextChanged -= TextBox_TextChanged;
+            TextBox9.TextChanged -= TextBox_TextChanged;
+            TextBox10.TextChanged -= TextBox_TextChanged;
+            TextBox11.TextChanged -= TextBox_TextChanged;
+            TextBox12.TextChanged -= TextBox_TextChanged;
+
+            TextBoxZulu.Text = string.Empty;
+            TextBox1.Text = string.Empty;
+            TextBox2.Text = string.Empty;
+            TextBox3.Text = string.Empty;
+            TextBox4.Text = string.Empty;
+            TextBox5.Text = string.Empty;
+            TextBox6.Text = string.Empty;
+            TextBox7.Text = string.Empty;
+            TextBox8.Text = string.Empty;
+            TextBox9.Text = string.Empty;
+            TextBox10.Text = string.Empty;
+            TextBox11.Text = string.Empty;
+            TextBox12.Text = string.Empty;
+
+            TextBoxZulu.Enabled = false;
+            TextBoxZulu.Visible = false;
+            ComboBoxZuluFrequency.Visible = false;
+            TextBox1.Enabled = false;
+            TextBox2.Enabled = false;
+            TextBox3.Enabled = false;
+            TextBox4.Enabled = false;
+            TextBox5.Enabled = false;
+            TextBox6.Enabled = false;
+            TextBox7.Enabled = false;
+            TextBox8.Enabled = false;
+            TextBox9.Enabled = false;
+            TextBox10.Enabled = false;
+            TextBox11.Enabled = false;
+            TextBox12.Enabled = false;
+
+            Label1.BackColor = default;
+            Label2.BackColor = default;
+            Label3.BackColor = default;
+            Label4.BackColor = default;
+            Label5.BackColor = default;
+            Label6.BackColor = default;
+            Label7.BackColor = default;
+            Label8.BackColor = default;
+            Label9.BackColor = default;
+            Label10.BackColor = default;
+            Label11.BackColor = default;
+            Label12.BackColor = default;
+        }
+
+        private void RefreshFrom_NoATIS()
+        {
+            ComboBoxAirport.Enabled = true;
+            buttonCreate.Enabled = true;
+            buttonDelete.Visible = false;
+            buttonCreate.Visible = true;
+
+            ButtonZulu.Enabled = false;
+            ButtonSave.Enabled = false;
+            ButtonCancel.Enabled = false;
+            ComboBoxLetter.Enabled = false;
+            ComboBoxTimecheck.Enabled = false;
+            LabelCode.Text = string.Empty;
+            buttonGetMetar.Enabled = false;
+            ButtonBroadcast.Enabled = false;
+            buttonNext.Enabled = false;
+            ComboBoxVoice.Enabled = false;
+            ButtonListen.Enabled = false;
+            ButtonListen.BackColor = Color.FromName("Control");
+            ButtonListen.ForeColor = default;
+            ButtonBroadcast.BackColor = Color.FromName("Control");
+            ButtonBroadcast.ForeColor = default;
+            ButtonZulu.BackColor = Color.FromName("Control");
+            ButtonZulu.ForeColor = default;
+
+            TextBox1.TextChanged -= TextBox_TextChanged;
+            TextBox2.TextChanged -= TextBox_TextChanged;
+            TextBox3.TextChanged -= TextBox_TextChanged;
+            TextBox4.TextChanged -= TextBox_TextChanged;
+            TextBox5.TextChanged -= TextBox_TextChanged;
+            TextBox6.TextChanged -= TextBox_TextChanged;
+            TextBox7.TextChanged -= TextBox_TextChanged;
+            TextBox8.TextChanged -= TextBox_TextChanged;
+            TextBox9.TextChanged -= TextBox_TextChanged;
+            TextBox10.TextChanged -= TextBox_TextChanged;
+            TextBox11.TextChanged -= TextBox_TextChanged;
+            TextBox12.TextChanged -= TextBox_TextChanged;
+
+            TextBox1.Text = string.Empty;
+            TextBox2.Text = string.Empty;
+            TextBox3.Text = string.Empty;
+            TextBox4.Text = string.Empty;
+            TextBox5.Text = string.Empty;
+            TextBox6.Text = string.Empty;
+            TextBox7.Text = string.Empty;
+            TextBox8.Text = string.Empty;
+            TextBox9.Text = string.Empty;
+            TextBox10.Text = string.Empty;
+            TextBox11.Text = string.Empty;
+            TextBox12.Text = string.Empty;
+
+            TextBoxZulu.Enabled = false;
+            TextBox1.Enabled = false;
+            TextBox2.Enabled = false;
+            TextBox3.Enabled = false;
+            TextBox4.Enabled = false;
+            TextBox5.Enabled = false;
+            TextBox6.Enabled = false;
+            TextBox7.Enabled = false;
+            TextBox8.Enabled = false;
+            TextBox9.Enabled = false;
+            TextBox10.Enabled = false;
+            TextBox11.Enabled = false;
+            TextBox12.Enabled = false;
+
+            RefreshFrom_ResetColours();
+        }
+
+        private void RefreshForm_EnableTextBoxs()
+        {
+            TextBox1.Enabled = true;
+            TextBox2.Enabled = true;
+            TextBox3.Enabled = true;
+            TextBox4.Enabled = true;
+            TextBox5.Enabled = true;
+            TextBox6.Enabled = true;
+            TextBox7.Enabled = true;
+            TextBox8.Enabled = true;
+            TextBox9.Enabled = true;
+            TextBox10.Enabled = true;
+            TextBox11.Enabled = true;
+            TextBox12.Enabled = true;
+
+            TextBox1.TextChanged += TextBox_TextChanged;
+            TextBox2.TextChanged += TextBox_TextChanged;
+            TextBox3.TextChanged += TextBox_TextChanged;
+            TextBox4.TextChanged += TextBox_TextChanged;
+            TextBox5.TextChanged += TextBox_TextChanged;
+            TextBox6.TextChanged += TextBox_TextChanged;
+            TextBox7.TextChanged += TextBox_TextChanged;
+            TextBox8.TextChanged += TextBox_TextChanged;
+            TextBox9.TextChanged += TextBox_TextChanged;
+            TextBox10.TextChanged += TextBox_TextChanged;
+            TextBox11.TextChanged += TextBox_TextChanged;
+            TextBox12.TextChanged += TextBox_TextChanged;
+        }
+
+        private void RefreshForm_DisableTextBoxs()
+        {
+            TextBox1.TextChanged -= TextBox_TextChanged;
+            TextBox2.TextChanged -= TextBox_TextChanged;
+            TextBox3.TextChanged -= TextBox_TextChanged;
+            TextBox4.TextChanged -= TextBox_TextChanged;
+            TextBox5.TextChanged -= TextBox_TextChanged;
+            TextBox6.TextChanged -= TextBox_TextChanged;
+            TextBox7.TextChanged -= TextBox_TextChanged;
+            TextBox8.TextChanged -= TextBox_TextChanged;
+            TextBox9.TextChanged -= TextBox_TextChanged;
+            TextBox10.TextChanged -= TextBox_TextChanged;
+            TextBox11.TextChanged -= TextBox_TextChanged;
+            TextBox12.TextChanged -= TextBox_TextChanged;
+        }
+
+        private void RefreshForm_WithATIS()
+        {
+            ButtonZulu.Enabled = true;
+            ComboBoxAirport.Enabled = false;
+            ComboBoxLetter.Enabled = true;
+            ComboBoxTimecheck.Enabled = true;
+            buttonCreate.Visible = false;
+            buttonDelete.Visible = true;
+            buttonGetMetar.Enabled = true;
+            buttonNext.Enabled = true;
+            ComboBoxVoice.Enabled = true;
+            ComboBoxRate.Enabled = true;
+
+            RefreshForm_DisableTextBoxs();
+
+            foreach (var line in Control.Lines)
+            {
+                switch (line.Number)
+                {
+                    case 1:
+                        TextBox1.Text = line.Value;
+                        break;
+                    case 2:
+                        TextBox2.Text = line.Value;
+                        break;
+                    case 3:
+                        TextBox3.Text = line.Value;
+                        break;
+                    case 4:
+                        TextBox4.Text = line.Value;
+                        break;
+                    case 5:
+                        TextBox5.Text = line.Value;
+                        break;
+                    case 6:
+                        TextBox6.Text = line.Value;
+                        break;
+                    case 7:
+                        TextBox7.Text = line.Value;
+                        break;
+                    case 8:
+                        TextBox8.Text = line.Value;
+                        break;
+                    case 9:
+                        TextBox9.Text = line.Value;
+                        break;
+                    case 10:
+                        TextBox10.Text = line.Value;
+                        break;
+                    case 11:
+                        TextBox11.Text = line.Value;
+                        break;
+                    case 12:
+                        TextBox12.Text = line.Value;
+                        break;
+                    default:
+                        break;
                 }
             }
 
+            RefreshForm_EnableTextBoxs();
+
+            LabelCode.Text = Control.ICAO;
+
+            LabelMETAR.Text = Control.METARRaw;
+
+            foreach (var line in Control.Lines)
+            {
+                var suggestedLine = Control.SuggestedLines.FirstOrDefault(x => x.Name == line.Name);
+
+                var saveLine = Saves.FirstOrDefault(x => x.Key == line.Name);
+
+                switch (line.Number)
+                {
+                    case 1:
+                        if (!string.IsNullOrWhiteSpace(saveLine.Value)) TextBox1.Text = saveLine.Value;
+                        else if (suggestedLine != null)
+                        {
+                            TextBox1.Text = suggestedLine.Value;
+                            Label1.BackColor = Color.Yellow;
+                        }
+                        else
+                        {
+                            Label1.BackColor = default;
+                        }
+                        break;
+                    case 2:
+                        if (!string.IsNullOrWhiteSpace(saveLine.Value)) TextBox2.Text = saveLine.Value;
+                        else if (suggestedLine != null)
+                        {
+                            TextBox2.Text = suggestedLine.Value;
+                            Label2.BackColor = Color.Yellow;
+                        }
+                        else
+                        {
+                            Label2.BackColor = default;
+                        }
+                        break;
+                    case 3:
+                        if (!string.IsNullOrWhiteSpace(saveLine.Value)) TextBox3.Text = saveLine.Value;
+                        else if (suggestedLine != null)
+                        {
+                            TextBox3.Text = suggestedLine.Value;
+                            Label3.BackColor = Color.Yellow;
+                        }
+                        else
+                        {
+                            Label3.BackColor = default;
+                        }
+                        break;
+                    case 4:
+                        if (!string.IsNullOrWhiteSpace(saveLine.Value)) TextBox4.Text = saveLine.Value;
+                        else if (suggestedLine != null)
+                        {
+                            TextBox4.Text = suggestedLine.Value;
+                            Label4.BackColor = Color.Yellow;
+                        }
+                        else
+                        {
+                            Label4.BackColor = default;
+                        }
+                        break;
+                    case 5:
+                        if (!string.IsNullOrWhiteSpace(saveLine.Value)) TextBox5.Text = saveLine.Value;
+                        else if (suggestedLine != null)
+                        {
+                            TextBox5.Text = suggestedLine.Value;
+                            Label5.BackColor = Color.Yellow;
+                        }
+                        else
+                        {
+                            Label5.BackColor = default;
+                        }
+                        break;
+                    case 6:
+                        if (!string.IsNullOrWhiteSpace(saveLine.Value)) TextBox6.Text = saveLine.Value;
+                        else if (suggestedLine != null)
+                        {
+                            TextBox6.Text = suggestedLine.Value;
+                            Label6.BackColor = Color.Yellow;
+                        }
+                        else
+                        {
+                            Label6.BackColor = default;
+                        }
+                        break;
+                    case 7:
+                        if (!string.IsNullOrWhiteSpace(saveLine.Value)) TextBox7.Text = saveLine.Value;
+                        else if (suggestedLine != null)
+                        {
+                            TextBox7.Text = suggestedLine.Value;
+                            Label7.BackColor = Color.Yellow;
+                        }
+                        else
+                        {
+                            Label7.BackColor = default;
+                        }
+                        break;
+                    case 8:
+                        if (!string.IsNullOrWhiteSpace(saveLine.Value)) TextBox8.Text = saveLine.Value;
+                        else if (suggestedLine != null)
+                        {
+                            TextBox8.Text = suggestedLine.Value;
+                            Label8.BackColor = Color.Yellow;
+                        }
+                        else
+                        {
+                            Label8.BackColor = default;
+                        }
+                        break;
+                    case 9:
+                        if (!string.IsNullOrWhiteSpace(saveLine.Value)) TextBox9.Text = saveLine.Value;
+                        else if (suggestedLine != null)
+                        {
+                            TextBox9.Text = suggestedLine.Value;
+                            Label9.BackColor = Color.Yellow;
+                        }
+                        else
+                        {
+                            Label9.BackColor = default;
+                        }
+                        break;
+                    case 10:
+                        if (!string.IsNullOrWhiteSpace(saveLine.Value)) TextBox10.Text = saveLine.Value;
+                        else if (suggestedLine != null)
+                        {
+                            TextBox10.Text = suggestedLine.Value;
+                            Label10.BackColor = Color.Yellow;
+                        }
+                        else
+                        {
+                            Label10.BackColor = default;
+                        }
+                        break;
+                    case 11:
+                        if (!string.IsNullOrWhiteSpace(saveLine.Value)) TextBox11.Text = saveLine.Value;
+                        else if (suggestedLine != null)
+                        {
+                            TextBox11.Text = suggestedLine.Value;
+                            Label11.BackColor = Color.Yellow;
+                        }
+                        else
+                        {
+                            Label11.BackColor = default;
+                        }
+                        break;
+                    case 12:
+                        if (!string.IsNullOrWhiteSpace(saveLine.Value)) TextBox12.Text = saveLine.Value;
+                        else if (suggestedLine != null)
+                        {
+                            TextBox12.Text = suggestedLine.Value;
+                            Label12.BackColor = Color.Yellow;
+                        }
+                        else
+                        {
+                            Label12.BackColor = default;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            if (Edits)
+            {
+                ButtonSave.Enabled = true;
+                ButtonCancel.Enabled = true;
+            }
+            else
+            {
+                ButtonSave.Enabled = false;
+                ButtonCancel.Enabled = false;
+            }
+
+            if (Control.CanListen)
+            {
+                ButtonListen.Enabled = true;
+                ButtonBroadcast.Enabled = true;
+            }
+            else
+            {
+                ButtonListen.Enabled = false;
+                ButtonBroadcast.Enabled = false;
+            }
+
+            if (Control.Listening)
+            {
+                ButtonListen.BackColor = Color.FromName("ControlDarkDark");
+                ButtonListen.ForeColor = Color.FromName("ControlLightLight");
+            }
+            else
+            {
+                ButtonListen.BackColor = Color.FromName("Control");
+                ButtonListen.ForeColor = default;
+            }
+
+            if (Control.Broadcasting)
+            {
+                ButtonBroadcast.BackColor = Color.FromName("ControlDarkDark");
+                ButtonBroadcast.ForeColor = Color.FromName("ControlLightLight");
+            }
+            else
+            {
+                ButtonBroadcast.BackColor = Color.FromName("Control");
+                ButtonBroadcast.ForeColor = default;
+            }
+        }
+
+        private void RefreshForm_ZuluATIS()
+        {
             if (Control.IsZulu && Network.IsConnected && Control?.ICAO != null)
             {
-                textBoxZulu.TextChanged += TextBox_TextChanged;
+                TextBoxZulu.TextChanged += TextBox_TextChanged;
+                TextBoxZulu.Enabled = true;
 
-                textBoxZulu.Visible = true;
-                comboBoxZuluFrequency.Visible = true;
-                labelFrequency.Visible = true;
-                buttonZulu.BackColor = Color.FromName("ControlDarkDark");
-                buttonZulu.ForeColor = Color.FromName("ControlLightLight");
-                textBoxAPCH.Visible = false;
-                textBoxRWY.Visible = false;
-                textBoxSFCCOND.Visible = false;
-                textBoxOPRINFO.Visible = false;
-                textBoxWIND.Visible = false;
-                textBoxVIS.Visible = false;
-                textBoxCLD.Visible = false;
-                textBoxWX.Visible = false;
-                textBoxTMP.Visible = false;
-                textBoxQNH.Visible = false;
-                textBoxSIGWX.Visible = false;
-                textBoxOFCW.Visible = false;
-                labelAPCH.Visible = false;
-                labelRWY.Visible = false;
-                labelSFCCOND.Visible = false;
-                labelOPRINFO.Visible = false;
-                labelWIND.Visible = false;
-                labelVIS.Visible = false;
-                labelCLD.Visible = false;
-                labelWX.Visible = false;
-                labelTMP.Visible = false;
-                labelQNH.Visible = false;
-                labelSIGWX.Visible = false;
-                labelOFCW.Visible = false;
+                TextBoxZulu.Visible = true;
+                ComboBoxZuluFrequency.Visible = true;
+                LabelFrequency.Visible = true;
+                ButtonZulu.BackColor = Color.FromName("ControlDarkDark");
+                ButtonZulu.ForeColor = Color.FromName("ControlLightLight");
+                TextBox1.Visible = false;
+                TextBox2.Visible = false;
+                TextBox3.Visible = false;
+                TextBox4.Visible = false;
+                TextBox5.Visible = false;
+                TextBox6.Visible = false;
+                TextBox7.Visible = false;
+                TextBox8.Visible = false;
+                TextBox9.Visible = false;
+                TextBox10.Visible = false;
+                TextBox11.Visible = false;
+                TextBox12.Visible = false;
+                Label1.Visible = false;
+                Label2.Visible = false;
+                Label3.Visible = false;
+                Label4.Visible = false;
+                Label5.Visible = false;
+                Label6.Visible = false;
+                Label7.Visible = false;
+                Label8.Visible = false;
+                Label9.Visible = false;
+                Label10.Visible = false;
+                Label11.Visible = false;
+                Label12.Visible = false;
                 labelTimeCheck.Visible = false;
             }
             else
             {
-                textBoxZulu.TextChanged -= TextBox_TextChanged;
+                TextBoxZulu.TextChanged -= TextBox_TextChanged;
+                TextBoxZulu.Enabled = false;
 
-                buttonZulu.BackColor = Color.FromName("Control");
-                buttonZulu.ForeColor = default;
-                textBoxZulu.Visible = false;
-                labelFrequency.Visible = false;
-                comboBoxZuluFrequency.Visible = false;
-                textBoxAPCH.Visible = true;
-                textBoxRWY.Visible = true;
-                textBoxSFCCOND.Visible = true;
-                textBoxOPRINFO.Visible = true;
-                textBoxWIND.Visible = true;
-                textBoxVIS.Visible = true;
-                textBoxCLD.Visible = true;
-                textBoxWX.Visible = true;
-                textBoxTMP.Visible = true;
-                textBoxQNH.Visible = true;
-                textBoxSIGWX.Visible = true;
-                textBoxOFCW.Visible = true;
-                labelAPCH.Visible = true;
-                labelRWY.Visible = true;
-                labelSFCCOND.Visible = true;
-                labelOPRINFO.Visible = true;
-                labelWIND.Visible = true;
-                labelVIS.Visible = true;
-                labelCLD.Visible = true;
-                labelWX.Visible = true;
-                labelTMP.Visible = true;
-                labelQNH.Visible = true;
-                labelSIGWX.Visible = true;
-                labelOFCW.Visible = true;
+                ButtonZulu.BackColor = Color.FromName("Control");
+                ButtonZulu.ForeColor = default;
+                TextBoxZulu.Visible = false;
+                LabelFrequency.Visible = false;
+                ComboBoxZuluFrequency.Visible = false;
+                TextBox1.Visible = true;
+                TextBox2.Visible = true;
+                TextBox3.Visible = true;
+                TextBox4.Visible = true;
+                TextBox5.Visible = true;
+                TextBox6.Visible = true;
+                TextBox7.Visible = true;
+                TextBox8.Visible = true;
+                TextBox9.Visible = true;
+                TextBox10.Visible = true;
+                TextBox11.Visible = true;
+                TextBox12.Visible = true;
+                Label1.Visible = true;
+                Label2.Visible = true;
+                Label3.Visible = true;
+                Label4.Visible = true;
+                Label5.Visible = true;
+                Label6.Visible = true;
+                Label7.Visible = true;
+                Label8.Visible = true;
+                Label9.Visible = true;
+                Label10.Visible = true;
+                Label11.Visible = true;
+                Label12.Visible = true;
                 labelTimeCheck.Visible = true;
             }
+        }
 
-            if (Network.IsConnected && Control?.ICAO == null)
-            {
-                comboBoxAirport.Enabled = true;
-                buttonCreate.Enabled = true;
-                buttonDelete.Visible = false;
-                buttonCreate.Visible = true;
-
-                buttonZulu.Enabled = false;
-                buttonSave.Enabled = false;
-                buttonCancel.Enabled = false;
-                comboBoxLetter.Enabled = false;
-                comboBoxTimecheck.Enabled = false;
-                labelCode.Text = string.Empty;
-                buttonGetMetar.Enabled = false;
-                buttonBroadcast.Enabled = false;
-                buttonNext.Enabled = false;
-                comboBoxVoice.Enabled = false;
-                buttonListen.Enabled = false;
-                buttonListen.BackColor = Color.FromName("Control");
-                buttonListen.ForeColor = default;
-                buttonBroadcast.BackColor = Color.FromName("Control");
-                buttonBroadcast.ForeColor = default;
-                buttonZulu.BackColor = Color.FromName("Control");
-                buttonZulu.ForeColor = default;
-
-                textBoxAPCH.TextChanged -= TextBox_TextChanged;
-                textBoxRWY.TextChanged -= TextBox_TextChanged;
-                textBoxSFCCOND.TextChanged -= TextBox_TextChanged;
-                textBoxOPRINFO.TextChanged -= TextBox_TextChanged;
-                textBoxWIND.TextChanged -= TextBox_TextChanged;
-                textBoxVIS.TextChanged -= TextBox_TextChanged;
-                textBoxCLD.TextChanged -= TextBox_TextChanged;
-                textBoxWX.TextChanged -= TextBox_TextChanged;
-                textBoxTMP.TextChanged -= TextBox_TextChanged;
-                textBoxQNH.TextChanged -= TextBox_TextChanged;
-                textBoxSIGWX.TextChanged -= TextBox_TextChanged;
-                textBoxOFCW.TextChanged -= TextBox_TextChanged;
-
-                textBoxAPCH.Text = string.Empty;
-                textBoxRWY.Text = string.Empty;
-                textBoxSFCCOND.Text = string.Empty;
-                textBoxOPRINFO.Text = string.Empty;
-                textBoxWIND.Text = string.Empty;
-                textBoxVIS.Text = string.Empty;
-                textBoxCLD.Text = string.Empty;
-                textBoxWX.Text = string.Empty;
-                textBoxTMP.Text = string.Empty;
-                textBoxQNH.Text = string.Empty;
-                textBoxSIGWX.Text = string.Empty;
-                textBoxOFCW.Text = string.Empty;
-
-                textBoxZulu.Enabled = false;
-                textBoxAPCH.Enabled = false;
-                textBoxRWY.Enabled = false;
-                textBoxSFCCOND.Enabled = false;
-                textBoxOPRINFO.Enabled = false;
-                textBoxWIND.Enabled = false;
-                textBoxVIS.Enabled = false;
-                textBoxCLD.Enabled = false;
-                textBoxWX.Enabled = false;
-                textBoxTMP.Enabled = false;
-                textBoxQNH.Enabled = false;
-                textBoxSIGWX.Enabled = false;
-                textBoxOFCW.Enabled = false;
-
-                labelWIND.BackColor = default;
-                labelVIS.BackColor = default;
-                labelCLD.BackColor = default;
-                labelWX.BackColor = default;
-                labelQNH.BackColor = default;
-                labelTMP.BackColor = default;
-            }
-            else if (Network.IsConnected && Control?.ICAO != null)
-            {
-                buttonZulu.Enabled = true;
-                comboBoxAirport.Enabled = false;
-                comboBoxLetter.Enabled = true;
-                comboBoxTimecheck.Enabled = true;
-                buttonCreate.Visible = false;
-                buttonDelete.Visible = true;
-                buttonGetMetar.Enabled = true;
-                buttonNext.Enabled = true;
-                comboBoxVoice.Enabled = true;
-                comboBoxRate.Enabled = true;
-
-                textBoxAPCH.TextChanged -= TextBox_TextChanged;
-                textBoxRWY.TextChanged -= TextBox_TextChanged;
-                textBoxSFCCOND.TextChanged -= TextBox_TextChanged;
-                textBoxOPRINFO.TextChanged -= TextBox_TextChanged;
-                textBoxWIND.TextChanged -= TextBox_TextChanged;
-                textBoxVIS.TextChanged -= TextBox_TextChanged;
-                textBoxCLD.TextChanged -= TextBox_TextChanged;
-                textBoxWX.TextChanged -= TextBox_TextChanged;
-                textBoxTMP.TextChanged -= TextBox_TextChanged;
-                textBoxQNH.TextChanged -= TextBox_TextChanged;
-                textBoxSIGWX.TextChanged -= TextBox_TextChanged;
-                textBoxOFCW.TextChanged -= TextBox_TextChanged;
-
-                foreach (var line in Control.Lines)
-                {
-                    switch (line.Name)
-                    {
-                        case "APCH":
-                            textBoxAPCH.Text = line.Value;
-                            break;
-                        case "RWY":
-                            textBoxRWY.Text = line.Value;
-                            break;
-                        case "SFC COND":
-                            textBoxSFCCOND.Text = line.Value;
-                            break;
-                        case "OPR INFO":
-                            textBoxOPRINFO.Text = line.Value;
-                            break;
-                        case "WIND":
-                            textBoxWIND.Text = line.Value;
-                            break;
-                        case "VIS":
-                            textBoxVIS.Text = line.Value;
-                            break;
-                        case "CLD":
-                            textBoxCLD.Text = line.Value;
-                            break;
-                        case "WX":
-                            textBoxWX.Text = line.Value;
-                            break;
-                        case "QNH":
-                            textBoxQNH.Text = line.Value;
-                            break;
-                        case "TMP":
-                            textBoxTMP.Text = line.Value;
-                            break;
-                        case "SIGWX":
-                            textBoxSIGWX.Text = line.Value;
-                            break;
-                        case "OFCW_NOTIFY":
-                            textBoxOFCW.Text = line.Value;
-                            break;
-                        default:
-                            break;
-                    }
-                }
-
-                textBoxAPCH.TextChanged += TextBox_TextChanged;
-                textBoxRWY.TextChanged += TextBox_TextChanged;
-                textBoxSFCCOND.TextChanged += TextBox_TextChanged;
-                textBoxOPRINFO.TextChanged += TextBox_TextChanged;
-                textBoxWIND.TextChanged += TextBox_TextChanged;
-                textBoxVIS.TextChanged += TextBox_TextChanged;
-                textBoxCLD.TextChanged += TextBox_TextChanged;
-                textBoxWX.TextChanged += TextBox_TextChanged;
-                textBoxTMP.TextChanged += TextBox_TextChanged;
-                textBoxQNH.TextChanged += TextBox_TextChanged;
-                textBoxSIGWX.TextChanged += TextBox_TextChanged;
-                textBoxOFCW.TextChanged += TextBox_TextChanged;
-
-                textBoxZulu.Enabled = true;
-                textBoxAPCH.Enabled = true;
-                textBoxRWY.Enabled = true;
-                textBoxSFCCOND.Enabled = true;
-                textBoxOPRINFO.Enabled = true;
-                textBoxWIND.Enabled = true;
-                textBoxVIS.Enabled = true;
-                textBoxCLD.Enabled = true;
-                textBoxWX.Enabled = true;
-                textBoxTMP.Enabled = true;
-                textBoxQNH.Enabled = true;
-                textBoxSIGWX.Enabled = true;
-                textBoxOFCW.Enabled = true;
-
-                labelCode.Text = Control.ICAO;
-
-                labelMETAR.Text = Control.METARRaw;
-
-                foreach (var line in Control.Lines)
-                {
-                    var suggestedLine = Control.SuggestedLines.FirstOrDefault(x => x.Name == line.Name);
-
-                    var saveLine = Saves.FirstOrDefault(x => x.Key == line.Name);
-
-                    switch (line.Name)
-                    {
-                        case "APCH":
-                            if (!string.IsNullOrWhiteSpace(saveLine.Value)) textBoxAPCH.Text = saveLine.Value;
-                            else if (suggestedLine != null) textBoxAPCH.Text = suggestedLine.Value;
-                            break;
-                        case "RWY":
-                            if (!string.IsNullOrWhiteSpace(saveLine.Value)) textBoxRWY.Text = saveLine.Value;
-                            else if (suggestedLine != null) textBoxRWY.Text = suggestedLine.Value;
-                            break;
-                        case "SFC COND":
-                            if (!string.IsNullOrWhiteSpace(saveLine.Value)) textBoxSFCCOND.Text = saveLine.Value;
-                            else if (suggestedLine != null) textBoxSFCCOND.Text = suggestedLine.Value;
-                            break;
-                        case "OPR INFO":
-                            if (!string.IsNullOrWhiteSpace(saveLine.Value)) textBoxOPRINFO.Text = saveLine.Value;
-                            else if (suggestedLine != null) textBoxOPRINFO.Text = suggestedLine.Value;
-                            break;
-                        case "WIND":
-                            if (!string.IsNullOrWhiteSpace(saveLine.Value)) textBoxWIND.Text = saveLine.Value;
-                            else if (suggestedLine != null)
-                            {
-                                textBoxWIND.Text = suggestedLine.Value;
-                                labelWIND.BackColor = Color.Yellow;
-                            }
-                            else
-                            {
-                                labelWIND.BackColor = default;
-                            }
-                            break;
-                        case "VIS":
-                            if (!string.IsNullOrWhiteSpace(saveLine.Value)) textBoxVIS.Text = saveLine.Value;
-                            else if (suggestedLine != null)
-                            {
-                                textBoxVIS.Text = suggestedLine.Value;
-                                labelVIS.BackColor = Color.Yellow;
-                            }
-                            else
-                            {
-                                labelVIS.BackColor = default;
-                            }
-                            break;
-                        case "CLD":
-                            if (!string.IsNullOrWhiteSpace(saveLine.Value)) textBoxCLD.Text = saveLine.Value;
-                            else if (suggestedLine != null)
-                            {
-                                textBoxCLD.Text = suggestedLine.Value;
-                                labelCLD.BackColor = Color.Yellow;
-                            }
-                            else
-                            {
-                                labelCLD.BackColor = default;
-                            }
-                            break;
-                        case "WX":
-                            if (!string.IsNullOrWhiteSpace(saveLine.Value)) textBoxWX.Text = saveLine.Value;
-                            else if (suggestedLine != null)
-                            {
-                                textBoxWX.Text = suggestedLine.Value;
-                                labelWX.BackColor = Color.Yellow;
-                            }
-                            else
-                            {
-                                labelWX.BackColor = default;
-                            }
-                            break;
-                        case "QNH":
-                            if (!string.IsNullOrWhiteSpace(saveLine.Value)) textBoxQNH.Text = saveLine.Value;
-                            else if (suggestedLine != null)
-                            {
-                                textBoxQNH.Text = suggestedLine.Value;
-                                labelQNH.BackColor = Color.Yellow;
-                            }
-                            else
-                            {
-                                labelQNH.BackColor = default;
-                            }
-                            break;
-                        case "TMP":
-                            if (!string.IsNullOrWhiteSpace(saveLine.Value)) textBoxTMP.Text = saveLine.Value;
-                            else if (suggestedLine != null)
-                            {
-                                textBoxTMP.Text = suggestedLine.Value;
-                                labelTMP.BackColor = Color.Yellow;
-                            }
-                            else
-                            {
-                                labelTMP.BackColor = default;
-                            }
-                            break;
-                        case "SIGWX":
-                            if (!string.IsNullOrWhiteSpace(saveLine.Value)) textBoxSIGWX.Text = saveLine.Value;
-                            else if (suggestedLine != null) textBoxSIGWX.Text = suggestedLine.Value;
-                            break;
-                        case "OFCW_NOTIFY":
-                            if (!string.IsNullOrWhiteSpace(saveLine.Value)) textBoxOFCW.Text = saveLine.Value;
-                            else if (suggestedLine != null) textBoxOFCW.Text = suggestedLine.Value;
-                            break;
-                        default:
-                            break;
-                    }
-                }
-
-                if (Edits)
-                {
-                    buttonSave.Enabled = true;
-                    buttonCancel.Enabled = true;
-                }
-                else
-                {
-                    buttonSave.Enabled = false;
-                    buttonCancel.Enabled = false;
-                }
-
-                if (Control.CanListen)
-                {
-                    buttonListen.Enabled = true;
-                    buttonBroadcast.Enabled = true;
-                }
-                else
-                {
-                    buttonListen.Enabled = false;
-                    buttonBroadcast.Enabled = false;
-                }
-
-                if (Control.Listening)
-                {
-                    buttonListen.BackColor = Color.FromName("ControlDarkDark");
-                    buttonListen.ForeColor = Color.FromName("ControlLightLight");
-                }
-                else
-                {
-                    buttonListen.BackColor = Color.FromName("Control");
-                    buttonListen.ForeColor = default;
-                }
-
-                if (Control.Broadcasting)
-                {
-                    buttonBroadcast.BackColor = Color.FromName("ControlDarkDark");
-                    buttonBroadcast.ForeColor = Color.FromName("ControlLightLight");
-                }
-                else
-                {
-                    buttonBroadcast.BackColor = Color.FromName("Control");
-                    buttonBroadcast.ForeColor = default;
-                }
-            }
-            else
-            {
-                buttonZulu.Enabled = false;
-                buttonSave.Enabled = false;
-                buttonCancel.Enabled = false;
-
-                if (Network.IsConnected && Network.IsValidATC)
-                {
-                    comboBoxAirport.Enabled = true;
-                    buttonCreate.Enabled = true;
-                }
-                else
-                {
-                    comboBoxAirport.Enabled = false;
-                    buttonCreate.Enabled = false;
-                }
-
-                comboBoxLetter.Enabled = false;
-                comboBoxTimecheck.Enabled = false;
-                labelCode.Text = string.Empty;
-                buttonCreate.Visible = true;
-                buttonDelete.Visible = false;
-                buttonGetMetar.Enabled = false;
-                buttonBroadcast.Enabled = false;
-                buttonNext.Enabled = false;
-                comboBoxVoice.Enabled = false;
-                comboBoxRate.Enabled = false;
-                buttonListen.Enabled = false;
-                buttonListen.BackColor = Color.FromName("Control");
-                buttonListen.ForeColor = default;
-                buttonBroadcast.BackColor = Color.FromName("Control");
-                buttonBroadcast.ForeColor = default;
-
-                textBoxAPCH.TextChanged -= TextBox_TextChanged;
-                textBoxRWY.TextChanged -= TextBox_TextChanged;
-                textBoxSFCCOND.TextChanged -= TextBox_TextChanged;
-                textBoxOPRINFO.TextChanged -= TextBox_TextChanged;
-                textBoxWIND.TextChanged -= TextBox_TextChanged;
-                textBoxVIS.TextChanged -= TextBox_TextChanged;
-                textBoxCLD.TextChanged -= TextBox_TextChanged;
-                textBoxWX.TextChanged -= TextBox_TextChanged;
-                textBoxTMP.TextChanged -= TextBox_TextChanged;
-                textBoxQNH.TextChanged -= TextBox_TextChanged;
-                textBoxSIGWX.TextChanged -= TextBox_TextChanged;
-                textBoxOFCW.TextChanged -= TextBox_TextChanged;
-
-                textBoxZulu.Text = string.Empty;
-                textBoxAPCH.Text = string.Empty;
-                textBoxRWY.Text = string.Empty;
-                textBoxSFCCOND.Text = string.Empty;
-                textBoxOPRINFO.Text = string.Empty;
-                textBoxWIND.Text = string.Empty;
-                textBoxVIS.Text = string.Empty;
-                textBoxCLD.Text = string.Empty;
-                textBoxWX.Text = string.Empty;
-                textBoxTMP.Text = string.Empty;
-                textBoxQNH.Text = string.Empty;
-                textBoxSIGWX.Text = string.Empty;
-                textBoxOFCW.Text = string.Empty;
-
-                textBoxZulu.Enabled = false;
-                textBoxZulu.Visible = false;
-                comboBoxZuluFrequency.Visible = false;
-                textBoxAPCH.Enabled = false;
-                textBoxRWY.Enabled = false;
-                textBoxSFCCOND.Enabled = false;
-                textBoxOPRINFO.Enabled = false;
-                textBoxWIND.Enabled = false;
-                textBoxVIS.Enabled = false;
-                textBoxCLD.Enabled = false;
-                textBoxWX.Enabled = false;
-                textBoxTMP.Enabled = false;
-                textBoxQNH.Enabled = false;
-                textBoxSIGWX.Enabled = false;
-                textBoxOFCW.Enabled = false;
-
-                labelWIND.BackColor = default;
-                labelVIS.BackColor = default;
-                labelCLD.BackColor = default;
-                labelWX.BackColor = default;
-                labelQNH.BackColor = default;
-                labelTMP.BackColor = default;
-            }
+        private void RefreshFrom_ResetColours()
+        {
+            Label1.BackColor = default;
+            Label2.BackColor = default;
+            Label3.BackColor = default;
+            Label4.BackColor = default;
+            Label5.BackColor = default;
+            Label6.BackColor = default;
+            Label7.BackColor = default;
+            Label8.BackColor = default;
+            Label9.BackColor = default;
+            Label10.BackColor = default;
+            Label11.BackColor = default;
+            Label12.BackColor = default;
         }
 
         private void GetMetar()
         {
-            labelMETAR.Text = "LOADING";
+            LabelMETAR.Text = "LOADING";
             
             MET.Instance.RequestProduct(new MET.ProductRequest(MET.ProductType.VATSIM_METAR, ICAO, true));
         }
@@ -810,7 +956,7 @@ namespace ATISPlugin
 
         private void ComboBoxAirport_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ICAO = comboBoxAirport.GetItemText(comboBoxAirport.SelectedItem);
+            ICAO = ComboBoxAirport.GetItemText(ComboBoxAirport.SelectedItem);
         }
 
         private async void ButtonDelete_Click(object sender, EventArgs e)
@@ -835,12 +981,7 @@ namespace ATISPlugin
 
             Control.SuggestedLines.Clear();
 
-            labelWIND.BackColor = default;
-            labelVIS.BackColor = default;
-            labelCLD.BackColor = default;
-            labelWX.BackColor = default;
-            labelQNH.BackColor = default;
-            labelTMP.BackColor = default;
+            RefreshFrom_ResetColours();
 
             RefreshForm();
         }
@@ -858,18 +999,14 @@ namespace ATISPlugin
         private async Task SaveATIS()
         {
             Control.InstalledVoice = Voice;
+
             Control.PromptRate = Rate;
 
             await Control.Save(ID, Saves, TimeCheck);
 
             Saves.Clear();
 
-            labelWIND.BackColor = default;
-            labelVIS.BackColor = default;
-            labelCLD.BackColor = default;
-            labelWX.BackColor = default;
-            labelQNH.BackColor = default;
-            labelTMP.BackColor = default;
+            RefreshFrom_ResetColours();
 
             RefreshForm();
         }
@@ -878,8 +1015,8 @@ namespace ATISPlugin
         {
             if (!Control.Broadcasting)
             {
-                buttonBroadcast.BackColor = Color.FromName("ControlDarkDark");
-                buttonBroadcast.ForeColor = Color.FromName("ControlLightLight");
+                ButtonBroadcast.BackColor = Color.FromName("ControlDarkDark");
+                ButtonBroadcast.ForeColor = Color.FromName("ControlLightLight");
 
                 if (Saves.Any()) await SaveATIS();
 
@@ -887,8 +1024,8 @@ namespace ATISPlugin
             }
             else
             {
-                buttonBroadcast.BackColor = default;
-                buttonBroadcast.ForeColor = default;
+                ButtonBroadcast.BackColor = default;
+                ButtonBroadcast.ForeColor = default;
 
                 await Control.BroadcastStop();
             }
@@ -900,69 +1037,66 @@ namespace ATISPlugin
         {
             if (!(sender is TextBox textBox)) return;
 
-            var lineName = string.Empty;
+            var lineNumber = 0;
 
             switch (textBox.Name)
             {
-                case "textBoxAPCH":
-                    lineName = "APCH";
+                case "TextBox1":
+                    lineNumber = 1;
                     break;
-                case "textBoxRWY":
-                    lineName = "RWY";
+                case "TextBox2":
+                    lineNumber = 2;
                     break;
-                case "textBoxSFCCOND":
-                    lineName = "SFC COND";
+                case "TextBox3":
+                    lineNumber = 3;
                     break;
-                case "textBoxOPRINFO":
-                    lineName = "OPR INFO";
+                case "TextBox4":
+                    lineNumber = 4;
                     break;
-                case "textBoxWIND":
-                    lineName = "WIND";
+                case "TextBox5":
+                    lineNumber = 5;
                     break;
-                case "textBoxVIS":
-                    lineName = "VIS";
+                case "TextBox6":
+                    lineNumber = 6;
                     break;
-                case "textBoxCLD":
-                    lineName = "CLD";
+                case "TextBox7":
+                    lineNumber = 7;
                     break;
-                case "textBoxWX":
-                    lineName = "WX";
+                case "TextBox8":
+                    lineNumber = 8;
                     break;
-                case "textBoxQNH":
-                    lineName = "QNH";
+                case "TextBox9":
+                    lineNumber = 9;
                     break;
-                case "textBoxTMP":
-                    lineName = "TMP";
+                case "TextBox10":
+                    lineNumber = 10;
                     break;
-                case "textBoxSIGWX":
-                    lineName = "SIGWX";
+                case "TextBox11":
+                    lineNumber = 11;
                     break;
-                case "textBoxOFCW":
-                    lineName = "OFCW_NOTIFY";
-                    break;
-                case "textBoxZulu":
-                    lineName = "ZULU";
+                case "TextBox12":
+                    lineNumber = 12;
                     break;
                 default:
                     break;
             }
 
-            if (lineName == string.Empty) return;
+            if (lineNumber == 0) return;
 
-            var existing = Control.Lines.FirstOrDefault(x => x.Name == lineName);
+            var line = Control.Lines.FirstOrDefault(x => x.Number == lineNumber);
 
-            if (existing == null) return;
+            if (line == null) return;
 
-            if (existing.Value == textBox.Text) return;
+            if (line.Value == textBox.Text) return;
 
-            var save = Saves.FirstOrDefault(x => x.Key == lineName);
+            var save = Saves.FirstOrDefault(x => x.Key == line.Name);
 
             if (save.Key != null)
             {
                 Saves.Remove(save.Key);
             }
 
-            Saves.Add(lineName, textBox.Text);
+            Saves.Add(line.Name, textBox.Text);
 
             if (Edits && ID == Control.ID && !Control.IsZulu)
             {
@@ -1098,7 +1232,7 @@ namespace ATISPlugin
             {
                 Control.IsZulu = false;
 
-                textBoxZulu.Text = string.Empty;
+                TextBoxZulu.Text = string.Empty;
 
                 ZuluFrequency = string.Empty;
             }
@@ -1108,7 +1242,7 @@ namespace ATISPlugin
 
         private void ComboBoxZuluFrequency_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var zuluFrequency = (string)comboBoxZuluFrequency.SelectedItem;
+            var zuluFrequency = (string)ComboBoxZuluFrequency.SelectedItem;
 
             if (zuluFrequency == ZuluFrequency) return;
 
@@ -1142,7 +1276,7 @@ namespace ATISPlugin
 
             zuluLine.Value = atis;
 
-            textBoxZulu.Text = atis;
+            TextBoxZulu.Text = atis;
         }
     }
 }

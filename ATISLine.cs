@@ -2,6 +2,7 @@
 {
     public class ATISLine
     {
+        public int Number { get; set; }
         public string Name { get; set; }
         public string Type { get; set; } = "Edit";
         public bool NameSpoken { get; set; }
@@ -14,6 +15,7 @@
 
         public ATISLine(
           string name,
+          int number,
           string type = "Edit",
           bool nameSpoken = false,
           bool numbersGrouped = false,
@@ -21,6 +23,7 @@
           METARField field = METARField.None)
         {
             Name = name;
+            Number = number;
             Type = type;
             NameSpoken = nameSpoken;
             NumbersGrouped = numbersGrouped;

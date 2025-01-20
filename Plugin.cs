@@ -22,7 +22,7 @@ namespace ATISPlugin
         public string Name => "ATIS Editor";
         public static string DisplayName => "ATIS Editor";
 
-        public static readonly Version Version = new Version(2, 14);
+        public static readonly Version Version = new Version(3, 0);
         private static readonly string VersionUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Version.json";
 
         private static readonly string ZuluUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Zulu.json";
@@ -38,7 +38,13 @@ namespace ATISPlugin
 
         private static EditorWindow Editor;
 
-        public static string DatasetPath => Path.Combine(Helpers.GetFilesFolder(), "Profiles", "Australia");
+        private static string ProfileName()
+        {
+            if (Profile.Name.Contains("Australia")) return "Australia";
+            else if (Profile.Name.Contains("VATNZ")) return "New Zealand";
+            else return string.Empty;
+        }
+        public static string DatasetPath => Path.Combine(Helpers.GetFilesFolder(), "Profiles", ProfileName());
         public static ATIS ATISData { get; set; }
         public static Sectors Sectors { get; set; }
         public static Airspace Airspace { get; set; }
@@ -53,7 +59,10 @@ namespace ATISPlugin
 
         public Plugin()
         {
-            if (!Profile.Name.Contains("Australia")) return;
+            if (!Profile.Name.Contains("Australia") && !Profile.Name.Contains("VATNZ"))
+            {
+                return;
+            }
 
             vatsys.ATIS.Disable();
 

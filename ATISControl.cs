@@ -58,9 +58,17 @@ namespace ATISPlugin
 
         public ATISControl()
         {
+            int number = 1;
+
             foreach (var line in Plugin.ATISData.Editor)
             {
-                var atisLine = new ATISLine(line.name, line.InputType, line.NameIsSpoken, line.NumbersSpokenGrouped, line.value, METARField.None);
+                var atisLine = new ATISLine(line.name,
+                    number,
+                    line.InputType,
+                    line.NameIsSpoken,
+                    line.NumbersSpokenGrouped,
+                    line.value,
+                    METARField.None);
 
                 switch (atisLine.Name)
                 {
@@ -85,9 +93,11 @@ namespace ATISPlugin
                 }
 
                 Lines.Add(atisLine);
+
+                number++;
             }
 
-            Lines.Add(new ATISLine("ZULU"));
+            Lines.Add(new ATISLine("ZULU", number));
 
             LoopTimer = new Timer
             {
@@ -365,7 +375,7 @@ namespace ATISPlugin
 
                 if (updatedLine == currentLine.Value) continue;
 
-                var suggestLine = new ATISLine(currentLine.Name, currentLine.Type, currentLine.NameSpoken, currentLine.NumbersGrouped, updatedLine, currentLine.METARField);
+                var suggestLine = new ATISLine(currentLine.Name, 0, currentLine.Type, currentLine.NameSpoken, currentLine.NumbersGrouped, updatedLine, currentLine.METARField);
 
                 suggestedLines.Add(suggestLine);
             }
