@@ -114,8 +114,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Serialization" />
     <Reference Include="vatSys">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\vatSys\bin\vatSys.exe</HintPath>
-      <Private>false</Private>
+      <HintPath>..\..\..\vatSys\bin\vatSys.exe</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
