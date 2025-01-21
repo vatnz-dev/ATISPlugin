@@ -1,12 +1,12 @@
-﻿using System.Linq;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using System;
 
 namespace ATISPlugin
 {
     public class METAR
     {
-        public bool SPECI { get; set; }
+        public string ICAO { get; set; }
+        public DateTime ProductTime { get; set; } = DateTime.MaxValue;
         public string Wind { get; set; }
         public string Visibility { get; set; }
         public string Cloud { get; set; }
@@ -17,147 +17,158 @@ namespace ATISPlugin
 
         public METAR Process(string metar)
         {
-            if (metar.Length < 4)
-                return null;
-            string icao = "NONE";
-            //bool speci = false;
-            int startIndex = 0;
-            if (metar.Contains("METAR "))
-            {
-                startIndex = metar.IndexOf("METAR ") + 6;
-                if (metar.Length > startIndex + 5)
-                    icao = metar.Substring(startIndex, 4);
-            }
-            else if (metar.Contains("SPECI "))
-            {
-                //speci = true;
-                startIndex = metar.IndexOf("SPECI ") + 6;
-                if (metar.Length > startIndex + 5)
-                    icao = metar.Substring(startIndex, 4);
-            }
-            else
-                icao = metar.Substring(0, 4);
-            if (metar.Length < startIndex + 4)
-                return null;
-            string[] strArray1 = Regex.Replace(metar.Substring(startIndex + 4), "\\t|\\n|\\r", "").Split(' ');
-            
-            DateTime producttime = DateTime.MaxValue;
+            if (metar.Length < 4) return null;
 
-            for (int index = 0; index < strArray1.Length; ++index)
+            ICAO = metar.Substring(0, 4);
+
+            string[] components = Regex.Replace(metar.Substring(5), "\\t|\\n|\\r", "").Split(' ');
+
+            foreach (var item in components)
             {
-                string str1 = strArray1[index].Trim().ToUpperInvariant();
-                switch (str1)
+                if (item == "RMK") break;
+
+                if (item == "AUTO") continue;
+
+                if (item == "//" || item == "////" || item == "//////") continue;
+
+                // TIME
+                if (Regex.IsMatch(item, "^\\d{6}Z$"))
                 {
-                    case "RMK":
+                    ProductTime = new DateTime(1, 1, int.Parse(item.Substring(0, 2)), int.Parse(item.Substring(2, 2)), int.Parse(item.Substring(4, 2)), 0);
+                    continue;
+                }
+
+                // WIND
+                if (Regex.IsMatch(item, "^(\\d{3}|VRB)\\d{2}(KT|MPS|KPH)$") || Regex.IsMatch(item, "^(\\d{3}|VRB)\\d{2}G\\d{2,3}(KT|MPS|KPH)$"))
+                {
+                    var wind = item.Replace("KT", "").Replace("MPS", "").Replace("KPH", "");
+
+                    if (item == "00000")
+                    {
+                        Wind = "CALM";
+
                         continue;
-                    case "AUTO":
+                    }
+
+                    if (wind.EndsWith("01") || wind.EndsWith("02") || wind.EndsWith("03"))
+                    {
+                        Wind = "VRB";
+
                         continue;
-                    default:
-                        if (Regex.IsMatch(str1, "^\\d{6}Z$"))
-                            producttime = new DateTime(1, 1, int.Parse(str1.Substring(0, 2)), int.Parse(str1.Substring(2, 2)), int.Parse(str1.Substring(4, 2)), 0);
-                        if (Regex.IsMatch(str1, "^(\\d{3}|VRB)\\d{2}(KT|MPS|KPH)$") || Regex.IsMatch(str1, "^(\\d{3}|VRB)\\d{2}G\\d{2,3}(KT|MPS|KPH)$"))
-                        {
-                            str1 = str1.Replace("KT", "").Replace("MPS", "").Replace("KPH", "");
-                            if (str1 == "00000") Wind = "CALM";
-                            else if (str1.EndsWith("01") || str1.EndsWith("02")) Wind = "VRB";
-                            else
-                            {
-                                string str2 = (str1[2] != '1' ? Wind + str1.Substring(0, 3) : Wind + str1.Substring(0, 2) + "0") + "/";
-                                string source = str1.Substring(4);
-                                if (str1[3] != '0')
-                                    source = str1.Substring(3);
-                                if (source.Contains<char>('G'))
-                                {
-                                    string[] strArray2 = source.Split('G');
-                                    Wind = str2 + strArray2[0] + "-" + strArray2[1];
-                                }
-                                else
-                                    Wind = str2 + source;
-                            }
-                        }
-                        if (Wind != "CALM" && Regex.IsMatch(str1, "^\\d{3}V\\d{3}$"))
-                        {
-                            if (Wind != null)
-                            {
-                                string[] strArray3 = Wind.Split('/');
-                                string[] strArray4 = str1.Split('V');
-                                if (strArray3.Length == 2 && strArray4.Length == 2)
-                                    Wind = strArray4[0] + "-" + strArray4[1] + "/" + strArray3[1];
-                                else
-                                    Wind = Wind + " " + str1;
-                            }
-                            else
-                                Wind += str1;
-                        }
-                        if (str1 == "CAVOK" || Regex.IsMatch(str1, "^\\d{4}$"))
-                        {
-                            switch (str1)
-                            {
-                                case "CAVOK":
-                                    Weather = "CAVOK";
-                                    break;
-                                case "9999":
-                                    Visibility = "GT 10KM";
-                                    break;
-                                default:
-                                    try
-                                    {
-                                        int num = int.Parse(str1);
-                                        Visibility = num <= 5000 ? str1 + "M" : (num / 1000).ToString() + "KM";
-                                        break;
-                                    }
-                                    catch
-                                    {
-                                        break;
-                                    }
-                            }
-                        }
-                        if (Regex.IsMatch(str1, "^(\\d\\/\\d+|\\d{1,2})(KM|SM)$"))
-                            Visibility = str1;
-                        if (Regex.IsMatch(str1, "^(\\+|\\-){0,1}([A-Z]{2}){1,3}$"))
-                        {
-                            if (Weather != null)
-                                Weather += " ";
-                            Weather += str1;
-                        }
-                        if (Regex.IsMatch(str1, "^(FEW|SCT|BKN|OVC)\\d{3}(CB|TCU){0,1}$"))
-                        {
-                            try
-                            {
-                                if (int.Parse(str1.Substring(3, 3)) < 50)
-                                {
-                                    if (!str1.Contains("CB"))
-                                    {
-                                        if (!str1.Contains("TCU"))
-                                        {
-                                            if (Cloud != null)
-                                                Cloud += ", ";
-                                            Cloud += str1;
-                                        }
-                                    }
-                                }
-                            }
-                            catch
-                            {
-                            }
-                        }
-                        if (str1 == "NCD" && Visibility == "GT 10KM" && Weather == null)
-                        {
-                            Visibility = null;
-                            Weather = "CAVOK";
-                        }
-                        if (Regex.IsMatch(str1, "^M{0,1}\\d{2}\\/M{0,1}\\d{2}$"))
-                        {
-                            Temperature = str1[0] != '0' ? str1.Substring(0, 2) : str1.Substring(1, 1);
-                            DewPoint = str1[3] != '0' ? str1.Substring(3) : str1.Substring(4);
-                        }
-                        if (Regex.IsMatch(str1, "^(Q|A)\\d{4}$"))
-                        {
-                            QNH = str1.Substring(1).TrimStart('0');
-                        }
+                    }
+
+                    var direction = wind.Substring(0, 3);
+
+                    var speed = wind.Substring(3, 2);
+
+                    Wind = $"{direction}/{speed}";
+
+                    var gust = wind.Split('G');
+
+                    if (gust.Length > 1) Wind += $"-{gust[1]}";
+
+                    continue;
+                }
+
+                // VARIABLE WIND
+                if (Wind != "CALM" && Regex.IsMatch(item, "^\\d{3}V\\d{3}$"))
+                {
+                    if (Wind == null) continue;
+
+                    string[] wind = Wind.Split('/');
+
+                    string[] variable = item.Split('V');
+
+                    if (wind.Length == 2 && variable.Length == 2)
+                    {
+                        Wind = variable[0] + "-" + variable[1] + "/" + wind[1];
+                    }
+                    else
+                    {
+                        Wind = Wind + " " + item;
+                    }
+
+                    continue;
+                }
+
+                // WEATHER
+                if (Regex.IsMatch(item, "^(\\+|\\-){0,1}([A-Z]{2}){1,3}$"))
+                {
+                    if (Weather != null) Weather += " ";
+
+                    Weather += item;
+
+                    continue;
+                }
+
+                // VISIBILITY
+                if (Regex.IsMatch(item, "^(\\d\\/\\d+|\\d{1,2})(KM|SM)$"))
+                {
+                    Visibility = item;
+
+                    continue;
+                }
+
+                if (Regex.IsMatch(item, "^\\d{4}$"))
+                {
+                    if (item == "9999")
+                    {
+                        Visibility = "GT 10KM";
                         continue;
+                    }
+
+                    var visOk = int.TryParse(item, out int visibility);
+
+                    if (!visOk) continue;
+
+                    Visibility = visibility <= 5000 ? $"{visibility}M" : $"{visibility / 1000}KM";
+
+                    continue;
+                }
+
+                // CLOUD
+                var cloud = Regex.Match(item, "^(FEW|SCT|BKN|OVC)\\d{3}(CB|TCU){0,1}$");
+
+                if (cloud.Success)
+                {
+                    var levelOk = int.TryParse(item.Substring(3, 3), out int level);
+
+                    if (!levelOk) continue;
+
+                    if (level > 50) continue; // TODO: Should be or below MSA + add CB and TCU to ATIS voice.
+
+                    if (Cloud != null) Cloud += ", ";
+
+                    Cloud += item;
+
+                    continue;
+                }
+
+                // TEMP/ DEP
+                if (Regex.IsMatch(item, "^M{0,1}\\d{2}\\/M{0,1}\\d{2}$"))
+                {
+                    Temperature = item[0] != '0' ? item.Substring(0, 2) : item.Substring(1, 1);
+
+                    DewPoint = item[3] != '0' ? item.Substring(3) : item.Substring(4);
+
+                    continue;
+                }
+
+                // QNH
+                if (Regex.IsMatch(item, "^(Q|A)\\d{4}$"))
+                {
+                    QNH = item.Substring(1).TrimStart('0');
+
+                    continue;
                 }
             }
+
+            if (Cloud == null && (Visibility == "GT 10KM" || Visibility == null) && Weather == null)
+            {
+                Visibility = null;
+                Weather = "CAVOK";
+            }
+
             return this;
         }
 
