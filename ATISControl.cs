@@ -73,6 +73,7 @@ namespace ATISPlugin
                 switch (atisLine.Name)
                 {
                     case "WIND":
+                    case "SFC WIND":
                         atisLine.METARField = METARField.Wind;
                         break;
                     case "VIS":
