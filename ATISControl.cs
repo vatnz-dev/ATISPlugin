@@ -58,6 +58,25 @@ namespace ATISPlugin
 
         public ATISControl()
         {
+            setupATISLines();
+
+            LoopTimer = new Timer
+            {
+                AutoReset = false
+            };
+            LoopTimer.Elapsed += new ElapsedEventHandler(LoopTimer_Elapsed);
+
+            SpeechSynth = new SpeechSynthesizer()
+            {
+                Rate = 0
+            };
+            SpeechFormat = new SpeechAudioFormatInfo(WaveForm.SampleRate, AudioBitsPerSample.Sixteen, AudioChannel.Mono);
+
+            InstalledVoice = SpeechSynth.GetInstalledVoices().FirstOrDefault();
+        }
+
+        private void setupATISLines()
+        {
             int number = 1;
 
             foreach (var line in Plugin.ATISData.Editor)
@@ -99,20 +118,6 @@ namespace ATISPlugin
             }
 
             Lines.Add(new ATISLine("ZULU", number));
-
-            LoopTimer = new Timer
-            {
-                AutoReset = false
-            };
-            LoopTimer.Elapsed += new ElapsedEventHandler(LoopTimer_Elapsed);
-
-            SpeechSynth = new SpeechSynthesizer()
-            {
-                Rate = 0
-            };
-            SpeechFormat = new SpeechAudioFormatInfo(WaveForm.SampleRate, AudioBitsPerSample.Sixteen, AudioChannel.Mono);
-
-            InstalledVoice = SpeechSynth.GetInstalledVoices().FirstOrDefault();
         }
 
         public ATISControl(int number) : this()
@@ -198,6 +203,8 @@ namespace ATISPlugin
                 line.Value = null;
                 line.Changed = false;
             }
+
+            setupATISLines();
 
             SuggestedLines.Clear();
 
