@@ -107,6 +107,9 @@ namespace ATISPlugin
                     case "TMP":
                         atisLine.METARField = METARField.Temperature;
                         break;
+                    case "DP":
+                        atisLine.METARField = METARField.DewPoint;
+                        break;
                     case "QNH":
                         atisLine.METARField = METARField.QNH;
                         break;
