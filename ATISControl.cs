@@ -58,6 +58,25 @@ namespace ATISPlugin
 
         public ATISControl()
         {
+            setupATISLines();
+
+            LoopTimer = new Timer
+            {
+                AutoReset = false
+            };
+            LoopTimer.Elapsed += new ElapsedEventHandler(LoopTimer_Elapsed);
+
+            SpeechSynth = new SpeechSynthesizer()
+            {
+                Rate = 0
+            };
+            SpeechFormat = new SpeechAudioFormatInfo(WaveForm.SampleRate, AudioBitsPerSample.Sixteen, AudioChannel.Mono);
+
+            InstalledVoice = SpeechSynth.GetInstalledVoices().FirstOrDefault();
+        }
+
+        private void setupATISLines()
+        {
             int number = 1;
 
             foreach (var line in Plugin.ATISData.Editor)
@@ -73,6 +92,7 @@ namespace ATISPlugin
                 switch (atisLine.Name)
                 {
                     case "WIND":
+                    case "SFC WIND":
                         atisLine.METARField = METARField.Wind;
                         break;
                     case "VIS":
@@ -87,6 +107,9 @@ namespace ATISPlugin
                     case "TMP":
                         atisLine.METARField = METARField.Temperature;
                         break;
+                    case "DP":
+                        atisLine.METARField = METARField.DewPoint;
+                        break;
                     case "QNH":
                         atisLine.METARField = METARField.QNH;
                         break;
@@ -98,20 +121,6 @@ namespace ATISPlugin
             }
 
             Lines.Add(new ATISLine("ZULU", number));
-
-            LoopTimer = new Timer
-            {
-                AutoReset = false
-            };
-            LoopTimer.Elapsed += new ElapsedEventHandler(LoopTimer_Elapsed);
-
-            SpeechSynth = new SpeechSynthesizer()
-            {
-                Rate = 0
-            };
-            SpeechFormat = new SpeechAudioFormatInfo(WaveForm.SampleRate, AudioBitsPerSample.Sixteen, AudioChannel.Mono);
-
-            InstalledVoice = SpeechSynth.GetInstalledVoices().FirstOrDefault();
         }
 
         public ATISControl(int number) : this()
@@ -197,6 +206,8 @@ namespace ATISPlugin
                 line.Value = null;
                 line.Changed = false;
             }
+
+            setupATISLines();
 
             SuggestedLines.Clear();
 
