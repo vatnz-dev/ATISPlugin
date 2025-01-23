@@ -79,14 +79,31 @@ namespace ATISPlugin
             Change(1);
         }
 
-        private void LoadOptions()
+        private void LoadRunways()
         {
             ComboBoxRunway.Items.Clear();
 
-            for (int i = 1; i <= 36; i++)
+            var airport = Plugin.Airspace.Airports.FirstOrDefault(x => x.ICAO == ICAO);
+
+            if (airport != null)
             {
-                ComboBoxRunway.Items.Add($"RWY {i.ToString().PadLeft(2, '0')}");
+                foreach (var runway in airport.Runway.OrderBy(x => x.Name))
+                {
+                    ComboBoxRunway.Items.Add($"RWY {runway.Name.ToString().PadLeft(2, '0')}");
+                }
             }
+            else
+            {
+                for (int i = 1; i <= 36; i++)
+                {
+                    ComboBoxRunway.Items.Add($"RWY {i.ToString().PadLeft(2, '0')}");
+                }
+            }
+        }
+
+        private void LoadOptions()
+        {
+            LoadRunways();
 
             ComboBoxAirport.Items.Clear();
 
@@ -203,9 +220,11 @@ namespace ATISPlugin
 
             RefeshForm_TopButtons();
 
-            RefreshForm_ZuluATIS();
-
-            if (Network.IsConnected && Control?.ICAO == null)
+            if (Control.IsZulu)
+            {
+                RefreshForm_ZuluATIS();
+            }
+            else if (Network.IsConnected && Control?.ICAO == null)
             {
                 RefreshFrom_NoATIS();
             }
@@ -377,22 +396,22 @@ namespace ATISPlugin
             if (Network.IsConnected && Network.IsValidATC)
             {
                 ComboBoxAirport.Enabled = true;
-                buttonCreate.Enabled = true;
+                ButtonCreate.Enabled = true;
             }
             else
             {
                 ComboBoxAirport.Enabled = false;
-                buttonCreate.Enabled = false;
+                ButtonCreate.Enabled = false;
             }
 
             ComboBoxLetter.Enabled = false;
             ComboBoxTimecheck.Enabled = false;
             LabelCode.Text = string.Empty;
-            buttonCreate.Visible = true;
-            buttonDelete.Visible = false;
-            buttonGetMetar.Enabled = false;
+            ButtonCreate.Visible = true;
+            ButtonDelete.Visible = false;
+            ButtonGetMetar.Enabled = false;
             ButtonBroadcast.Enabled = false;
-            buttonNext.Enabled = false;
+            ButtonNext.Enabled = false;
             ComboBoxVoice.Enabled = false;
             ComboBoxRate.Enabled = false;
             ButtonListen.Enabled = false;
@@ -461,9 +480,9 @@ namespace ATISPlugin
         private void RefreshFrom_NoATIS()
         {
             ComboBoxAirport.Enabled = true;
-            buttonCreate.Enabled = true;
-            buttonDelete.Visible = false;
-            buttonCreate.Visible = true;
+            ButtonCreate.Enabled = true;
+            ButtonDelete.Visible = false;
+            ButtonCreate.Visible = true;
 
             ButtonZulu.Enabled = false;
             ButtonSave.Enabled = false;
@@ -471,9 +490,9 @@ namespace ATISPlugin
             ComboBoxLetter.Enabled = false;
             ComboBoxTimecheck.Enabled = false;
             LabelCode.Text = string.Empty;
-            buttonGetMetar.Enabled = false;
+            ButtonGetMetar.Enabled = false;
             ButtonBroadcast.Enabled = false;
-            buttonNext.Enabled = false;
+            ButtonNext.Enabled = false;
             ComboBoxVoice.Enabled = false;
             ButtonListen.Enabled = false;
             ButtonListen.BackColor = Color.FromName("Control");
@@ -577,12 +596,13 @@ namespace ATISPlugin
             ComboBoxAirport.Enabled = false;
             ComboBoxLetter.Enabled = true;
             ComboBoxTimecheck.Enabled = true;
-            buttonCreate.Visible = false;
-            buttonDelete.Visible = true;
-            buttonGetMetar.Enabled = true;
-            buttonNext.Enabled = true;
+            ButtonCreate.Visible = false;
+            ButtonDelete.Visible = true;
+            ButtonGetMetar.Enabled = true;
+            ButtonNext.Enabled = true;
             ComboBoxVoice.Enabled = true;
             ComboBoxRate.Enabled = true;
+            ComboBoxLetter.Enabled = true;
 
             RefreshForm_DisableTextBoxs();
 
@@ -841,12 +861,15 @@ namespace ATISPlugin
 
         private void RefreshForm_ZuluATIS()
         {
-            if (Control.IsZulu && Network.IsConnected && Control?.ICAO != null)
+            ComboBoxLetter.Enabled = false;
+            ButtonNext.Enabled = false;
+
+            if (Network.IsConnected && Control?.ICAO != null)
             {
                 TextBoxZulu.TextChanged += TextBox_TextChanged;
                 TextBoxZulu.Enabled = true;
-
                 TextBoxZulu.Visible = true;
+
                 ComboBoxZuluFrequency.Visible = true;
                 LabelFrequency.Visible = true;
                 ButtonZulu.BackColor = Color.FromName("ControlDarkDark");
@@ -881,10 +904,9 @@ namespace ATISPlugin
             {
                 TextBoxZulu.TextChanged -= TextBox_TextChanged;
                 TextBoxZulu.Enabled = false;
-
+                TextBoxZulu.Visible = false;
                 ButtonZulu.BackColor = Color.FromName("Control");
                 ButtonZulu.ForeColor = default;
-                TextBoxZulu.Visible = false;
                 LabelFrequency.Visible = false;
                 ComboBoxZuluFrequency.Visible = false;
                 TextBox1.Visible = true;
@@ -964,6 +986,8 @@ namespace ATISPlugin
             if (airport == null) return;
 
             await Control.Create(ICAO, frequency.Frequency.ToString(), airport.Position);
+
+            LoadRunways();
 
             GetMetar();
         }

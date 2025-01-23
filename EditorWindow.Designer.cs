@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.labelICAO = new System.Windows.Forms.Label();
-            this.buttonCreate = new System.Windows.Forms.Button();
+            this.ButtonCreate = new System.Windows.Forms.Button();
             this.ComboBoxAirport = new System.Windows.Forms.ComboBox();
             this.TextBox1 = new System.Windows.Forms.TextBox();
             this.TextBox2 = new System.Windows.Forms.TextBox();
@@ -58,18 +58,18 @@
             this.Label12 = new System.Windows.Forms.Label();
             this.labelTimeCheck = new System.Windows.Forms.Label();
             this.ComboBoxLetter = new System.Windows.Forms.ComboBox();
-            this.buttonNext = new System.Windows.Forms.Button();
+            this.ButtonNext = new System.Windows.Forms.Button();
             this.labelATIS = new System.Windows.Forms.Label();
             this.LabelCode = new System.Windows.Forms.Label();
             this.LabelMETAR = new System.Windows.Forms.Label();
             this.ButtonSave = new System.Windows.Forms.Button();
             this.ButtonCancel = new System.Windows.Forms.Button();
             this.ButtonListen = new System.Windows.Forms.Button();
-            this.buttonGetMetar = new System.Windows.Forms.Button();
+            this.ButtonGetMetar = new System.Windows.Forms.Button();
             this.ButtonBroadcast = new System.Windows.Forms.Button();
             this.ComboBoxVoice = new System.Windows.Forms.ComboBox();
             this.ComboBoxRate = new System.Windows.Forms.ComboBox();
-            this.buttonDelete = new System.Windows.Forms.Button();
+            this.ButtonDelete = new System.Windows.Forms.Button();
             this.labelVoice = new System.Windows.Forms.Label();
             this.ButtonATIS1 = new System.Windows.Forms.Button();
             this.ButtonATIS2 = new System.Windows.Forms.Button();
@@ -96,13 +96,13 @@
             // 
             // buttonCreate
             // 
-            this.buttonCreate.Location = new System.Drawing.Point(484, 58);
-            this.buttonCreate.Name = "buttonCreate";
-            this.buttonCreate.Size = new System.Drawing.Size(100, 28);
-            this.buttonCreate.TabIndex = 4;
-            this.buttonCreate.Text = "Create";
-            this.buttonCreate.UseVisualStyleBackColor = true;
-            this.buttonCreate.Click += new System.EventHandler(this.ButtonCreate_Click);
+            this.ButtonCreate.Location = new System.Drawing.Point(484, 58);
+            this.ButtonCreate.Name = "buttonCreate";
+            this.ButtonCreate.Size = new System.Drawing.Size(100, 28);
+            this.ButtonCreate.TabIndex = 4;
+            this.ButtonCreate.Text = "Create";
+            this.ButtonCreate.UseVisualStyleBackColor = true;
+            this.ButtonCreate.Click += new System.EventHandler(this.ButtonCreate_Click);
             // 
             // ComboBoxAirport
             // 
@@ -405,13 +405,13 @@
             // 
             // buttonNext
             // 
-            this.buttonNext.Location = new System.Drawing.Point(378, 195);
-            this.buttonNext.Name = "buttonNext";
-            this.buttonNext.Size = new System.Drawing.Size(100, 28);
-            this.buttonNext.TabIndex = 34;
-            this.buttonNext.Text = "Next";
-            this.buttonNext.UseVisualStyleBackColor = true;
-            this.buttonNext.Click += new System.EventHandler(this.ButtonNext_Click);
+            this.ButtonNext.Location = new System.Drawing.Point(378, 195);
+            this.ButtonNext.Name = "buttonNext";
+            this.ButtonNext.Size = new System.Drawing.Size(100, 28);
+            this.ButtonNext.TabIndex = 34;
+            this.ButtonNext.Text = "Next";
+            this.ButtonNext.UseVisualStyleBackColor = true;
+            this.ButtonNext.Click += new System.EventHandler(this.ButtonNext_Click);
             // 
             // labelATIS
             // 
@@ -480,14 +480,14 @@
             // 
             // buttonGetMetar
             // 
-            this.buttonGetMetar.BackColor = System.Drawing.SystemColors.Control;
-            this.buttonGetMetar.Location = new System.Drawing.Point(172, 125);
-            this.buttonGetMetar.Name = "buttonGetMetar";
-            this.buttonGetMetar.Size = new System.Drawing.Size(200, 28);
-            this.buttonGetMetar.TabIndex = 41;
-            this.buttonGetMetar.Text = "Load METAR";
-            this.buttonGetMetar.UseVisualStyleBackColor = false;
-            this.buttonGetMetar.Click += new System.EventHandler(this.ButtonGetMetar_Click);
+            this.ButtonGetMetar.BackColor = System.Drawing.SystemColors.Control;
+            this.ButtonGetMetar.Location = new System.Drawing.Point(172, 125);
+            this.ButtonGetMetar.Name = "buttonGetMetar";
+            this.ButtonGetMetar.Size = new System.Drawing.Size(200, 28);
+            this.ButtonGetMetar.TabIndex = 41;
+            this.ButtonGetMetar.Text = "Load METAR";
+            this.ButtonGetMetar.UseVisualStyleBackColor = false;
+            this.ButtonGetMetar.Click += new System.EventHandler(this.ButtonGetMetar_Click);
             // 
             // ButtonBroadcast
             // 
@@ -532,13 +532,13 @@
             // 
             // buttonDelete
             // 
-            this.buttonDelete.Location = new System.Drawing.Point(484, 58);
-            this.buttonDelete.Name = "buttonDelete";
-            this.buttonDelete.Size = new System.Drawing.Size(100, 28);
-            this.buttonDelete.TabIndex = 45;
-            this.buttonDelete.Text = "Delete";
-            this.buttonDelete.UseVisualStyleBackColor = true;
-            this.buttonDelete.Click += new System.EventHandler(this.ButtonDelete_Click);
+            this.ButtonDelete.Location = new System.Drawing.Point(484, 58);
+            this.ButtonDelete.Name = "buttonDelete";
+            this.ButtonDelete.Size = new System.Drawing.Size(100, 28);
+            this.ButtonDelete.TabIndex = 45;
+            this.ButtonDelete.Text = "Delete";
+            this.ButtonDelete.UseVisualStyleBackColor = true;
+            this.ButtonDelete.Click += new System.EventHandler(this.ButtonDelete_Click);
             // 
             // labelVoice
             // 
@@ -688,18 +688,18 @@
             this.Controls.Add(this.ButtonATIS2);
             this.Controls.Add(this.ButtonATIS1);
             this.Controls.Add(this.labelVoice);
-            this.Controls.Add(this.buttonDelete);
+            this.Controls.Add(this.ButtonDelete);
             this.Controls.Add(this.ComboBoxRate);
             this.Controls.Add(this.ComboBoxVoice);
             this.Controls.Add(this.ButtonBroadcast);
-            this.Controls.Add(this.buttonGetMetar);
+            this.Controls.Add(this.ButtonGetMetar);
             this.Controls.Add(this.ButtonListen);
             this.Controls.Add(this.ButtonCancel);
             this.Controls.Add(this.ButtonSave);
             this.Controls.Add(this.LabelMETAR);
             this.Controls.Add(this.LabelCode);
             this.Controls.Add(this.labelATIS);
-            this.Controls.Add(this.buttonNext);
+            this.Controls.Add(this.ButtonNext);
             this.Controls.Add(this.ComboBoxLetter);
             this.Controls.Add(this.labelTimeCheck);
             this.Controls.Add(this.Label12);
@@ -728,7 +728,7 @@
             this.Controls.Add(this.TextBox2);
             this.Controls.Add(this.TextBox1);
             this.Controls.Add(this.ComboBoxAirport);
-            this.Controls.Add(this.buttonCreate);
+            this.Controls.Add(this.ButtonCreate);
             this.Controls.Add(this.labelICAO);
             this.Controls.Add(this.TextBoxZulu);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -750,7 +750,7 @@
         #endregion
 
         private System.Windows.Forms.Label labelICAO;
-        private System.Windows.Forms.Button buttonCreate;
+        private System.Windows.Forms.Button ButtonCreate;
         private System.Windows.Forms.ComboBox ComboBoxAirport;
         private System.Windows.Forms.TextBox TextBox1;
         private System.Windows.Forms.TextBox TextBox2;
@@ -779,18 +779,18 @@
         private System.Windows.Forms.Label Label12;
         private System.Windows.Forms.Label labelTimeCheck;
         private System.Windows.Forms.ComboBox ComboBoxLetter;
-        private System.Windows.Forms.Button buttonNext;
+        private System.Windows.Forms.Button ButtonNext;
         private System.Windows.Forms.Label labelATIS;
         private System.Windows.Forms.Label LabelCode;
         private System.Windows.Forms.Label LabelMETAR;
         private System.Windows.Forms.Button ButtonSave;
         private System.Windows.Forms.Button ButtonCancel;
         private System.Windows.Forms.Button ButtonListen;
-        private System.Windows.Forms.Button buttonGetMetar;
+        private System.Windows.Forms.Button ButtonGetMetar;
         private System.Windows.Forms.Button ButtonBroadcast;
         private System.Windows.Forms.ComboBox ComboBoxVoice;
         private System.Windows.Forms.ComboBox ComboBoxRate;
-        private System.Windows.Forms.Button buttonDelete;
+        private System.Windows.Forms.Button ButtonDelete;
         private System.Windows.Forms.Label labelVoice;
         private System.Windows.Forms.Button ButtonATIS1;
         private System.Windows.Forms.Button ButtonATIS2;

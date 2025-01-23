@@ -77,6 +77,8 @@ namespace ATISPlugin
 
         private void SetupATISLines()
         {
+            Lines.Clear();
+
             int number = 1;
 
             foreach (var line in Plugin.ATISData.Editor)
