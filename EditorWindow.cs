@@ -1278,5 +1278,10 @@ namespace ATISPlugin
 
             TextBoxZulu.Text = atis;
         }
+
+        private void ButtonWindCalculator_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

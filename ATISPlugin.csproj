@@ -63,6 +63,12 @@
     <Compile Include="ATISAudio.cs" />
     <Compile Include="ATISControl.cs" />
     <Compile Include="ATISLine.cs" />
+    <Compile Include="CalculatorWindow.cs">
+      <SubType>designer</SubType>
+    </Compile>
+    <Compile Include="CalculatorWindow.Designer.cs">
+      <DependentUpon>CalculatorWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="EditorWindow.cs">
       <SubType>designer</SubType>
     </Compile>
@@ -93,6 +99,9 @@
     <None Include="Zulu.json" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="CalculatorWindow.resx">
+      <DependentUpon>CalculatorWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="EditorWindow.resx">
       <DependentUpon>EditorWindow.cs</DependentUpon>
     </EmbeddedResource>
@@ -115,7 +124,6 @@
     <Reference Include="System.Xml.Serialization" />
     <Reference Include="vatSys">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\vatSys\bin\vatSys.exe</HintPath>
-      <Private>false</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>

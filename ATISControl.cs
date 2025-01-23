@@ -58,7 +58,7 @@ namespace ATISPlugin
 
         public ATISControl()
         {
-            setupATISLines();
+            SetupATISLines();
 
             LoopTimer = new Timer
             {
@@ -75,7 +75,7 @@ namespace ATISPlugin
             InstalledVoice = SpeechSynth.GetInstalledVoices().FirstOrDefault();
         }
 
-        private void setupATISLines()
+        private void SetupATISLines()
         {
             int number = 1;
 
@@ -207,7 +207,7 @@ namespace ATISPlugin
                 line.Changed = false;
             }
 
-            setupATISLines();
+            SetupATISLines();
 
             SuggestedLines.Clear();
 

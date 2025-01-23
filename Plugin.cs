@@ -245,11 +245,20 @@ namespace ATISPlugin
         {
             Frequencies.Clear();
 
+            var frequenciesUpdate = false;
+
             foreach (var frequency in Audio.VSCSFrequencies)
             {
                 if (!frequency.Transmit) continue;
 
+                frequenciesUpdate = true;
+
                 Frequencies.Add(frequency);
+            }
+
+            if (Editor != null && !Editor.IsDisposed && frequenciesUpdate)
+            {
+                Editor?.RefreshEvent.Invoke(this, null);
             }
         }
 

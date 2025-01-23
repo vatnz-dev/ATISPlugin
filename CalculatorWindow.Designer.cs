@@ -1,6 +1,6 @@
 ﻿namespace ATISPlugin
 {
-    partial class EditorWindow
+    partial class CalculatorWindow
     {
         /// <summary>
         /// Required designer variable.
@@ -100,7 +100,6 @@
             this.buttonCreate.TabIndex = 4;
             this.buttonCreate.Text = "Create";
             this.buttonCreate.UseVisualStyleBackColor = true;
-            this.buttonCreate.Click += new System.EventHandler(this.ButtonCreate_Click);
             // 
             // ComboBoxAirport
             // 
@@ -111,7 +110,6 @@
             this.ComboBoxAirport.Name = "ComboBoxAirport";
             this.ComboBoxAirport.Size = new System.Drawing.Size(306, 25);
             this.ComboBoxAirport.TabIndex = 1;
-            this.ComboBoxAirport.SelectedIndexChanged += new System.EventHandler(this.ComboBoxAirport_SelectedIndexChanged);
             // 
             // TextBox1
             // 
@@ -260,7 +258,6 @@
             this.ComboBoxTimecheck.Name = "ComboBoxTimecheck";
             this.ComboBoxTimecheck.Size = new System.Drawing.Size(121, 25);
             this.ComboBoxTimecheck.TabIndex = 17;
-            this.ComboBoxTimecheck.SelectedIndexChanged += new System.EventHandler(this.ComboBoxTimecheck_SelectedIndexChanged);
             // 
             // Label4
             // 
@@ -399,7 +396,6 @@
             this.ComboBoxLetter.Name = "ComboBoxLetter";
             this.ComboBoxLetter.Size = new System.Drawing.Size(200, 25);
             this.ComboBoxLetter.TabIndex = 4;
-            this.ComboBoxLetter.SelectedIndexChanged += new System.EventHandler(this.ComboBoxLetter_SelectedIndexChanged);
             // 
             // buttonNext
             // 
@@ -409,7 +405,6 @@
             this.buttonNext.TabIndex = 34;
             this.buttonNext.Text = "Next";
             this.buttonNext.UseVisualStyleBackColor = true;
-            this.buttonNext.Click += new System.EventHandler(this.ButtonNext_Click);
             // 
             // labelATIS
             // 
@@ -452,7 +447,6 @@
             this.ButtonSave.TabIndex = 18;
             this.ButtonSave.Text = "Save";
             this.ButtonSave.UseVisualStyleBackColor = true;
-            this.ButtonSave.Click += new System.EventHandler(this.ButtonSave_Click);
             // 
             // ButtonCancel
             // 
@@ -463,7 +457,6 @@
             this.ButtonCancel.TabIndex = 19;
             this.ButtonCancel.Text = "Cancel";
             this.ButtonCancel.UseVisualStyleBackColor = true;
-            this.ButtonCancel.Click += new System.EventHandler(this.ButtonCancel_Click);
             // 
             // ButtonListen
             // 
@@ -474,7 +467,6 @@
             this.ButtonListen.TabIndex = 40;
             this.ButtonListen.Text = "Listen";
             this.ButtonListen.UseVisualStyleBackColor = false;
-            this.ButtonListen.Click += new System.EventHandler(this.ButtonListen_Click);
             // 
             // buttonGetMetar
             // 
@@ -485,7 +477,6 @@
             this.buttonGetMetar.TabIndex = 41;
             this.buttonGetMetar.Text = "Load METAR";
             this.buttonGetMetar.UseVisualStyleBackColor = false;
-            this.buttonGetMetar.Click += new System.EventHandler(this.ButtonGetMetar_Click);
             // 
             // ButtonBroadcast
             // 
@@ -496,7 +487,6 @@
             this.ButtonBroadcast.TabIndex = 42;
             this.ButtonBroadcast.Text = "Broadcast";
             this.ButtonBroadcast.UseVisualStyleBackColor = true;
-            this.ButtonBroadcast.Click += new System.EventHandler(this.ButtonBroadcast_Click);
             // 
             // ComboBoxVoice
             // 
@@ -508,7 +498,6 @@
             this.ComboBoxVoice.Name = "ComboBoxVoice";
             this.ComboBoxVoice.Size = new System.Drawing.Size(306, 25);
             this.ComboBoxVoice.TabIndex = 2;
-            this.ComboBoxVoice.SelectedIndexChanged += new System.EventHandler(this.ComboBoxVoice_SelectedIndexChanged);
             // 
             // ComboBoxRate
             // 
@@ -526,7 +515,6 @@
             this.ComboBoxRate.Name = "ComboBoxRate";
             this.ComboBoxRate.Size = new System.Drawing.Size(100, 25);
             this.ComboBoxRate.TabIndex = 3;
-            this.ComboBoxRate.SelectedIndexChanged += new System.EventHandler(this.ComboBoxRate_SelectedIndexChanged);
             // 
             // buttonDelete
             // 
@@ -536,7 +524,6 @@
             this.buttonDelete.TabIndex = 45;
             this.buttonDelete.Text = "Delete";
             this.buttonDelete.UseVisualStyleBackColor = true;
-            this.buttonDelete.Click += new System.EventHandler(this.ButtonDelete_Click);
             // 
             // labelVoice
             // 
@@ -557,7 +544,6 @@
             this.ButtonATIS1.TabIndex = 47;
             this.ButtonATIS1.Text = "ATIS #1";
             this.ButtonATIS1.UseVisualStyleBackColor = true;
-            this.ButtonATIS1.Click += new System.EventHandler(this.ButtonATIS1_Click);
             // 
             // ButtonATIS2
             // 
@@ -568,7 +554,6 @@
             this.ButtonATIS2.TabIndex = 48;
             this.ButtonATIS2.Text = "ATIS #2";
             this.ButtonATIS2.UseVisualStyleBackColor = true;
-            this.ButtonATIS2.Click += new System.EventHandler(this.ButtonATIS2_Click);
             // 
             // ButtonATIS3
             // 
@@ -579,7 +564,6 @@
             this.ButtonATIS3.TabIndex = 49;
             this.ButtonATIS3.Text = "ATIS #3";
             this.ButtonATIS3.UseVisualStyleBackColor = true;
-            this.ButtonATIS3.Click += new System.EventHandler(this.ButtonATIS3_Click);
             // 
             // ButtonATIS4
             // 
@@ -590,7 +574,6 @@
             this.ButtonATIS4.TabIndex = 50;
             this.ButtonATIS4.Text = "ATIS #4";
             this.ButtonATIS4.UseVisualStyleBackColor = true;
-            this.ButtonATIS4.Click += new System.EventHandler(this.ButtonATIS4_Click);
             // 
             // TextBoxZulu
             // 
@@ -602,7 +585,6 @@
             this.TextBoxZulu.Size = new System.Drawing.Size(412, 365);
             this.TextBoxZulu.TabIndex = 52;
             this.TextBoxZulu.Visible = false;
-            this.TextBoxZulu.TextChanged += new System.EventHandler(this.TextBox_TextChanged);
             // 
             // ButtonZulu
             // 
@@ -613,7 +595,6 @@
             this.ButtonZulu.TabIndex = 53;
             this.ButtonZulu.Text = "Zulu";
             this.ButtonZulu.UseVisualStyleBackColor = true;
-            this.ButtonZulu.Click += new System.EventHandler(this.ButtonZulu_Click);
             // 
             // ComboBoxZuluFrequency
             // 
@@ -624,7 +605,6 @@
             this.ComboBoxZuluFrequency.Name = "ComboBoxZuluFrequency";
             this.ComboBoxZuluFrequency.Size = new System.Drawing.Size(412, 25);
             this.ComboBoxZuluFrequency.TabIndex = 54;
-            this.ComboBoxZuluFrequency.SelectedIndexChanged += new System.EventHandler(this.ComboBoxZuluFrequency_SelectedIndexChanged);
             // 
             // LabelFrequency
             // 
@@ -646,7 +626,6 @@
             this.ButtonWindCalculator.TabIndex = 56;
             this.ButtonWindCalculator.Text = "Wind Calc";
             this.ButtonWindCalculator.UseVisualStyleBackColor = false;
-            this.ButtonWindCalculator.Click += new System.EventHandler(this.ButtonWindCalculator_Click);
             // 
             // EditorWindow
             // 
@@ -717,7 +696,6 @@
             this.Text = "ATIS Editor";
             this.TitleTextColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.TopMost = true;
-            this.Load += new System.EventHandler(this.EditorWindow_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
