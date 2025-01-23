@@ -349,16 +349,13 @@ namespace ATISPlugin
                 return;
             }
 
-            MMI.InvokeOnGUI((MethodInvoker)delegate ()
+            if (Editor == null || Editor.IsDisposed)
             {
-                if (Editor == null || Editor.IsDisposed)
-                {
-                    Editor = new EditorWindow();
-                }
-                else if (Editor.Visible) return;
+                Editor = new EditorWindow();
+            }
+            else if (Editor.Visible) return;
 
-                Editor.Show();
-            });
+            Editor.Show(Form.ActiveForm);
         }
 
         public void OnFDRUpdate(FDP2.FDR updated)

@@ -19,7 +19,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\..\..\OneDrive\Documents\vatSys Files\Profiles\Australia\Plugins\ATIS\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -63,12 +63,6 @@
     <Compile Include="ATISAudio.cs" />
     <Compile Include="ATISControl.cs" />
     <Compile Include="ATISLine.cs" />
-    <Compile Include="CalculatorWindow.cs">
-      <SubType>designer</SubType>
-    </Compile>
-    <Compile Include="CalculatorWindow.Designer.cs">
-      <DependentUpon>CalculatorWindow.cs</DependentUpon>
-    </Compile>
     <Compile Include="EditorWindow.cs">
       <SubType>designer</SubType>
     </Compile>
@@ -99,9 +93,6 @@
     <None Include="Zulu.json" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CalculatorWindow.resx">
-      <DependentUpon>CalculatorWindow.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="EditorWindow.resx">
       <DependentUpon>EditorWindow.cs</DependentUpon>
     </EmbeddedResource>

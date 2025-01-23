@@ -81,6 +81,13 @@ namespace ATISPlugin
 
         private void LoadOptions()
         {
+            ComboBoxRunway.Items.Clear();
+
+            for (int i = 1; i <= 36; i++)
+            {
+                ComboBoxRunway.Items.Add($"RWY {i.ToString().PadLeft(2, '0')}");
+            }
+
             ComboBoxAirport.Items.Clear();
 
             foreach (var freq in Plugin.ATISData.Frequencies.OrderBy(x => x.Airport))
@@ -160,7 +167,12 @@ namespace ATISPlugin
             }
         }
 
-        private void RefreshForm()
+        public void RefreshForm()
+        {
+            Invoke(new Action(() => _refreshForm()));
+        }
+
+        private void _refreshForm()
         {
             LabelMETAR.Text = string.Empty;
 
@@ -205,6 +217,8 @@ namespace ATISPlugin
             {
                 RefreshForm_NotConnected();
             }
+
+            CalculateWind();
         }
 
         private void RefeshForm_TopButtons()
@@ -1279,9 +1293,68 @@ namespace ATISPlugin
             TextBoxZulu.Text = atis;
         }
 
-        private void ButtonWindCalculator_Click(object sender, EventArgs e)
+        private string Wind(string wind, string runway)
         {
+            if (string.IsNullOrWhiteSpace(wind) || string.IsNullOrWhiteSpace(runway))
+            {
+                return string.Empty;
+            }
 
+            if (wind == "CALM") return "CALM";
+
+            if (wind == "VRB") return "VARIABLE";
+
+            var runwayDirection = runway.Replace("RWY ", "") + "0";
+
+            var windDirection = wind.Substring(0, 3);
+
+            var windSpeed = wind.Substring(4, 2);
+
+            if (double.Parse(windSpeed) == 0.0) return "CALM";
+
+            double radians = Conversions.DegreesToRadians(double.Parse(windDirection));
+            double num1 = Conversions.DegreesToRadians(double.Parse(runwayDirection)) - radians;
+            double num2 = double.Parse(windSpeed);
+            double num3 = Math.Round(num2 * Math.Sin(num1));
+            double num4 = Math.Round(num2 * Math.Cos(num1));
+            string str1 = Math.Abs(num3).ToString("F0");
+            string str2 = Math.Abs(num4).ToString("F0");
+
+            if (num3 < 0.0)
+                str1 += " Right";
+            else if (num3 > 0.0)
+                str1 += " Left";
+
+            if (num4 < 0.0)
+                str2 += " Tailwind";
+            else if (num4 > 0.0)
+                str2 += " Headwind";
+
+            if (str1 == "0") return str2;
+
+            if (str2 == "0") return str1;
+
+            return $"{str2}, {str1}";
+        }
+
+        private void CalculateWind()
+        {
+            var suggestedWind = Control.SuggestedLines.FirstOrDefault(x => x.Name.Contains("WIND"));
+
+            var atisWind = Control.Lines.FirstOrDefault(x => x.Name.Contains("WIND"));
+
+            var wind = suggestedWind != null ? suggestedWind : atisWind;
+
+            if (wind == null) return;
+
+            var windComponents = Wind(wind.Value, ComboBoxRunway.Text);
+
+            LabelWindComponents.Text = windComponents;
+        }
+
+        private void ComboBoxRunway_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            CalculateWind();
         }
     }
 }

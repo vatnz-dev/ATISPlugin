@@ -79,7 +79,9 @@
             this.ButtonZulu = new System.Windows.Forms.Button();
             this.ComboBoxZuluFrequency = new System.Windows.Forms.ComboBox();
             this.LabelFrequency = new System.Windows.Forms.Label();
-            this.ButtonWindCalculator = new System.Windows.Forms.Button();
+            this.label13 = new System.Windows.Forms.Label();
+            this.ComboBoxRunway = new System.Windows.Forms.ComboBox();
+            this.LabelWindComponents = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // labelICAO
@@ -94,7 +96,7 @@
             // 
             // buttonCreate
             // 
-            this.buttonCreate.Location = new System.Drawing.Point(484, 60);
+            this.buttonCreate.Location = new System.Drawing.Point(484, 58);
             this.buttonCreate.Name = "buttonCreate";
             this.buttonCreate.Size = new System.Drawing.Size(100, 28);
             this.buttonCreate.TabIndex = 4;
@@ -117,7 +119,7 @@
             // 
             this.TextBox1.BackColor = System.Drawing.SystemColors.ControlDark;
             this.TextBox1.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.TextBox1.Location = new System.Drawing.Point(172, 219);
+            this.TextBox1.Location = new System.Drawing.Point(172, 229);
             this.TextBox1.Name = "TextBox1";
             this.TextBox1.Size = new System.Drawing.Size(412, 25);
             this.TextBox1.TabIndex = 5;
@@ -126,7 +128,7 @@
             // 
             this.TextBox2.BackColor = System.Drawing.SystemColors.ControlDark;
             this.TextBox2.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.TextBox2.Location = new System.Drawing.Point(172, 250);
+            this.TextBox2.Location = new System.Drawing.Point(172, 260);
             this.TextBox2.Name = "TextBox2";
             this.TextBox2.Size = new System.Drawing.Size(412, 25);
             this.TextBox2.TabIndex = 6;
@@ -135,7 +137,7 @@
             // 
             this.TextBox3.BackColor = System.Drawing.SystemColors.ControlDark;
             this.TextBox3.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.TextBox3.Location = new System.Drawing.Point(172, 281);
+            this.TextBox3.Location = new System.Drawing.Point(172, 291);
             this.TextBox3.Name = "TextBox3";
             this.TextBox3.Size = new System.Drawing.Size(412, 25);
             this.TextBox3.TabIndex = 7;
@@ -144,7 +146,7 @@
             // 
             this.Label1.AutoSize = true;
             this.Label1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.Label1.Location = new System.Drawing.Point(8, 222);
+            this.Label1.Location = new System.Drawing.Point(8, 232);
             this.Label1.MinimumSize = new System.Drawing.Size(160, 17);
             this.Label1.Name = "Label1";
             this.Label1.Size = new System.Drawing.Size(160, 17);
@@ -156,7 +158,7 @@
             // 
             this.Label2.AutoSize = true;
             this.Label2.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.Label2.Location = new System.Drawing.Point(8, 253);
+            this.Label2.Location = new System.Drawing.Point(8, 263);
             this.Label2.MinimumSize = new System.Drawing.Size(160, 17);
             this.Label2.Name = "Label2";
             this.Label2.Size = new System.Drawing.Size(160, 17);
@@ -168,7 +170,7 @@
             // 
             this.Label3.AutoSize = true;
             this.Label3.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.Label3.Location = new System.Drawing.Point(8, 284);
+            this.Label3.Location = new System.Drawing.Point(8, 294);
             this.Label3.MinimumSize = new System.Drawing.Size(160, 17);
             this.Label3.Name = "Label3";
             this.Label3.Size = new System.Drawing.Size(160, 17);
@@ -180,7 +182,7 @@
             // 
             this.TextBox5.BackColor = System.Drawing.SystemColors.ControlDark;
             this.TextBox5.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.TextBox5.Location = new System.Drawing.Point(172, 343);
+            this.TextBox5.Location = new System.Drawing.Point(172, 353);
             this.TextBox5.Name = "TextBox5";
             this.TextBox5.Size = new System.Drawing.Size(412, 25);
             this.TextBox5.TabIndex = 9;
@@ -189,7 +191,7 @@
             // 
             this.TextBox6.BackColor = System.Drawing.SystemColors.ControlDark;
             this.TextBox6.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.TextBox6.Location = new System.Drawing.Point(172, 374);
+            this.TextBox6.Location = new System.Drawing.Point(172, 384);
             this.TextBox6.Name = "TextBox6";
             this.TextBox6.Size = new System.Drawing.Size(412, 25);
             this.TextBox6.TabIndex = 10;
@@ -198,7 +200,7 @@
             // 
             this.TextBox7.BackColor = System.Drawing.SystemColors.ControlDark;
             this.TextBox7.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.TextBox7.Location = new System.Drawing.Point(172, 405);
+            this.TextBox7.Location = new System.Drawing.Point(172, 415);
             this.TextBox7.Name = "TextBox7";
             this.TextBox7.Size = new System.Drawing.Size(412, 25);
             this.TextBox7.TabIndex = 11;
@@ -207,7 +209,7 @@
             // 
             this.TextBox8.BackColor = System.Drawing.SystemColors.ControlDark;
             this.TextBox8.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.TextBox8.Location = new System.Drawing.Point(172, 436);
+            this.TextBox8.Location = new System.Drawing.Point(172, 446);
             this.TextBox8.Name = "TextBox8";
             this.TextBox8.Size = new System.Drawing.Size(412, 25);
             this.TextBox8.TabIndex = 12;
@@ -216,7 +218,7 @@
             // 
             this.TextBox9.BackColor = System.Drawing.SystemColors.ControlDark;
             this.TextBox9.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.TextBox9.Location = new System.Drawing.Point(172, 467);
+            this.TextBox9.Location = new System.Drawing.Point(172, 477);
             this.TextBox9.Name = "TextBox9";
             this.TextBox9.Size = new System.Drawing.Size(412, 25);
             this.TextBox9.TabIndex = 13;
@@ -225,7 +227,7 @@
             // 
             this.TextBox10.BackColor = System.Drawing.SystemColors.ControlDark;
             this.TextBox10.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.TextBox10.Location = new System.Drawing.Point(172, 498);
+            this.TextBox10.Location = new System.Drawing.Point(172, 508);
             this.TextBox10.Name = "TextBox10";
             this.TextBox10.Size = new System.Drawing.Size(412, 25);
             this.TextBox10.TabIndex = 14;
@@ -234,7 +236,7 @@
             // 
             this.TextBox11.BackColor = System.Drawing.SystemColors.ControlDark;
             this.TextBox11.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.TextBox11.Location = new System.Drawing.Point(172, 529);
+            this.TextBox11.Location = new System.Drawing.Point(172, 539);
             this.TextBox11.Name = "TextBox11";
             this.TextBox11.Size = new System.Drawing.Size(412, 25);
             this.TextBox11.TabIndex = 15;
@@ -243,7 +245,7 @@
             // 
             this.TextBox12.BackColor = System.Drawing.SystemColors.ControlDark;
             this.TextBox12.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.TextBox12.Location = new System.Drawing.Point(172, 559);
+            this.TextBox12.Location = new System.Drawing.Point(172, 569);
             this.TextBox12.Name = "TextBox12";
             this.TextBox12.Size = new System.Drawing.Size(412, 25);
             this.TextBox12.TabIndex = 16;
@@ -256,7 +258,7 @@
             this.ComboBoxTimecheck.Items.AddRange(new object[] {
             "True",
             "False"});
-            this.ComboBoxTimecheck.Location = new System.Drawing.Point(172, 591);
+            this.ComboBoxTimecheck.Location = new System.Drawing.Point(172, 600);
             this.ComboBoxTimecheck.Name = "ComboBoxTimecheck";
             this.ComboBoxTimecheck.Size = new System.Drawing.Size(121, 25);
             this.ComboBoxTimecheck.TabIndex = 17;
@@ -266,7 +268,7 @@
             // 
             this.Label4.AutoSize = true;
             this.Label4.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.Label4.Location = new System.Drawing.Point(8, 315);
+            this.Label4.Location = new System.Drawing.Point(8, 325);
             this.Label4.MinimumSize = new System.Drawing.Size(160, 17);
             this.Label4.Name = "Label4";
             this.Label4.Size = new System.Drawing.Size(160, 17);
@@ -278,7 +280,7 @@
             // 
             this.TextBox4.BackColor = System.Drawing.SystemColors.ControlDark;
             this.TextBox4.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.TextBox4.Location = new System.Drawing.Point(172, 312);
+            this.TextBox4.Location = new System.Drawing.Point(172, 322);
             this.TextBox4.Name = "TextBox4";
             this.TextBox4.Size = new System.Drawing.Size(412, 25);
             this.TextBox4.TabIndex = 8;
@@ -287,7 +289,7 @@
             // 
             this.Label5.AutoSize = true;
             this.Label5.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.Label5.Location = new System.Drawing.Point(8, 346);
+            this.Label5.Location = new System.Drawing.Point(6, 356);
             this.Label5.MinimumSize = new System.Drawing.Size(160, 17);
             this.Label5.Name = "Label5";
             this.Label5.Size = new System.Drawing.Size(160, 17);
@@ -299,7 +301,7 @@
             // 
             this.Label6.AutoSize = true;
             this.Label6.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.Label6.Location = new System.Drawing.Point(6, 377);
+            this.Label6.Location = new System.Drawing.Point(6, 387);
             this.Label6.MinimumSize = new System.Drawing.Size(160, 17);
             this.Label6.Name = "Label6";
             this.Label6.Size = new System.Drawing.Size(160, 17);
@@ -311,7 +313,7 @@
             // 
             this.Label7.AutoSize = true;
             this.Label7.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.Label7.Location = new System.Drawing.Point(8, 408);
+            this.Label7.Location = new System.Drawing.Point(6, 418);
             this.Label7.MinimumSize = new System.Drawing.Size(160, 17);
             this.Label7.Name = "Label7";
             this.Label7.Size = new System.Drawing.Size(160, 17);
@@ -323,7 +325,7 @@
             // 
             this.Label8.AutoSize = true;
             this.Label8.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.Label8.Location = new System.Drawing.Point(8, 439);
+            this.Label8.Location = new System.Drawing.Point(6, 449);
             this.Label8.MinimumSize = new System.Drawing.Size(160, 17);
             this.Label8.Name = "Label8";
             this.Label8.Size = new System.Drawing.Size(160, 17);
@@ -335,7 +337,7 @@
             // 
             this.Label10.AutoSize = true;
             this.Label10.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.Label10.Location = new System.Drawing.Point(8, 501);
+            this.Label10.Location = new System.Drawing.Point(6, 511);
             this.Label10.MinimumSize = new System.Drawing.Size(160, 17);
             this.Label10.Name = "Label10";
             this.Label10.Size = new System.Drawing.Size(160, 17);
@@ -347,7 +349,7 @@
             // 
             this.Label9.AutoSize = true;
             this.Label9.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.Label9.Location = new System.Drawing.Point(8, 470);
+            this.Label9.Location = new System.Drawing.Point(6, 480);
             this.Label9.MinimumSize = new System.Drawing.Size(160, 17);
             this.Label9.Name = "Label9";
             this.Label9.Size = new System.Drawing.Size(160, 17);
@@ -359,7 +361,7 @@
             // 
             this.Label11.AutoSize = true;
             this.Label11.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.Label11.Location = new System.Drawing.Point(8, 532);
+            this.Label11.Location = new System.Drawing.Point(8, 542);
             this.Label11.MinimumSize = new System.Drawing.Size(160, 17);
             this.Label11.Name = "Label11";
             this.Label11.Size = new System.Drawing.Size(160, 17);
@@ -371,7 +373,7 @@
             // 
             this.Label12.AutoSize = true;
             this.Label12.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.Label12.Location = new System.Drawing.Point(8, 562);
+            this.Label12.Location = new System.Drawing.Point(8, 572);
             this.Label12.MinimumSize = new System.Drawing.Size(160, 17);
             this.Label12.Name = "Label12";
             this.Label12.Size = new System.Drawing.Size(160, 17);
@@ -383,7 +385,7 @@
             // 
             this.labelTimeCheck.AutoSize = true;
             this.labelTimeCheck.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.labelTimeCheck.Location = new System.Drawing.Point(78, 594);
+            this.labelTimeCheck.Location = new System.Drawing.Point(78, 604);
             this.labelTimeCheck.Name = "labelTimeCheck";
             this.labelTimeCheck.Size = new System.Drawing.Size(88, 17);
             this.labelTimeCheck.TabIndex = 32;
@@ -395,7 +397,7 @@
             this.ComboBoxLetter.BackColor = System.Drawing.SystemColors.ControlDark;
             this.ComboBoxLetter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ComboBoxLetter.FormattingEnabled = true;
-            this.ComboBoxLetter.Location = new System.Drawing.Point(172, 188);
+            this.ComboBoxLetter.Location = new System.Drawing.Point(172, 197);
             this.ComboBoxLetter.Name = "ComboBoxLetter";
             this.ComboBoxLetter.Size = new System.Drawing.Size(200, 25);
             this.ComboBoxLetter.TabIndex = 4;
@@ -403,7 +405,7 @@
             // 
             // buttonNext
             // 
-            this.buttonNext.Location = new System.Drawing.Point(378, 186);
+            this.buttonNext.Location = new System.Drawing.Point(378, 195);
             this.buttonNext.Name = "buttonNext";
             this.buttonNext.Size = new System.Drawing.Size(100, 28);
             this.buttonNext.TabIndex = 34;
@@ -415,7 +417,7 @@
             // 
             this.labelATIS.AutoSize = true;
             this.labelATIS.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.labelATIS.Location = new System.Drawing.Point(126, 193);
+            this.labelATIS.Location = new System.Drawing.Point(126, 202);
             this.labelATIS.Name = "labelATIS";
             this.labelATIS.Size = new System.Drawing.Size(40, 17);
             this.labelATIS.TabIndex = 35;
@@ -426,7 +428,7 @@
             // 
             this.LabelCode.AutoSize = true;
             this.LabelCode.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.LabelCode.Location = new System.Drawing.Point(86, 193);
+            this.LabelCode.Location = new System.Drawing.Point(86, 202);
             this.LabelCode.Name = "LabelCode";
             this.LabelCode.Size = new System.Drawing.Size(40, 17);
             this.LabelCode.TabIndex = 36;
@@ -437,18 +439,18 @@
             // 
             this.LabelMETAR.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.LabelMETAR.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.LabelMETAR.Location = new System.Drawing.Point(10, 161);
+            this.LabelMETAR.Location = new System.Drawing.Point(10, 156);
             this.LabelMETAR.Name = "LabelMETAR";
-            this.LabelMETAR.Size = new System.Drawing.Size(574, 19);
+            this.LabelMETAR.Size = new System.Drawing.Size(574, 36);
             this.LabelMETAR.TabIndex = 37;
             this.LabelMETAR.Text = "LOADING";
             this.LabelMETAR.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // ButtonSave
             // 
-            this.ButtonSave.Location = new System.Drawing.Point(172, 627);
+            this.ButtonSave.Location = new System.Drawing.Point(172, 631);
             this.ButtonSave.Name = "ButtonSave";
-            this.ButtonSave.Size = new System.Drawing.Size(203, 28);
+            this.ButtonSave.Size = new System.Drawing.Size(200, 28);
             this.ButtonSave.TabIndex = 18;
             this.ButtonSave.Text = "Save";
             this.ButtonSave.UseVisualStyleBackColor = true;
@@ -457,9 +459,9 @@
             // ButtonCancel
             // 
             this.ButtonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.ButtonCancel.Location = new System.Drawing.Point(381, 627);
+            this.ButtonCancel.Location = new System.Drawing.Point(378, 631);
             this.ButtonCancel.Name = "ButtonCancel";
-            this.ButtonCancel.Size = new System.Drawing.Size(203, 28);
+            this.ButtonCancel.Size = new System.Drawing.Size(206, 28);
             this.ButtonCancel.TabIndex = 19;
             this.ButtonCancel.Text = "Cancel";
             this.ButtonCancel.UseVisualStyleBackColor = true;
@@ -468,9 +470,9 @@
             // ButtonListen
             // 
             this.ButtonListen.BackColor = System.Drawing.SystemColors.Control;
-            this.ButtonListen.Location = new System.Drawing.Point(298, 125);
+            this.ButtonListen.Location = new System.Drawing.Point(378, 125);
             this.ButtonListen.Name = "ButtonListen";
-            this.ButtonListen.Size = new System.Drawing.Size(140, 28);
+            this.ButtonListen.Size = new System.Drawing.Size(100, 28);
             this.ButtonListen.TabIndex = 40;
             this.ButtonListen.Text = "Listen";
             this.ButtonListen.UseVisualStyleBackColor = false;
@@ -479,9 +481,9 @@
             // buttonGetMetar
             // 
             this.buttonGetMetar.BackColor = System.Drawing.SystemColors.Control;
-            this.buttonGetMetar.Location = new System.Drawing.Point(6, 125);
+            this.buttonGetMetar.Location = new System.Drawing.Point(172, 125);
             this.buttonGetMetar.Name = "buttonGetMetar";
-            this.buttonGetMetar.Size = new System.Drawing.Size(140, 28);
+            this.buttonGetMetar.Size = new System.Drawing.Size(200, 28);
             this.buttonGetMetar.TabIndex = 41;
             this.buttonGetMetar.Text = "Load METAR";
             this.buttonGetMetar.UseVisualStyleBackColor = false;
@@ -490,9 +492,9 @@
             // ButtonBroadcast
             // 
             this.ButtonBroadcast.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.ButtonBroadcast.Location = new System.Drawing.Point(444, 125);
+            this.ButtonBroadcast.Location = new System.Drawing.Point(484, 125);
             this.ButtonBroadcast.Name = "ButtonBroadcast";
-            this.ButtonBroadcast.Size = new System.Drawing.Size(140, 28);
+            this.ButtonBroadcast.Size = new System.Drawing.Size(100, 28);
             this.ButtonBroadcast.TabIndex = 42;
             this.ButtonBroadcast.Text = "Broadcast";
             this.ButtonBroadcast.UseVisualStyleBackColor = true;
@@ -530,7 +532,7 @@
             // 
             // buttonDelete
             // 
-            this.buttonDelete.Location = new System.Drawing.Point(484, 60);
+            this.buttonDelete.Location = new System.Drawing.Point(484, 58);
             this.buttonDelete.Name = "buttonDelete";
             this.buttonDelete.Size = new System.Drawing.Size(100, 28);
             this.buttonDelete.TabIndex = 45;
@@ -596,7 +598,7 @@
             // 
             this.TextBoxZulu.BackColor = System.Drawing.SystemColors.ControlDark;
             this.TextBoxZulu.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.TextBoxZulu.Location = new System.Drawing.Point(172, 219);
+            this.TextBoxZulu.Location = new System.Drawing.Point(172, 230);
             this.TextBoxZulu.Multiline = true;
             this.TextBoxZulu.Name = "TextBoxZulu";
             this.TextBoxZulu.Size = new System.Drawing.Size(412, 365);
@@ -607,7 +609,7 @@
             // ButtonZulu
             // 
             this.ButtonZulu.CausesValidation = false;
-            this.ButtonZulu.Location = new System.Drawing.Point(484, 186);
+            this.ButtonZulu.Location = new System.Drawing.Point(484, 195);
             this.ButtonZulu.Name = "ButtonZulu";
             this.ButtonZulu.Size = new System.Drawing.Size(100, 28);
             this.ButtonZulu.TabIndex = 53;
@@ -620,7 +622,7 @@
             this.ComboBoxZuluFrequency.BackColor = System.Drawing.SystemColors.ControlDark;
             this.ComboBoxZuluFrequency.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ComboBoxZuluFrequency.FormattingEnabled = true;
-            this.ComboBoxZuluFrequency.Location = new System.Drawing.Point(172, 590);
+            this.ComboBoxZuluFrequency.Location = new System.Drawing.Point(172, 600);
             this.ComboBoxZuluFrequency.Name = "ComboBoxZuluFrequency";
             this.ComboBoxZuluFrequency.Size = new System.Drawing.Size(412, 25);
             this.ComboBoxZuluFrequency.TabIndex = 54;
@@ -630,31 +632,54 @@
             // 
             this.LabelFrequency.AutoSize = true;
             this.LabelFrequency.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.LabelFrequency.Location = new System.Drawing.Point(86, 594);
+            this.LabelFrequency.Location = new System.Drawing.Point(86, 604);
             this.LabelFrequency.Name = "LabelFrequency";
             this.LabelFrequency.Size = new System.Drawing.Size(80, 17);
             this.LabelFrequency.TabIndex = 55;
             this.LabelFrequency.Text = "FREQUENCY";
             this.LabelFrequency.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
-            // ButtonWindCalculator
+            // label13
             // 
-            this.ButtonWindCalculator.BackColor = System.Drawing.SystemColors.Control;
-            this.ButtonWindCalculator.Location = new System.Drawing.Point(153, 125);
-            this.ButtonWindCalculator.Name = "ButtonWindCalculator";
-            this.ButtonWindCalculator.Size = new System.Drawing.Size(140, 28);
-            this.ButtonWindCalculator.TabIndex = 56;
-            this.ButtonWindCalculator.Text = "Wind Calc";
-            this.ButtonWindCalculator.UseVisualStyleBackColor = false;
-            this.ButtonWindCalculator.Click += new System.EventHandler(this.ButtonWindCalculator_Click);
+            this.label13.AutoSize = true;
+            this.label13.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.label13.Location = new System.Drawing.Point(6, 684);
+            this.label13.MinimumSize = new System.Drawing.Size(160, 17);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(160, 17);
+            this.label13.TabIndex = 56;
+            this.label13.Text = "Wind Calculator";
+            this.label13.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // ComboBoxRunway
+            // 
+            this.ComboBoxRunway.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ComboBoxRunway.FormattingEnabled = true;
+            this.ComboBoxRunway.Location = new System.Drawing.Point(172, 681);
+            this.ComboBoxRunway.Name = "ComboBoxRunway";
+            this.ComboBoxRunway.Size = new System.Drawing.Size(200, 25);
+            this.ComboBoxRunway.TabIndex = 57;
+            this.ComboBoxRunway.SelectedIndexChanged += new System.EventHandler(this.ComboBoxRunway_SelectedIndexChanged);
+            // 
+            // LabelWindComponents
+            // 
+            this.LabelWindComponents.AutoSize = true;
+            this.LabelWindComponents.Location = new System.Drawing.Point(383, 684);
+            this.LabelWindComponents.MinimumSize = new System.Drawing.Size(200, 0);
+            this.LabelWindComponents.Name = "LabelWindComponents";
+            this.LabelWindComponents.Size = new System.Drawing.Size(200, 17);
+            this.LabelWindComponents.TabIndex = 58;
+            this.LabelWindComponents.Text = "label14";
             // 
             // EditorWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.Disable;
-            this.ClientSize = new System.Drawing.Size(596, 672);
-            this.Controls.Add(this.ButtonWindCalculator);
+            this.ClientSize = new System.Drawing.Size(596, 722);
+            this.Controls.Add(this.LabelWindComponents);
+            this.Controls.Add(this.ComboBoxRunway);
+            this.Controls.Add(this.label13);
             this.Controls.Add(this.LabelFrequency);
             this.Controls.Add(this.ComboBoxZuluFrequency);
             this.Controls.Add(this.ButtonZulu);
@@ -709,14 +734,13 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.HideOnClose = true;
             this.Margin = new System.Windows.Forms.Padding(4);
-            this.MaximumSize = new System.Drawing.Size(600, 700);
-            this.MinimumSize = new System.Drawing.Size(600, 700);
+            this.MaximumSize = new System.Drawing.Size(600, 750);
+            this.MinimumSize = new System.Drawing.Size(600, 750);
             this.Name = "EditorWindow";
             this.Resizeable = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ATIS Editor";
             this.TitleTextColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.TopMost = true;
             this.Load += new System.EventHandler(this.EditorWindow_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -776,6 +800,8 @@
         private System.Windows.Forms.Button ButtonZulu;
         private System.Windows.Forms.ComboBox ComboBoxZuluFrequency;
         private System.Windows.Forms.Label LabelFrequency;
-        private System.Windows.Forms.Button ButtonWindCalculator;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.ComboBox ComboBoxRunway;
+        private System.Windows.Forms.Label LabelWindComponents;
     }
 }
