@@ -44,6 +44,7 @@ namespace ATISPlugin
             else if (Profile.Name.Contains("VATNZ")) return "New Zealand";
             else return string.Empty;
         }
+        public static readonly string ManualVoiceName = "Manual Recording";
         public static string DatasetPath => Path.Combine(Helpers.GetFilesFolder(), "Profiles", ProfileName());
         public static ATIS ATISData { get; set; }
         public static Sectors Sectors { get; set; }

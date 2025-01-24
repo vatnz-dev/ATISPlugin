@@ -29,7 +29,24 @@ namespace ATISPlugin
 
                 if (item == "AUTO") continue;
 
-                if (item == "//" || item == "////" || item == "//////") continue;
+
+                if (item == "//") // weather
+                {
+                    Weather = "WEATHER NAVBL";
+                    continue;
+                }
+
+                if (item == "////") // visibility,
+                {
+                    Visibility = "NAVBL";
+                    continue;
+                }
+
+                if (item == "//////") // cloud
+                {
+                    Cloud = "NAVBL";
+                    continue;
+                }
 
                 // TIME
                 if (Regex.IsMatch(item, "^\\d{6}Z$"))

@@ -82,6 +82,7 @@
             this.label13 = new System.Windows.Forms.Label();
             this.ComboBoxRunway = new System.Windows.Forms.ComboBox();
             this.LabelWindComponents = new System.Windows.Forms.Label();
+            this.ButtonRecord = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // labelICAO
@@ -670,12 +671,24 @@
             this.LabelWindComponents.Size = new System.Drawing.Size(320, 17);
             this.LabelWindComponents.TabIndex = 58;
             // 
+            // ButtonRecord
+            // 
+            this.ButtonRecord.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.ButtonRecord.Location = new System.Drawing.Point(504, 92);
+            this.ButtonRecord.Name = "ButtonRecord";
+            this.ButtonRecord.Size = new System.Drawing.Size(160, 28);
+            this.ButtonRecord.TabIndex = 59;
+            this.ButtonRecord.Text = "Record";
+            this.ButtonRecord.UseVisualStyleBackColor = true;
+            this.ButtonRecord.Click += new System.EventHandler(this.ButtonRecord_Click);
+            // 
             // EditorWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.Disable;
             this.ClientSize = new System.Drawing.Size(676, 722);
+            this.Controls.Add(this.ButtonRecord);
             this.Controls.Add(this.LabelWindComponents);
             this.Controls.Add(this.ComboBoxRunway);
             this.Controls.Add(this.label13);
@@ -802,5 +815,6 @@
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.ComboBox ComboBoxRunway;
         private System.Windows.Forms.Label LabelWindComponents;
+        private System.Windows.Forms.Button ButtonRecord;
     }
 }

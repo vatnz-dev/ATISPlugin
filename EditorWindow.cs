@@ -29,12 +29,13 @@ namespace ATISPlugin
             TimeCheck != Control.TimeCheck || 
             ID != Control.ID || 
             Control.PromptRate != Rate || 
-            Control.InstalledVoice != Voice;
+            Control.VoiceName != VoiceName;
         private bool TimeCheck { get; set; }
         public EventHandler RefreshEvent { get; set; }  
-        public InstalledVoice Voice { get; set; }
+        public string VoiceName { get; set; }
         public PromptRate Rate { get; set; } 
-        private string ZuluFrequency { get; set; }  
+        private string ZuluFrequency { get; set; }
+        public bool CanRecord => Edits == false && Control.Broadcasting == false ? true : false;
 
         public EditorWindow()
         {
@@ -58,7 +59,7 @@ namespace ATISPlugin
 
             Rate = Control.PromptRate;
 
-            Voice = Control.InstalledVoice;
+            VoiceName = Control.VoiceName;
 
             Saves.Clear();
 
@@ -130,6 +131,8 @@ namespace ATISPlugin
                 ComboBoxVoice.Items.Add(voice.VoiceInfo.Name);
             }
 
+            ComboBoxVoice.Items.Add(Plugin.ManualVoiceName);
+
             ComboBoxZuluFrequency.Items.Clear();
 
             if (Plugin.Frequencies.Any())
@@ -194,10 +197,7 @@ namespace ATISPlugin
             {
                 Invoke(new Action(() => _refreshForm()));
             }
-            catch (Exception ex) 
-            {
-                Console.WriteLine(ex.Message);
-            }
+            catch { }
         }
 
         private void _refreshForm()
@@ -208,10 +208,7 @@ namespace ATISPlugin
 
             ComboBoxLetter.SelectedIndex = ComboBoxLetter.FindStringExact(ID.ToString());
 
-            if (Voice != null)
-            {
-                ComboBoxVoice.SelectedIndex = ComboBoxVoice.FindStringExact(Voice.VoiceInfo.Name);
-            }
+            ComboBoxVoice.SelectedIndex = ComboBoxVoice.FindStringExact(VoiceName);
 
             ComboBoxRate.SelectedIndex = ComboBoxRate.FindStringExact(Rate.ToString());
 
@@ -821,6 +818,26 @@ namespace ATISPlugin
                 ButtonBroadcast.Enabled = false;
             }
 
+            if (CanRecord)
+            {
+                ButtonRecord.Enabled = true;
+            }
+            else
+            {
+                ButtonRecord.Enabled = false;
+            }
+
+            if (Control.Recording)
+            {
+                ButtonRecord.BackColor = Color.FromName("ControlDarkDark");
+                ButtonRecord.ForeColor = Color.FromName("ControlLightLight");
+            }
+            else
+            {
+                ButtonRecord.BackColor = Color.FromName("Control");
+                ButtonRecord.ForeColor = default;
+            }
+
             if (Control.Listening)
             {
                 ButtonListen.BackColor = Color.FromName("ControlDarkDark");
@@ -1029,7 +1046,7 @@ namespace ATISPlugin
 
         private async Task SaveATIS()
         {
-            Control.InstalledVoice = Voice;
+            Control.VoiceName = VoiceName;
 
             Control.PromptRate = Rate;
 
@@ -1171,11 +1188,20 @@ namespace ATISPlugin
 
             string selectedVoice = (string)comboBox.SelectedItem;
 
-            var voice = Control.SpeechSynth.GetInstalledVoices().FirstOrDefault(x => x.VoiceInfo.Name == selectedVoice);   
+            if (selectedVoice == null) return;  
 
-            if (voice == null) return;  
+            VoiceName =  selectedVoice;
 
-            Voice =  voice;
+            if (VoiceName == Plugin.ManualVoiceName)
+            {
+                ComboBoxRate.Visible = false;
+                ButtonRecord.Visible = true;
+            }
+            else
+            {
+                ComboBoxRate.Visible = true;
+                ButtonRecord.Visible = false;
+            }
 
             RefreshForm();
         }
@@ -1407,6 +1433,20 @@ namespace ATISPlugin
         private void ComboBoxRunway_SelectedIndexChanged(object sender, EventArgs e)
         {
             CalculateWind();
+        }
+
+        private void ButtonRecord_Click(object sender, EventArgs e)
+        {
+            if (Control.Recording)
+            {
+                Control.StopRecording();
+            }
+            else
+            {
+                Control.StartRecording();
+            }
+
+            RefreshForm();
         }
     }
 }
