@@ -47,8 +47,6 @@ namespace ATISPlugin
         public static readonly string ManualVoiceName = "Manual Recording";
         public static string DatasetPath => Path.Combine(Helpers.GetFilesFolder(), "Profiles", ProfileName());
         public static ATIS ATISData { get; set; }
-        public static Sectors Sectors { get; set; }
-        public static Airspace Airspace { get; set; }
         public static List<ZuluInfo> ZuluInfo { get; set; } = new List<ZuluInfo>();
 
         public static SoundPlayer SoundPlayer { get; set; } = new SoundPlayer();
@@ -87,18 +85,6 @@ namespace ATISPlugin
                 }
 
                 GetData();
-
-                if (Airspace == null)
-                {
-                    Errors.Add(new Exception("Could not load Airspace data."), DisplayName);
-                    return;
-                }
-
-                if (Sectors == null)
-                {
-                    Errors.Add(new Exception("Could not load Sectors data."), DisplayName);
-                    return;
-                }
 
                 if (ATISData == null)
                 {
@@ -311,8 +297,6 @@ namespace ATISPlugin
         private void GetData()
         {
             ATISData = (ATIS)LoadXML(DatasetPath + "\\ATIS.xml", typeof(ATIS));
-            Sectors = (Sectors)LoadXML(DatasetPath + "\\Sectors.xml", typeof(Sectors));
-            Airspace = (Airspace)LoadXML(DatasetPath + "\\Airspace.xml", typeof(Airspace));
         }
 
         public object LoadXML(string filePath, Type type)
@@ -338,7 +322,7 @@ namespace ATISPlugin
 
         private static void ShowEditorWindow()
         {
-            if (ATISData == null || Sectors == null || Airspace == null)
+            if (ATISData == null)
             {
                 Errors.Add(new Exception("Plugin was not started due to missing data."), DisplayName);
 

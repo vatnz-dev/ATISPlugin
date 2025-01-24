@@ -149,7 +149,7 @@ namespace ATISPlugin
             BroadcastStart();
         }
 
-        public async Task Create(string icao, string frequency, string coordinates)
+        public async Task Create(string icao, string frequency, Coordinate coordinates)
         {
             if (!Network.IsConnected || !Network.IsValidATC) return;
 
@@ -173,7 +173,7 @@ namespace ATISPlugin
                 Frequency = Normalize25KhzFrequency(FrequencyToUInt(frequency));
                 AliasFrequency = Normalize25KhzFrequency(199998000U);
                 Callsign = $"{icao}_ATIS";
-                VisPoint = new Coordinate(coordinates);
+                VisPoint = coordinates;
                 IsZulu = false;
 
                 Network.ConnectATIS(Index, Callsign, ICAO, FSDFrequency, VisPoint);

@@ -88,11 +88,13 @@ namespace ATISPlugin
 
             ComboBoxRunway.Items.Add("");
 
-            var airport = Plugin.Airspace.Airports.FirstOrDefault(x => x.ICAO == ICAO);
+            if (ICAO == null) return;
+
+            var airport = Airspace2.GetAirport(ICAO);
 
             if (airport != null)
             {
-                foreach (var runway in airport.Runway.OrderBy(x => x.Name))
+                foreach (var runway in airport.Runways.OrderBy(x => x.Name))
                 {
                     ComboBoxRunway.Items.Add($"RWY {runway.Name.ToString().PadLeft(2, '0')}");
                 }
@@ -989,11 +991,11 @@ namespace ATISPlugin
 
             if (frequency == null) return;
 
-            var airport = Plugin.Airspace.Airports.FirstOrDefault(x => x.ICAO == ICAO.ToUpper());
+            var airport = Airspace2.GetAirport(ICAO.ToUpper());
 
             if (airport == null) return;
 
-            await Control.Create(ICAO, frequency.Frequency.ToString(), airport.Position);
+            await Control.Create(ICAO, frequency.Frequency.ToString(), airport.LatLong);
 
             LoadRunways();
 
@@ -1349,9 +1351,9 @@ namespace ATISPlugin
             TextBoxZulu.Text = atis;
         }
 
-        private string Wind(string wind, string runway)
+        private string Wind(string wind, double rwyHeading)
         {
-            if (string.IsNullOrWhiteSpace(wind) || string.IsNullOrWhiteSpace(runway))
+            if (string.IsNullOrWhiteSpace(wind))
             {
                 return string.Empty;
             }
@@ -1359,8 +1361,6 @@ namespace ATISPlugin
             if (wind == "CALM") return "CALM";
 
             if (wind == "VRB") return "VARIABLE";
-
-            var runwayDirection = runway.Replace("RWY ", "").Replace("L", "").Replace("R", "").Replace("C", "") + "0";
 
             var split = wind.Split('/');
 
@@ -1377,10 +1377,6 @@ namespace ATISPlugin
                 windSpeed = gust.Last();
             }
 
-            var runwayOK = double.TryParse(runwayDirection, out double rwy);
-
-            if (!runwayOK) return string.Empty;
-
             var windSpeedOK = double.TryParse(windSpeed, out double wSpeed);
 
             if (!windSpeedOK) return string.Empty;
@@ -1392,7 +1388,7 @@ namespace ATISPlugin
             if (double.Parse(windSpeed) == 0.0) return "CALM";
 
             double radians = Conversions.DegreesToRadians(wDirection);
-            double num1 = Conversions.DegreesToRadians(rwy) - radians;
+            double num1 = Conversions.DegreesToRadians(rwyHeading) - radians;
             double num3 = Math.Round(wSpeed * Math.Sin(num1));
             double num4 = Math.Round(wSpeed * Math.Cos(num1));
             string str1 = Math.Abs(num3).ToString("F0");
@@ -1425,9 +1421,64 @@ namespace ATISPlugin
 
             if (wind == null) return;
 
-            var windComponents = Wind(wind, ComboBoxRunway.Text);
+            var runwayName = ComboBoxRunway.Text.Replace("RWY ", "");
+
+            var runwayHeading = GetRunwayHeading(runwayName);
+
+            if (runwayHeading == null)
+            {
+                var runwayNameHeadingOk = double.TryParse(runwayName, out double runwayNameHeading);
+
+                if (!runwayNameHeadingOk) return;
+
+                runwayHeading = runwayNameHeading;
+            }
+
+            var windComponents = Wind(wind, runwayHeading.Value);
 
             LabelWindComponents.Text = windComponents;
+        }
+
+        private double? GetRunwayHeading(string runwayName)
+        {
+            var airport = Airspace2.GetAirport(Control.ICAO);
+
+            if (airport == null) return null;
+
+            var runway = airport.Runways.FirstOrDefault(x => x.Name == runwayName);
+
+            if (runway == null) return null;
+
+            var oppositeRunway = OppositeRunway(airport, runway.Name);
+
+            if (oppositeRunway == null) return null;
+
+            var position = LogicalPositions.Positions.FirstOrDefault(x => x.Name == Control.ICAO);
+
+            if (position == null) return null;
+
+            var heading = Conversions.CalculateTrack(runway.LatLong, oppositeRunway.LatLong);
+
+            heading = heading + position.MagneticVariation;
+
+            return Math.Round(heading, 0);
+        }
+
+        public static Airspace2.Airport.Runway OppositeRunway(Airspace2.Airport airport, string runway)
+        {
+            if (runway == null) return null;
+
+            var oppRwyNum = int.Parse(runway.Replace("L", "").Replace("C", "").Replace("R", "")) + 18;
+            if (oppRwyNum > 36) oppRwyNum -= 36;
+            var oppositeRunway = oppRwyNum.ToString("D2");
+            if (runway.EndsWith("L"))
+                oppositeRunway += "R";
+            else if (runway.EndsWith("R"))
+                oppositeRunway += "L";
+            else if (runway.EndsWith("C"))
+                oppositeRunway += "C";
+
+            return airport.Runways.FirstOrDefault(x => x.Name == oppositeRunway);
         }
 
         private void ComboBoxRunway_SelectedIndexChanged(object sender, EventArgs e)

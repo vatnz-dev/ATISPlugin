@@ -58,7 +58,6 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Airspace.cs" />
     <Compile Include="ATIS.cs" />
     <Compile Include="ATISAudio.cs" />
     <Compile Include="ATISControl.cs" />
@@ -77,7 +76,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Sectors.cs" />
     <Compile Include="ZuluInfo.cs" />
   </ItemGroup>
   <ItemGroup>
