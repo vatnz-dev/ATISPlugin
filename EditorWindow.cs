@@ -194,7 +194,10 @@ namespace ATISPlugin
             {
                 Invoke(new Action(() => _refreshForm()));
             }
-            catch { }
+            catch (Exception ex) 
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         private void _refreshForm()
@@ -1133,6 +1136,11 @@ namespace ATISPlugin
             {
                 IncreaseID();
             }
+            else if (Edits && Control.IsZulu)
+            {
+                ButtonSave.Enabled = true;
+                ButtonCancel.Enabled = true; 
+            }
 
             if (line.Name.Contains("WIND"))
             {
@@ -1365,14 +1373,14 @@ namespace ATISPlugin
             string str2 = Math.Abs(num4).ToString("F0");
 
             if (num3 < 0.0)
-                str1 += " Right Crosswind"; // Right
+                str1 += "kt Right Crosswind"; // Right
             else if (num3 > 0.0)
-                str1 += " Left Crosswind"; // Left
+                str1 += "kt Left Crosswind"; // Left
 
             if (num4 < 0.0)
-                str2 += " Tailwind";
+                str2 += "kt Tailwind";
             else if (num4 > 0.0)
-                str2 += " Headwind";
+                str2 += "kt Headwind";
 
             if (str1 == "0") return str2;
 
