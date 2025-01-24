@@ -264,17 +264,12 @@ namespace ATISPlugin
 
         private async void Network_Disconnected(object sender, EventArgs e)
         {
-            if (Editor != null && !Editor.IsDisposed)
-            {
-                Editor.Dispose();
-            }
-
             ToBroadcast.Clear();
             
-            await ATIS1?.Delete(false);
-            await ATIS2?.Delete(false);
-            await ATIS3?.Delete(false);
-            await ATIS4?.Delete(false);
+            await ATIS1?.Delete();
+            await ATIS2?.Delete();
+            await ATIS3?.Delete();
+            await ATIS4?.Delete();
         }
 
         private void OnUpdate(object sender, EventArgs e)

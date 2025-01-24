@@ -45,7 +45,7 @@
             this.TextBox10 = new System.Windows.Forms.TextBox();
             this.TextBox11 = new System.Windows.Forms.TextBox();
             this.TextBox12 = new System.Windows.Forms.TextBox();
-            this.ComboBoxTimecheck = new System.Windows.Forms.ComboBox();
+            this.ComboBoxTimeCheck = new System.Windows.Forms.ComboBox();
             this.Label4 = new System.Windows.Forms.Label();
             this.TextBox4 = new System.Windows.Forms.TextBox();
             this.Label5 = new System.Windows.Forms.Label();
@@ -94,11 +94,11 @@
             this.labelICAO.TabIndex = 0;
             this.labelICAO.Text = "Airport";
             // 
-            // buttonCreate
+            // ButtonCreate
             // 
-            this.ButtonCreate.Location = new System.Drawing.Point(484, 58);
-            this.ButtonCreate.Name = "buttonCreate";
-            this.ButtonCreate.Size = new System.Drawing.Size(100, 28);
+            this.ButtonCreate.Location = new System.Drawing.Point(504, 58);
+            this.ButtonCreate.Name = "ButtonCreate";
+            this.ButtonCreate.Size = new System.Drawing.Size(160, 28);
             this.ButtonCreate.TabIndex = 4;
             this.ButtonCreate.Text = "Create";
             this.ButtonCreate.UseVisualStyleBackColor = true;
@@ -111,7 +111,7 @@
             this.ComboBoxAirport.FormattingEnabled = true;
             this.ComboBoxAirport.Location = new System.Drawing.Point(172, 60);
             this.ComboBoxAirport.Name = "ComboBoxAirport";
-            this.ComboBoxAirport.Size = new System.Drawing.Size(306, 25);
+            this.ComboBoxAirport.Size = new System.Drawing.Size(326, 25);
             this.ComboBoxAirport.TabIndex = 1;
             this.ComboBoxAirport.SelectedIndexChanged += new System.EventHandler(this.ComboBoxAirport_SelectedIndexChanged);
             // 
@@ -121,7 +121,7 @@
             this.TextBox1.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.TextBox1.Location = new System.Drawing.Point(172, 229);
             this.TextBox1.Name = "TextBox1";
-            this.TextBox1.Size = new System.Drawing.Size(412, 25);
+            this.TextBox1.Size = new System.Drawing.Size(492, 25);
             this.TextBox1.TabIndex = 5;
             // 
             // TextBox2
@@ -130,7 +130,7 @@
             this.TextBox2.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.TextBox2.Location = new System.Drawing.Point(172, 260);
             this.TextBox2.Name = "TextBox2";
-            this.TextBox2.Size = new System.Drawing.Size(412, 25);
+            this.TextBox2.Size = new System.Drawing.Size(492, 25);
             this.TextBox2.TabIndex = 6;
             // 
             // TextBox3
@@ -139,7 +139,7 @@
             this.TextBox3.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.TextBox3.Location = new System.Drawing.Point(172, 291);
             this.TextBox3.Name = "TextBox3";
-            this.TextBox3.Size = new System.Drawing.Size(412, 25);
+            this.TextBox3.Size = new System.Drawing.Size(492, 25);
             this.TextBox3.TabIndex = 7;
             // 
             // Label1
@@ -184,7 +184,7 @@
             this.TextBox5.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.TextBox5.Location = new System.Drawing.Point(172, 353);
             this.TextBox5.Name = "TextBox5";
-            this.TextBox5.Size = new System.Drawing.Size(412, 25);
+            this.TextBox5.Size = new System.Drawing.Size(492, 25);
             this.TextBox5.TabIndex = 9;
             // 
             // TextBox6
@@ -193,7 +193,7 @@
             this.TextBox6.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.TextBox6.Location = new System.Drawing.Point(172, 384);
             this.TextBox6.Name = "TextBox6";
-            this.TextBox6.Size = new System.Drawing.Size(412, 25);
+            this.TextBox6.Size = new System.Drawing.Size(492, 25);
             this.TextBox6.TabIndex = 10;
             // 
             // TextBox7
@@ -202,7 +202,7 @@
             this.TextBox7.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.TextBox7.Location = new System.Drawing.Point(172, 415);
             this.TextBox7.Name = "TextBox7";
-            this.TextBox7.Size = new System.Drawing.Size(412, 25);
+            this.TextBox7.Size = new System.Drawing.Size(492, 25);
             this.TextBox7.TabIndex = 11;
             // 
             // TextBox8
@@ -211,7 +211,7 @@
             this.TextBox8.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.TextBox8.Location = new System.Drawing.Point(172, 446);
             this.TextBox8.Name = "TextBox8";
-            this.TextBox8.Size = new System.Drawing.Size(412, 25);
+            this.TextBox8.Size = new System.Drawing.Size(492, 25);
             this.TextBox8.TabIndex = 12;
             // 
             // TextBox9
@@ -220,7 +220,7 @@
             this.TextBox9.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.TextBox9.Location = new System.Drawing.Point(172, 477);
             this.TextBox9.Name = "TextBox9";
-            this.TextBox9.Size = new System.Drawing.Size(412, 25);
+            this.TextBox9.Size = new System.Drawing.Size(492, 25);
             this.TextBox9.TabIndex = 13;
             // 
             // TextBox10
@@ -229,7 +229,7 @@
             this.TextBox10.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.TextBox10.Location = new System.Drawing.Point(172, 508);
             this.TextBox10.Name = "TextBox10";
-            this.TextBox10.Size = new System.Drawing.Size(412, 25);
+            this.TextBox10.Size = new System.Drawing.Size(492, 25);
             this.TextBox10.TabIndex = 14;
             // 
             // TextBox11
@@ -238,7 +238,7 @@
             this.TextBox11.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.TextBox11.Location = new System.Drawing.Point(172, 539);
             this.TextBox11.Name = "TextBox11";
-            this.TextBox11.Size = new System.Drawing.Size(412, 25);
+            this.TextBox11.Size = new System.Drawing.Size(492, 25);
             this.TextBox11.TabIndex = 15;
             // 
             // TextBox12
@@ -247,22 +247,22 @@
             this.TextBox12.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.TextBox12.Location = new System.Drawing.Point(172, 569);
             this.TextBox12.Name = "TextBox12";
-            this.TextBox12.Size = new System.Drawing.Size(412, 25);
+            this.TextBox12.Size = new System.Drawing.Size(492, 25);
             this.TextBox12.TabIndex = 16;
             // 
-            // ComboBoxTimecheck
+            // ComboBoxTimeCheck
             // 
-            this.ComboBoxTimecheck.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.ComboBoxTimecheck.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.ComboBoxTimecheck.FormattingEnabled = true;
-            this.ComboBoxTimecheck.Items.AddRange(new object[] {
+            this.ComboBoxTimeCheck.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.ComboBoxTimeCheck.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ComboBoxTimeCheck.FormattingEnabled = true;
+            this.ComboBoxTimeCheck.Items.AddRange(new object[] {
             "True",
             "False"});
-            this.ComboBoxTimecheck.Location = new System.Drawing.Point(172, 600);
-            this.ComboBoxTimecheck.Name = "ComboBoxTimecheck";
-            this.ComboBoxTimecheck.Size = new System.Drawing.Size(121, 25);
-            this.ComboBoxTimecheck.TabIndex = 17;
-            this.ComboBoxTimecheck.SelectedIndexChanged += new System.EventHandler(this.ComboBoxTimecheck_SelectedIndexChanged);
+            this.ComboBoxTimeCheck.Location = new System.Drawing.Point(172, 600);
+            this.ComboBoxTimeCheck.Name = "ComboBoxTimeCheck";
+            this.ComboBoxTimeCheck.Size = new System.Drawing.Size(121, 25);
+            this.ComboBoxTimeCheck.TabIndex = 17;
+            this.ComboBoxTimeCheck.SelectedIndexChanged += new System.EventHandler(this.ComboBoxTimeCheck_SelectedIndexChanged);
             // 
             // Label4
             // 
@@ -282,7 +282,7 @@
             this.TextBox4.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.TextBox4.Location = new System.Drawing.Point(172, 322);
             this.TextBox4.Name = "TextBox4";
-            this.TextBox4.Size = new System.Drawing.Size(412, 25);
+            this.TextBox4.Size = new System.Drawing.Size(492, 25);
             this.TextBox4.TabIndex = 8;
             // 
             // Label5
@@ -397,17 +397,17 @@
             this.ComboBoxLetter.BackColor = System.Drawing.SystemColors.ControlDark;
             this.ComboBoxLetter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ComboBoxLetter.FormattingEnabled = true;
-            this.ComboBoxLetter.Location = new System.Drawing.Point(172, 197);
+            this.ComboBoxLetter.Location = new System.Drawing.Point(172, 195);
             this.ComboBoxLetter.Name = "ComboBoxLetter";
-            this.ComboBoxLetter.Size = new System.Drawing.Size(200, 25);
+            this.ComboBoxLetter.Size = new System.Drawing.Size(160, 25);
             this.ComboBoxLetter.TabIndex = 4;
             this.ComboBoxLetter.SelectedIndexChanged += new System.EventHandler(this.ComboBoxLetter_SelectedIndexChanged);
             // 
-            // buttonNext
+            // ButtonNext
             // 
-            this.ButtonNext.Location = new System.Drawing.Point(378, 195);
-            this.ButtonNext.Name = "buttonNext";
-            this.ButtonNext.Size = new System.Drawing.Size(100, 28);
+            this.ButtonNext.Location = new System.Drawing.Point(341, 194);
+            this.ButtonNext.Name = "ButtonNext";
+            this.ButtonNext.Size = new System.Drawing.Size(160, 28);
             this.ButtonNext.TabIndex = 34;
             this.ButtonNext.Text = "Next";
             this.ButtonNext.UseVisualStyleBackColor = true;
@@ -441,7 +441,7 @@
             this.LabelMETAR.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
             this.LabelMETAR.Location = new System.Drawing.Point(10, 156);
             this.LabelMETAR.Name = "LabelMETAR";
-            this.LabelMETAR.Size = new System.Drawing.Size(574, 36);
+            this.LabelMETAR.Size = new System.Drawing.Size(654, 36);
             this.LabelMETAR.TabIndex = 37;
             this.LabelMETAR.Text = "LOADING";
             this.LabelMETAR.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -450,7 +450,7 @@
             // 
             this.ButtonSave.Location = new System.Drawing.Point(172, 631);
             this.ButtonSave.Name = "ButtonSave";
-            this.ButtonSave.Size = new System.Drawing.Size(200, 28);
+            this.ButtonSave.Size = new System.Drawing.Size(245, 28);
             this.ButtonSave.TabIndex = 18;
             this.ButtonSave.Text = "Save";
             this.ButtonSave.UseVisualStyleBackColor = true;
@@ -459,9 +459,9 @@
             // ButtonCancel
             // 
             this.ButtonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.ButtonCancel.Location = new System.Drawing.Point(378, 631);
+            this.ButtonCancel.Location = new System.Drawing.Point(423, 631);
             this.ButtonCancel.Name = "ButtonCancel";
-            this.ButtonCancel.Size = new System.Drawing.Size(206, 28);
+            this.ButtonCancel.Size = new System.Drawing.Size(241, 28);
             this.ButtonCancel.TabIndex = 19;
             this.ButtonCancel.Text = "Cancel";
             this.ButtonCancel.UseVisualStyleBackColor = true;
@@ -470,20 +470,20 @@
             // ButtonListen
             // 
             this.ButtonListen.BackColor = System.Drawing.SystemColors.Control;
-            this.ButtonListen.Location = new System.Drawing.Point(378, 125);
+            this.ButtonListen.Location = new System.Drawing.Point(338, 125);
             this.ButtonListen.Name = "ButtonListen";
-            this.ButtonListen.Size = new System.Drawing.Size(100, 28);
+            this.ButtonListen.Size = new System.Drawing.Size(160, 28);
             this.ButtonListen.TabIndex = 40;
             this.ButtonListen.Text = "Listen";
             this.ButtonListen.UseVisualStyleBackColor = false;
             this.ButtonListen.Click += new System.EventHandler(this.ButtonListen_Click);
             // 
-            // buttonGetMetar
+            // ButtonGetMetar
             // 
             this.ButtonGetMetar.BackColor = System.Drawing.SystemColors.Control;
             this.ButtonGetMetar.Location = new System.Drawing.Point(172, 125);
-            this.ButtonGetMetar.Name = "buttonGetMetar";
-            this.ButtonGetMetar.Size = new System.Drawing.Size(200, 28);
+            this.ButtonGetMetar.Name = "ButtonGetMetar";
+            this.ButtonGetMetar.Size = new System.Drawing.Size(160, 28);
             this.ButtonGetMetar.TabIndex = 41;
             this.ButtonGetMetar.Text = "Load METAR";
             this.ButtonGetMetar.UseVisualStyleBackColor = false;
@@ -492,9 +492,9 @@
             // ButtonBroadcast
             // 
             this.ButtonBroadcast.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.ButtonBroadcast.Location = new System.Drawing.Point(484, 125);
+            this.ButtonBroadcast.Location = new System.Drawing.Point(504, 125);
             this.ButtonBroadcast.Name = "ButtonBroadcast";
-            this.ButtonBroadcast.Size = new System.Drawing.Size(100, 28);
+            this.ButtonBroadcast.Size = new System.Drawing.Size(160, 28);
             this.ButtonBroadcast.TabIndex = 42;
             this.ButtonBroadcast.Text = "Broadcast";
             this.ButtonBroadcast.UseVisualStyleBackColor = true;
@@ -508,7 +508,7 @@
             this.ComboBoxVoice.FormattingEnabled = true;
             this.ComboBoxVoice.Location = new System.Drawing.Point(172, 94);
             this.ComboBoxVoice.Name = "ComboBoxVoice";
-            this.ComboBoxVoice.Size = new System.Drawing.Size(306, 25);
+            this.ComboBoxVoice.Size = new System.Drawing.Size(326, 25);
             this.ComboBoxVoice.TabIndex = 2;
             this.ComboBoxVoice.SelectedIndexChanged += new System.EventHandler(this.ComboBoxVoice_SelectedIndexChanged);
             // 
@@ -524,17 +524,17 @@
             "Medium",
             "Slow",
             "Extra Slow"});
-            this.ComboBoxRate.Location = new System.Drawing.Point(484, 94);
+            this.ComboBoxRate.Location = new System.Drawing.Point(504, 94);
             this.ComboBoxRate.Name = "ComboBoxRate";
-            this.ComboBoxRate.Size = new System.Drawing.Size(100, 25);
+            this.ComboBoxRate.Size = new System.Drawing.Size(160, 25);
             this.ComboBoxRate.TabIndex = 3;
             this.ComboBoxRate.SelectedIndexChanged += new System.EventHandler(this.ComboBoxRate_SelectedIndexChanged);
             // 
-            // buttonDelete
+            // ButtonDelete
             // 
-            this.ButtonDelete.Location = new System.Drawing.Point(484, 58);
-            this.ButtonDelete.Name = "buttonDelete";
-            this.ButtonDelete.Size = new System.Drawing.Size(100, 28);
+            this.ButtonDelete.Location = new System.Drawing.Point(504, 57);
+            this.ButtonDelete.Name = "ButtonDelete";
+            this.ButtonDelete.Size = new System.Drawing.Size(160, 28);
             this.ButtonDelete.TabIndex = 45;
             this.ButtonDelete.Text = "Delete";
             this.ButtonDelete.UseVisualStyleBackColor = true;
@@ -555,7 +555,7 @@
             this.ButtonATIS1.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.ButtonATIS1.Location = new System.Drawing.Point(6, 8);
             this.ButtonATIS1.Name = "ButtonATIS1";
-            this.ButtonATIS1.Size = new System.Drawing.Size(140, 44);
+            this.ButtonATIS1.Size = new System.Drawing.Size(160, 44);
             this.ButtonATIS1.TabIndex = 47;
             this.ButtonATIS1.Text = "ATIS #1";
             this.ButtonATIS1.UseVisualStyleBackColor = true;
@@ -564,9 +564,9 @@
             // ButtonATIS2
             // 
             this.ButtonATIS2.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.ButtonATIS2.Location = new System.Drawing.Point(152, 8);
+            this.ButtonATIS2.Location = new System.Drawing.Point(172, 8);
             this.ButtonATIS2.Name = "ButtonATIS2";
-            this.ButtonATIS2.Size = new System.Drawing.Size(140, 44);
+            this.ButtonATIS2.Size = new System.Drawing.Size(160, 44);
             this.ButtonATIS2.TabIndex = 48;
             this.ButtonATIS2.Text = "ATIS #2";
             this.ButtonATIS2.UseVisualStyleBackColor = true;
@@ -575,9 +575,9 @@
             // ButtonATIS3
             // 
             this.ButtonATIS3.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.ButtonATIS3.Location = new System.Drawing.Point(298, 8);
+            this.ButtonATIS3.Location = new System.Drawing.Point(338, 8);
             this.ButtonATIS3.Name = "ButtonATIS3";
-            this.ButtonATIS3.Size = new System.Drawing.Size(140, 44);
+            this.ButtonATIS3.Size = new System.Drawing.Size(160, 44);
             this.ButtonATIS3.TabIndex = 49;
             this.ButtonATIS3.Text = "ATIS #3";
             this.ButtonATIS3.UseVisualStyleBackColor = true;
@@ -586,9 +586,9 @@
             // ButtonATIS4
             // 
             this.ButtonATIS4.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.ButtonATIS4.Location = new System.Drawing.Point(444, 8);
+            this.ButtonATIS4.Location = new System.Drawing.Point(504, 8);
             this.ButtonATIS4.Name = "ButtonATIS4";
-            this.ButtonATIS4.Size = new System.Drawing.Size(140, 44);
+            this.ButtonATIS4.Size = new System.Drawing.Size(160, 44);
             this.ButtonATIS4.TabIndex = 50;
             this.ButtonATIS4.Text = "ATIS #4";
             this.ButtonATIS4.UseVisualStyleBackColor = true;
@@ -601,7 +601,7 @@
             this.TextBoxZulu.Location = new System.Drawing.Point(172, 230);
             this.TextBoxZulu.Multiline = true;
             this.TextBoxZulu.Name = "TextBoxZulu";
-            this.TextBoxZulu.Size = new System.Drawing.Size(412, 365);
+            this.TextBoxZulu.Size = new System.Drawing.Size(492, 365);
             this.TextBoxZulu.TabIndex = 52;
             this.TextBoxZulu.Visible = false;
             this.TextBoxZulu.TextChanged += new System.EventHandler(this.TextBox_TextChanged);
@@ -609,9 +609,9 @@
             // ButtonZulu
             // 
             this.ButtonZulu.CausesValidation = false;
-            this.ButtonZulu.Location = new System.Drawing.Point(484, 195);
+            this.ButtonZulu.Location = new System.Drawing.Point(504, 194);
             this.ButtonZulu.Name = "ButtonZulu";
-            this.ButtonZulu.Size = new System.Drawing.Size(100, 28);
+            this.ButtonZulu.Size = new System.Drawing.Size(160, 28);
             this.ButtonZulu.TabIndex = 53;
             this.ButtonZulu.Text = "Zulu";
             this.ButtonZulu.UseVisualStyleBackColor = true;
@@ -624,7 +624,7 @@
             this.ComboBoxZuluFrequency.FormattingEnabled = true;
             this.ComboBoxZuluFrequency.Location = new System.Drawing.Point(172, 600);
             this.ComboBoxZuluFrequency.Name = "ComboBoxZuluFrequency";
-            this.ComboBoxZuluFrequency.Size = new System.Drawing.Size(412, 25);
+            this.ComboBoxZuluFrequency.Size = new System.Drawing.Size(492, 25);
             this.ComboBoxZuluFrequency.TabIndex = 54;
             this.ComboBoxZuluFrequency.SelectedIndexChanged += new System.EventHandler(this.ComboBoxZuluFrequency_SelectedIndexChanged);
             // 
@@ -657,26 +657,25 @@
             this.ComboBoxRunway.FormattingEnabled = true;
             this.ComboBoxRunway.Location = new System.Drawing.Point(172, 681);
             this.ComboBoxRunway.Name = "ComboBoxRunway";
-            this.ComboBoxRunway.Size = new System.Drawing.Size(200, 25);
+            this.ComboBoxRunway.Size = new System.Drawing.Size(160, 25);
             this.ComboBoxRunway.TabIndex = 57;
             this.ComboBoxRunway.SelectedIndexChanged += new System.EventHandler(this.ComboBoxRunway_SelectedIndexChanged);
             // 
             // LabelWindComponents
             // 
             this.LabelWindComponents.AutoSize = true;
-            this.LabelWindComponents.Location = new System.Drawing.Point(383, 684);
-            this.LabelWindComponents.MinimumSize = new System.Drawing.Size(200, 0);
+            this.LabelWindComponents.Location = new System.Drawing.Point(338, 684);
+            this.LabelWindComponents.MinimumSize = new System.Drawing.Size(320, 0);
             this.LabelWindComponents.Name = "LabelWindComponents";
-            this.LabelWindComponents.Size = new System.Drawing.Size(200, 17);
+            this.LabelWindComponents.Size = new System.Drawing.Size(320, 17);
             this.LabelWindComponents.TabIndex = 58;
-            this.LabelWindComponents.Text = "label14";
             // 
             // EditorWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.Disable;
-            this.ClientSize = new System.Drawing.Size(596, 722);
+            this.ClientSize = new System.Drawing.Size(676, 722);
             this.Controls.Add(this.LabelWindComponents);
             this.Controls.Add(this.ComboBoxRunway);
             this.Controls.Add(this.label13);
@@ -712,7 +711,7 @@
             this.Controls.Add(this.Label5);
             this.Controls.Add(this.TextBox4);
             this.Controls.Add(this.Label4);
-            this.Controls.Add(this.ComboBoxTimecheck);
+            this.Controls.Add(this.ComboBoxTimeCheck);
             this.Controls.Add(this.TextBox12);
             this.Controls.Add(this.TextBox11);
             this.Controls.Add(this.TextBox10);
@@ -734,8 +733,8 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.HideOnClose = true;
             this.Margin = new System.Windows.Forms.Padding(4);
-            this.MaximumSize = new System.Drawing.Size(600, 750);
-            this.MinimumSize = new System.Drawing.Size(600, 750);
+            this.MaximumSize = new System.Drawing.Size(680, 750);
+            this.MinimumSize = new System.Drawing.Size(680, 750);
             this.Name = "EditorWindow";
             this.Resizeable = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -766,7 +765,7 @@
         private System.Windows.Forms.TextBox TextBox10;
         private System.Windows.Forms.TextBox TextBox11;
         private System.Windows.Forms.TextBox TextBox12;
-        private System.Windows.Forms.ComboBox ComboBoxTimecheck;
+        private System.Windows.Forms.ComboBox ComboBoxTimeCheck;
         private System.Windows.Forms.Label Label4;
         private System.Windows.Forms.TextBox TextBox4;
         private System.Windows.Forms.Label Label5;

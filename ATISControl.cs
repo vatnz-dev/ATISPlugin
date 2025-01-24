@@ -182,11 +182,11 @@ namespace ATISPlugin
             StatusChanged?.Invoke(this, null);
         }
 
-        public async Task Delete(bool killOnNetwork = true)
+        public async Task Delete()
         {
-            await BroadcastStop(killOnNetwork);
+            await BroadcastStop();
 
-            if (killOnNetwork && Network.GetATISConnected(Index))
+            if (Network.GetATISConnected(Index))
             {
                 Network.DisconnectATIS(Index);
             }
@@ -315,18 +315,15 @@ namespace ATISPlugin
             }
         }
 
-        public async Task BroadcastStop(bool killOnNetwork = true)
+        public async Task BroadcastStop()
         {
             Broadcasting = false;
 
-            if (killOnNetwork)
+            try
             {
-                try
-                {
-                    await AFV.RemoveATISBot(Index);
-                }
-                catch { }
+                await AFV.RemoveATISBot(Index);
             }
+            catch { }
         }
 
         public string[] GetInfo()

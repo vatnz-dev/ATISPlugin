@@ -64,6 +64,8 @@ namespace ATISPlugin
 
             LoadOptions();
 
+            RefreshForm_ClearWindCalculator();
+
             RefreshForm();
         }
 
@@ -82,6 +84,8 @@ namespace ATISPlugin
         private void LoadRunways()
         {
             ComboBoxRunway.Items.Clear();
+
+            ComboBoxRunway.Items.Add("");
 
             var airport = Plugin.Airspace.Airports.FirstOrDefault(x => x.ICAO == ICAO);
 
@@ -186,7 +190,11 @@ namespace ATISPlugin
 
         public void RefreshForm()
         {
-            Invoke(new Action(() => _refreshForm()));
+            try
+            {
+                Invoke(new Action(() => _refreshForm()));
+            }
+            catch { }
         }
 
         private void _refreshForm()
@@ -204,7 +212,7 @@ namespace ATISPlugin
 
             ComboBoxRate.SelectedIndex = ComboBoxRate.FindStringExact(Rate.ToString());
 
-            ComboBoxTimecheck.SelectedIndex = ComboBoxTimecheck.FindStringExact(TimeCheck.ToString());
+            ComboBoxTimeCheck.SelectedIndex = ComboBoxTimeCheck.FindStringExact(TimeCheck.ToString());
 
             ComboBoxZuluFrequency.Items.Clear();
 
@@ -220,12 +228,9 @@ namespace ATISPlugin
 
             RefeshForm_TopButtons();
 
-            if (Control.IsZulu)
+            if (Network.IsConnected && Control?.ICAO == null)
             {
-                RefreshForm_ZuluATIS();
-            }
-            else if (Network.IsConnected && Control?.ICAO == null)
-            {
+                RefreshForm_ClearWindCalculator();
                 RefreshFrom_NoATIS();
             }
             else if (Network.IsConnected && Control?.ICAO != null)
@@ -234,10 +239,9 @@ namespace ATISPlugin
             }
             else
             {
+                RefreshForm_ClearWindCalculator();
                 RefreshForm_NotConnected();
             }
-
-            CalculateWind();
         }
 
         private void RefeshForm_TopButtons()
@@ -389,51 +393,22 @@ namespace ATISPlugin
 
         private void RefreshForm_NotConnected()
         {
+            ComboBoxAirport.Enabled = false;
+            ButtonCreate.Enabled = false;
+
+            RefreshForm_NormalATIS();
+
             ButtonZulu.Enabled = false;
-            ButtonSave.Enabled = false;
-            ButtonCancel.Enabled = false;
-
-            if (Network.IsConnected && Network.IsValidATC)
-            {
-                ComboBoxAirport.Enabled = true;
-                ButtonCreate.Enabled = true;
-            }
-            else
-            {
-                ComboBoxAirport.Enabled = false;
-                ButtonCreate.Enabled = false;
-            }
-
-            ComboBoxLetter.Enabled = false;
-            ComboBoxTimecheck.Enabled = false;
-            LabelCode.Text = string.Empty;
+            ComboBoxAirport.Enabled = true;
             ButtonCreate.Visible = true;
             ButtonDelete.Visible = false;
             ButtonGetMetar.Enabled = false;
-            ButtonBroadcast.Enabled = false;
-            ButtonNext.Enabled = false;
             ComboBoxVoice.Enabled = false;
             ComboBoxRate.Enabled = false;
-            ButtonListen.Enabled = false;
-            ButtonListen.BackColor = Color.FromName("Control");
-            ButtonListen.ForeColor = default;
-            ButtonBroadcast.BackColor = Color.FromName("Control");
-            ButtonBroadcast.ForeColor = default;
+            ComboBoxLetter.Enabled = false;
+            ButtonNext.Enabled = false;
+            ComboBoxTimeCheck.Enabled = false;
 
-            TextBox1.TextChanged -= TextBox_TextChanged;
-            TextBox2.TextChanged -= TextBox_TextChanged;
-            TextBox3.TextChanged -= TextBox_TextChanged;
-            TextBox4.TextChanged -= TextBox_TextChanged;
-            TextBox5.TextChanged -= TextBox_TextChanged;
-            TextBox6.TextChanged -= TextBox_TextChanged;
-            TextBox7.TextChanged -= TextBox_TextChanged;
-            TextBox8.TextChanged -= TextBox_TextChanged;
-            TextBox9.TextChanged -= TextBox_TextChanged;
-            TextBox10.TextChanged -= TextBox_TextChanged;
-            TextBox11.TextChanged -= TextBox_TextChanged;
-            TextBox12.TextChanged -= TextBox_TextChanged;
-
-            TextBoxZulu.Text = string.Empty;
             TextBox1.Text = string.Empty;
             TextBox2.Text = string.Empty;
             TextBox3.Text = string.Empty;
@@ -446,74 +421,50 @@ namespace ATISPlugin
             TextBox10.Text = string.Empty;
             TextBox11.Text = string.Empty;
             TextBox12.Text = string.Empty;
+            TextBoxZulu.Text = string.Empty;
 
-            TextBoxZulu.Enabled = false;
-            TextBoxZulu.Visible = false;
-            ComboBoxZuluFrequency.Visible = false;
-            TextBox1.Enabled = false;
-            TextBox2.Enabled = false;
-            TextBox3.Enabled = false;
-            TextBox4.Enabled = false;
-            TextBox5.Enabled = false;
-            TextBox6.Enabled = false;
-            TextBox7.Enabled = false;
-            TextBox8.Enabled = false;
-            TextBox9.Enabled = false;
-            TextBox10.Enabled = false;
-            TextBox11.Enabled = false;
-            TextBox12.Enabled = false;
+            LabelCode.Text = string.Empty;
+            LabelMETAR.Text = string.Empty;
 
-            Label1.BackColor = default;
-            Label2.BackColor = default;
-            Label3.BackColor = default;
-            Label4.BackColor = default;
-            Label5.BackColor = default;
-            Label6.BackColor = default;
-            Label7.BackColor = default;
-            Label8.BackColor = default;
-            Label9.BackColor = default;
-            Label10.BackColor = default;
-            Label11.BackColor = default;
-            Label12.BackColor = default;
+            ButtonSave.Enabled = false;
+            ButtonCancel.Enabled = false;
+
+            ButtonListen.Enabled = false;
+            ButtonBroadcast.Enabled = false;
+            ButtonListen.BackColor = Color.FromName("Control");
+            ButtonListen.ForeColor = default;
+            ButtonBroadcast.BackColor = Color.FromName("Control");
+            ButtonBroadcast.ForeColor = default;
+
+            RefreshForm_DisableTextBoxes();
+
+            RefreshForm_ResetColours();
         }
 
         private void RefreshFrom_NoATIS()
         {
             ComboBoxAirport.Enabled = true;
             ButtonCreate.Enabled = true;
-            ButtonDelete.Visible = false;
-            ButtonCreate.Visible = true;
+
+            if (Control.IsZulu)
+            {
+                RefreshForm_ZuluATIS();
+            }
+            else
+            {
+                RefreshForm_NormalATIS();
+            }
 
             ButtonZulu.Enabled = false;
-            ButtonSave.Enabled = false;
-            ButtonCancel.Enabled = false;
-            ComboBoxLetter.Enabled = false;
-            ComboBoxTimecheck.Enabled = false;
-            LabelCode.Text = string.Empty;
+            ComboBoxAirport.Enabled = true;
+            ButtonCreate.Visible = true;
+            ButtonDelete.Visible = false;
             ButtonGetMetar.Enabled = false;
-            ButtonBroadcast.Enabled = false;
-            ButtonNext.Enabled = false;
             ComboBoxVoice.Enabled = false;
-            ButtonListen.Enabled = false;
-            ButtonListen.BackColor = Color.FromName("Control");
-            ButtonListen.ForeColor = default;
-            ButtonBroadcast.BackColor = Color.FromName("Control");
-            ButtonBroadcast.ForeColor = default;
-            ButtonZulu.BackColor = Color.FromName("Control");
-            ButtonZulu.ForeColor = default;
-
-            TextBox1.TextChanged -= TextBox_TextChanged;
-            TextBox2.TextChanged -= TextBox_TextChanged;
-            TextBox3.TextChanged -= TextBox_TextChanged;
-            TextBox4.TextChanged -= TextBox_TextChanged;
-            TextBox5.TextChanged -= TextBox_TextChanged;
-            TextBox6.TextChanged -= TextBox_TextChanged;
-            TextBox7.TextChanged -= TextBox_TextChanged;
-            TextBox8.TextChanged -= TextBox_TextChanged;
-            TextBox9.TextChanged -= TextBox_TextChanged;
-            TextBox10.TextChanged -= TextBox_TextChanged;
-            TextBox11.TextChanged -= TextBox_TextChanged;
-            TextBox12.TextChanged -= TextBox_TextChanged;
+            ComboBoxRate.Enabled = false;
+            ComboBoxLetter.Enabled = false;
+            ButtonNext.Enabled = false;
+            ComboBoxTimeCheck.Enabled = false;
 
             TextBox1.Text = string.Empty;
             TextBox2.Text = string.Empty;
@@ -527,25 +478,27 @@ namespace ATISPlugin
             TextBox10.Text = string.Empty;
             TextBox11.Text = string.Empty;
             TextBox12.Text = string.Empty;
+            TextBoxZulu.Text = string.Empty;
 
-            TextBoxZulu.Enabled = false;
-            TextBox1.Enabled = false;
-            TextBox2.Enabled = false;
-            TextBox3.Enabled = false;
-            TextBox4.Enabled = false;
-            TextBox5.Enabled = false;
-            TextBox6.Enabled = false;
-            TextBox7.Enabled = false;
-            TextBox8.Enabled = false;
-            TextBox9.Enabled = false;
-            TextBox10.Enabled = false;
-            TextBox11.Enabled = false;
-            TextBox12.Enabled = false;
+            LabelCode.Text = string.Empty;
+            LabelMETAR.Text = string.Empty;
 
-            RefreshFrom_ResetColours();
+            ButtonSave.Enabled = false;
+            ButtonCancel.Enabled = false;
+
+            ButtonListen.Enabled = false;
+            ButtonBroadcast.Enabled = false;
+            ButtonListen.BackColor = Color.FromName("Control");
+            ButtonListen.ForeColor = default;
+            ButtonBroadcast.BackColor = Color.FromName("Control");
+            ButtonBroadcast.ForeColor = default;
+
+            RefreshForm_DisableTextBoxes();
+
+            RefreshForm_ResetColours();
         }
 
-        private void RefreshForm_EnableTextBoxs()
+        private void RefreshForm_EnableTextBoxes()
         {
             TextBox1.Enabled = true;
             TextBox2.Enabled = true;
@@ -559,6 +512,7 @@ namespace ATISPlugin
             TextBox10.Enabled = true;
             TextBox11.Enabled = true;
             TextBox12.Enabled = true;
+            TextBoxZulu.Enabled = true;
 
             TextBox1.TextChanged += TextBox_TextChanged;
             TextBox2.TextChanged += TextBox_TextChanged;
@@ -572,10 +526,25 @@ namespace ATISPlugin
             TextBox10.TextChanged += TextBox_TextChanged;
             TextBox11.TextChanged += TextBox_TextChanged;
             TextBox12.TextChanged += TextBox_TextChanged;
+            TextBoxZulu.TextChanged += TextBox_TextChanged;
         }
 
-        private void RefreshForm_DisableTextBoxs()
+        private void RefreshForm_DisableTextBoxes()
         {
+            TextBox1.Enabled = false;
+            TextBox2.Enabled = false;
+            TextBox3.Enabled = false;
+            TextBox4.Enabled = false;
+            TextBox5.Enabled = false;
+            TextBox6.Enabled = false;
+            TextBox7.Enabled = false;
+            TextBox8.Enabled = false;
+            TextBox9.Enabled = false;
+            TextBox10.Enabled = false;
+            TextBox11.Enabled = false;
+            TextBox12.Enabled = false;
+            TextBoxZulu.Enabled = false;
+
             TextBox1.TextChanged -= TextBox_TextChanged;
             TextBox2.TextChanged -= TextBox_TextChanged;
             TextBox3.TextChanged -= TextBox_TextChanged;
@@ -588,23 +557,30 @@ namespace ATISPlugin
             TextBox10.TextChanged -= TextBox_TextChanged;
             TextBox11.TextChanged -= TextBox_TextChanged;
             TextBox12.TextChanged -= TextBox_TextChanged;
+            TextBoxZulu.TextChanged -= TextBox_TextChanged;
         }
 
         private void RefreshForm_WithATIS()
         {
+            if (Control.IsZulu)
+            {
+                RefreshForm_ZuluATIS();
+            }
+            else
+            {
+                RefreshForm_NormalATIS();
+            }
+
             ButtonZulu.Enabled = true;
             ComboBoxAirport.Enabled = false;
-            ComboBoxLetter.Enabled = true;
-            ComboBoxTimecheck.Enabled = true;
             ButtonCreate.Visible = false;
             ButtonDelete.Visible = true;
             ButtonGetMetar.Enabled = true;
-            ButtonNext.Enabled = true;
             ComboBoxVoice.Enabled = true;
             ComboBoxRate.Enabled = true;
-            ComboBoxLetter.Enabled = true;
+            ComboBoxTimeCheck.Enabled = true;
 
-            RefreshForm_DisableTextBoxs();
+            RefreshForm_DisableTextBoxes();
 
             foreach (var line in Control.Lines)
             {
@@ -646,12 +622,15 @@ namespace ATISPlugin
                     case 12:
                         TextBox12.Text = line.Value;
                         break;
+                    case 13:
+                        TextBoxZulu.Text = line.Value;
+                        break;
                     default:
                         break;
                 }
             }
 
-            RefreshForm_EnableTextBoxs();
+            RefreshForm_EnableTextBoxes();
 
             LabelCode.Text = Control.ICAO;
 
@@ -809,6 +788,9 @@ namespace ATISPlugin
                             Label12.BackColor = default;
                         }
                         break;
+                    case 13:
+                        if (!string.IsNullOrWhiteSpace(saveLine.Value)) TextBoxZulu.Text = saveLine.Value;
+                        break;
                     default:
                         break;
                 }
@@ -859,85 +841,91 @@ namespace ATISPlugin
             }
         }
 
+        private void RefreshForm_NormalATIS()
+        {
+            TextBoxZulu.Visible = false;
+            ComboBoxZuluFrequency.Visible = false;
+            LabelFrequency.Visible = false;
+            ComboBoxLetter.Enabled = true;
+            ButtonNext.Enabled = true;
+
+            TextBox1.Visible = true;
+            TextBox2.Visible = true;
+            TextBox3.Visible = true;
+            TextBox4.Visible = true;
+            TextBox5.Visible = true;
+            TextBox6.Visible = true;
+            TextBox7.Visible = true;
+            TextBox8.Visible = true;
+            TextBox9.Visible = true;
+            TextBox10.Visible = true;
+            TextBox11.Visible = true;
+            TextBox12.Visible = true;
+            Label1.Visible = true;
+            Label2.Visible = true;
+            Label3.Visible = true;
+            Label4.Visible = true;
+            Label5.Visible = true;
+            Label6.Visible = true;
+            Label7.Visible = true;
+            Label8.Visible = true;
+            Label9.Visible = true;
+            Label10.Visible = true;
+            Label11.Visible = true;
+            Label12.Visible = true;
+            labelTimeCheck.Visible = true;
+            ComboBoxTimeCheck.Visible = true;
+
+            ButtonZulu.BackColor = Color.FromName("Control");
+            ButtonZulu.ForeColor = default;
+        }
+
         private void RefreshForm_ZuluATIS()
         {
+            TextBoxZulu.Visible = true;
+            ComboBoxZuluFrequency.Visible = true;
+            LabelFrequency.Visible = true;
             ComboBoxLetter.Enabled = false;
             ButtonNext.Enabled = false;
 
-            if (Network.IsConnected && Control?.ICAO != null)
-            {
-                TextBoxZulu.TextChanged += TextBox_TextChanged;
-                TextBoxZulu.Enabled = true;
-                TextBoxZulu.Visible = true;
+            TextBox1.Visible = false;
+            TextBox2.Visible = false;
+            TextBox3.Visible = false;
+            TextBox4.Visible = false;
+            TextBox5.Visible = false;
+            TextBox6.Visible = false;
+            TextBox7.Visible = false;
+            TextBox8.Visible = false;
+            TextBox9.Visible = false;
+            TextBox10.Visible = false;
+            TextBox11.Visible = false;
+            TextBox12.Visible = false;
+            Label1.Visible = false;
+            Label2.Visible = false;
+            Label3.Visible = false;
+            Label4.Visible = false;
+            Label5.Visible = false;
+            Label6.Visible = false;
+            Label7.Visible = false;
+            Label8.Visible = false;
+            Label9.Visible = false;
+            Label10.Visible = false;
+            Label11.Visible = false;
+            Label12.Visible = false;
+            labelTimeCheck.Visible = false;
+            ComboBoxTimeCheck.Visible = false;
 
-                ComboBoxZuluFrequency.Visible = true;
-                LabelFrequency.Visible = true;
-                ButtonZulu.BackColor = Color.FromName("ControlDarkDark");
-                ButtonZulu.ForeColor = Color.FromName("ControlLightLight");
-                TextBox1.Visible = false;
-                TextBox2.Visible = false;
-                TextBox3.Visible = false;
-                TextBox4.Visible = false;
-                TextBox5.Visible = false;
-                TextBox6.Visible = false;
-                TextBox7.Visible = false;
-                TextBox8.Visible = false;
-                TextBox9.Visible = false;
-                TextBox10.Visible = false;
-                TextBox11.Visible = false;
-                TextBox12.Visible = false;
-                Label1.Visible = false;
-                Label2.Visible = false;
-                Label3.Visible = false;
-                Label4.Visible = false;
-                Label5.Visible = false;
-                Label6.Visible = false;
-                Label7.Visible = false;
-                Label8.Visible = false;
-                Label9.Visible = false;
-                Label10.Visible = false;
-                Label11.Visible = false;
-                Label12.Visible = false;
-                labelTimeCheck.Visible = false;
-            }
-            else
-            {
-                TextBoxZulu.TextChanged -= TextBox_TextChanged;
-                TextBoxZulu.Enabled = false;
-                TextBoxZulu.Visible = false;
-                ButtonZulu.BackColor = Color.FromName("Control");
-                ButtonZulu.ForeColor = default;
-                LabelFrequency.Visible = false;
-                ComboBoxZuluFrequency.Visible = false;
-                TextBox1.Visible = true;
-                TextBox2.Visible = true;
-                TextBox3.Visible = true;
-                TextBox4.Visible = true;
-                TextBox5.Visible = true;
-                TextBox6.Visible = true;
-                TextBox7.Visible = true;
-                TextBox8.Visible = true;
-                TextBox9.Visible = true;
-                TextBox10.Visible = true;
-                TextBox11.Visible = true;
-                TextBox12.Visible = true;
-                Label1.Visible = true;
-                Label2.Visible = true;
-                Label3.Visible = true;
-                Label4.Visible = true;
-                Label5.Visible = true;
-                Label6.Visible = true;
-                Label7.Visible = true;
-                Label8.Visible = true;
-                Label9.Visible = true;
-                Label10.Visible = true;
-                Label11.Visible = true;
-                Label12.Visible = true;
-                labelTimeCheck.Visible = true;
-            }
+            ButtonZulu.BackColor = Color.FromName("ControlDarkDark");
+            ButtonZulu.ForeColor = Color.FromName("ControlLightLight");
         }
 
-        private void RefreshFrom_ResetColours()
+        private void RefreshForm_ClearWindCalculator()
+        {
+            LabelWindComponents.Text = "";
+            ComboBoxRunway.SelectedIndex = ComboBoxRunway.FindStringExact("");
+        }
+
+        private void RefreshForm_ResetColours()
         {
             Label1.BackColor = default;
             Label2.BackColor = default;
@@ -1019,7 +1007,7 @@ namespace ATISPlugin
 
             Control.SuggestedLines.Clear();
 
-            RefreshFrom_ResetColours();
+            RefreshForm_ResetColours();
 
             RefreshForm();
         }
@@ -1031,6 +1019,8 @@ namespace ATISPlugin
 
         private async void ButtonSave_Click(object sender, EventArgs e)
         {
+            RefreshForm_ClearWindCalculator();
+
             await SaveATIS();
         }
 
@@ -1044,7 +1034,7 @@ namespace ATISPlugin
 
             Saves.Clear();
 
-            RefreshFrom_ResetColours();
+            RefreshForm_ResetColours();
 
             RefreshForm();
         }
@@ -1115,6 +1105,9 @@ namespace ATISPlugin
                 case "TextBox12":
                     lineNumber = 12;
                     break;
+                case "TextBoxZulu":
+                    lineNumber = 13;
+                    break;
                 default:
                     break;
             }
@@ -1139,6 +1132,11 @@ namespace ATISPlugin
             if (Edits && ID == Control.ID && !Control.IsZulu)
             {
                 IncreaseID();
+            }
+
+            if (line.Name.Contains("WIND"))
+            {
+                CalculateWind();
             }
         }
 
@@ -1243,7 +1241,7 @@ namespace ATISPlugin
             Change(4);
         }
 
-        private void ComboBoxTimecheck_SelectedIndexChanged(object sender, EventArgs e)
+        private void ComboBoxTimeCheck_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (!(sender is ComboBox comboBox)) return;
 
@@ -1328,26 +1326,48 @@ namespace ATISPlugin
 
             if (wind == "VRB") return "VARIABLE";
 
-            var runwayDirection = runway.Replace("RWY ", "") + "0";
+            var runwayDirection = runway.Replace("RWY ", "").Replace("L", "").Replace("R", "").Replace("C", "") + "0";
 
-            var windDirection = wind.Substring(0, 3);
+            var split = wind.Split('/');
 
-            var windSpeed = wind.Substring(4, 2);
+            if (split.Length != 2) return string.Empty;
+
+            var windDirection = split.First();
+
+            var windSpeed = split.Last();
+
+            var gust = windSpeed.Split('-');
+
+            if (gust.Length == 2)
+            {
+                windSpeed = gust.Last();
+            }
+
+            var runwayOK = double.TryParse(runwayDirection, out double rwy);
+
+            if (!runwayOK) return string.Empty;
+
+            var windSpeedOK = double.TryParse(windSpeed, out double wSpeed);
+
+            if (!windSpeedOK) return string.Empty;
+
+            var windDirectionOk = double.TryParse(windDirection, out double wDirection);
+
+            if (!windDirectionOk) return string.Empty;
 
             if (double.Parse(windSpeed) == 0.0) return "CALM";
 
-            double radians = Conversions.DegreesToRadians(double.Parse(windDirection));
-            double num1 = Conversions.DegreesToRadians(double.Parse(runwayDirection)) - radians;
-            double num2 = double.Parse(windSpeed);
-            double num3 = Math.Round(num2 * Math.Sin(num1));
-            double num4 = Math.Round(num2 * Math.Cos(num1));
+            double radians = Conversions.DegreesToRadians(wDirection);
+            double num1 = Conversions.DegreesToRadians(rwy) - radians;
+            double num3 = Math.Round(wSpeed * Math.Sin(num1));
+            double num4 = Math.Round(wSpeed * Math.Cos(num1));
             string str1 = Math.Abs(num3).ToString("F0");
             string str2 = Math.Abs(num4).ToString("F0");
 
             if (num3 < 0.0)
-                str1 += " Right";
+                str1 += " Right Crosswind"; // Right
             else if (num3 > 0.0)
-                str1 += " Left";
+                str1 += " Left Crosswind"; // Left
 
             if (num4 < 0.0)
                 str2 += " Tailwind";
@@ -1363,15 +1383,15 @@ namespace ATISPlugin
 
         private void CalculateWind()
         {
-            var suggestedWind = Control.SuggestedLines.FirstOrDefault(x => x.Name.Contains("WIND"));
+            var saveWind = Saves.FirstOrDefault(x => x.Key.Contains("WIND"));
 
             var atisWind = Control.Lines.FirstOrDefault(x => x.Name.Contains("WIND"));
 
-            var wind = suggestedWind != null ? suggestedWind : atisWind;
+            var wind = saveWind.Key != null ? saveWind.Value : atisWind.Value;
 
             if (wind == null) return;
 
-            var windComponents = Wind(wind.Value, ComboBoxRunway.Text);
+            var windComponents = Wind(wind, ComboBoxRunway.Text);
 
             LabelWindComponents.Text = windComponents;
         }
