@@ -76,6 +76,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="ToggleButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="ZuluInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -141,6 +144,9 @@
     <Reference Include="vatSys">
       <Private>false</Private>
       <HintPath>..\..\..\..\..\..\Program Files (x86)\vatSys\bin\vatSys.exe</HintPath>
+    </Reference>
+    <Reference Include="VATSYSControls">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\vatSys\bin\VATSYSControls.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

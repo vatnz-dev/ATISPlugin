@@ -6,6 +6,7 @@ using System.Speech.Synthesis;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using vatsys;
+using VATSYSControls;
 
 namespace ATISPlugin
 {
@@ -45,6 +46,21 @@ namespace ATISPlugin
 
             BackColor = Colours.GetColour(Colours.Identities.WindowBackground);
             ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
+
+            ComboBoxTimeCheck.BackColor = Colours.GetColour(Colours.Identities.WindowBackground);
+            ComboBoxTimeCheck.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
+            ComboBoxTimeCheck.FocusColor = Colours.GetColour(Colours.Identities.HighlightedText);
+            ComboBoxTimeCheck.Font = MMI.eurofont_winsml;
+
+            ComboBoxAirport.BackColor = Colours.GetColour(Colours.Identities.WindowBackground);
+            ComboBoxAirport.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
+            ComboBoxAirport.FocusColor = Colours.GetColour(Colours.Identities.HighlightedText);
+            ComboBoxAirport.Font = MMI.eurofont_winsml;
+
+            ComboBoxLetter.BackColor = Colours.GetColour(Colours.Identities.WindowBackground);
+            ComboBoxLetter.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
+            ComboBoxLetter.FocusColor = Colours.GetColour(Colours.Identities.HighlightedText);
+            ComboBoxLetter.Font = MMI.eurofont_winsml;
         }
 
         public void Change(int number)
@@ -84,6 +100,8 @@ namespace ATISPlugin
 
         private void LoadRunways()
         {
+            if (ComboBoxRunway.Items == null) ComboBoxRunway.Items = new List<string>();
+
             ComboBoxRunway.Items.Clear();
 
             ComboBoxRunway.Items.Add("");
@@ -112,6 +130,8 @@ namespace ATISPlugin
         {
             LoadRunways();
 
+            if (ComboBoxAirport.Items == null) ComboBoxAirport.Items = new List<string>();
+
             ComboBoxAirport.Items.Clear();
 
             foreach (var freq in Plugin.ATISData.Frequencies.OrderBy(x => x.Airport))
@@ -119,12 +139,16 @@ namespace ATISPlugin
                 ComboBoxAirport.Items.Add(freq.Airport);
             }
 
+            if (ComboBoxLetter.Items == null) ComboBoxLetter.Items = new List<string>();
+
             ComboBoxLetter.Items.Clear();
 
             for (char c = 'A'; c <= 'Y'; c++)
             {
                 ComboBoxLetter.Items.Add(c.ToString());
             }
+
+            if (ComboBoxVoice.Items == null) ComboBoxVoice.Items = new List<string>();
 
             ComboBoxVoice.Items.Clear();
 
@@ -134,6 +158,8 @@ namespace ATISPlugin
             }
 
             ComboBoxVoice.Items.Add(Plugin.ManualVoiceName);
+
+            if (ComboBoxZuluFrequency.Items == null) ComboBoxZuluFrequency.Items = new List<string>();
 
             ComboBoxZuluFrequency.Items.Clear();
 
@@ -206,15 +232,15 @@ namespace ATISPlugin
         {
             LabelMETAR.Text = string.Empty;
 
-            ComboBoxAirport.SelectedIndex = ComboBoxAirport.FindStringExact(ICAO);
+            ComboBoxAirport.SelectedIndex = ComboBoxAirport.Items.IndexOf(ICAO);
 
-            ComboBoxLetter.SelectedIndex = ComboBoxLetter.FindStringExact(ID.ToString());
+            ComboBoxLetter.SelectedIndex = ComboBoxLetter.Items.IndexOf(ID.ToString());
 
-            ComboBoxVoice.SelectedIndex = ComboBoxVoice.FindStringExact(VoiceName);
+            ComboBoxVoice.SelectedIndex = ComboBoxVoice.Items.IndexOf(VoiceName);
 
-            ComboBoxRate.SelectedIndex = ComboBoxRate.FindStringExact(Rate.ToString());
+            ComboBoxRate.SelectedIndex = ComboBoxRate.Items.IndexOf(Rate.ToString());
 
-            ComboBoxTimeCheck.SelectedIndex = ComboBoxTimeCheck.FindStringExact(TimeCheck.ToString());
+            ComboBoxTimeCheck.SelectedIndex = ComboBoxTimeCheck.Items.IndexOf(TimeCheck.ToString());
 
             ComboBoxZuluFrequency.Items.Clear();
 
@@ -225,7 +251,7 @@ namespace ATISPlugin
 
             if (!string.IsNullOrWhiteSpace(ZuluFrequency))
             {
-                ComboBoxZuluFrequency.SelectedIndex = ComboBoxZuluFrequency.FindStringExact(ZuluFrequency);
+                ComboBoxZuluFrequency.SelectedIndex = ComboBoxZuluFrequency.Items.IndexOf(ZuluFrequency);
             }
 
             RefeshForm_TopButtons();
@@ -284,112 +310,40 @@ namespace ATISPlugin
                 ButtonATIS4.Text = "ATIS #4";
             }
 
-            if (Number == 1)
+            if (Control.Number == 1)
             {
-                ButtonATIS1.BackColor = Color.FromName("ControlDarkDark");
-
-                if (Plugin.ATIS1.SuggestedLines.Any())
-                {
-                    ButtonATIS1.ForeColor = Color.Yellow;
-                }
-                else
-                {
-                    ButtonATIS1.ForeColor = Color.FromName("ControlLightLight");
-                }
+                ButtonATIS1.Checked = true;
             }
             else
             {
-                ButtonATIS1.ForeColor = default;
-
-                if (Plugin.ATIS1.SuggestedLines.Any())
-                {
-                    ButtonATIS1.BackColor = Color.Yellow;
-                }
-                else
-                {
-                    ButtonATIS1.BackColor = Color.FromName("Control");
-                }
+                ButtonATIS1.Checked = false;
             }
 
-            if (Number == 2)
+            if (Control.Number == 2)
             {
-                ButtonATIS2.BackColor = Color.FromName("ControlDarkDark");
-
-                if (Plugin.ATIS2.SuggestedLines.Any())
-                {
-                    ButtonATIS2.ForeColor = Color.Yellow;
-                }
-                else
-                {
-                    ButtonATIS2.ForeColor = Color.FromName("ControlLightLight");
-                }
+                ButtonATIS2.Checked = true;
             }
             else
             {
-                ButtonATIS2.ForeColor = default;
-
-                if (Plugin.ATIS2.SuggestedLines.Any())
-                {
-                    ButtonATIS2.BackColor = Color.Yellow;
-                }
-                else
-                {
-                    ButtonATIS2.BackColor = Color.FromName("Control");
-                }
+                ButtonATIS2.Checked = false;
             }
 
-            if (Number == 3)
+            if (Control.Number == 3)
             {
-                ButtonATIS3.BackColor = Color.FromName("ControlDarkDark");
-
-                if (Plugin.ATIS3.SuggestedLines.Any())
-                {
-                    ButtonATIS3.ForeColor = Color.Yellow;
-                }
-                else
-                {
-                    ButtonATIS3.ForeColor = Color.FromName("ControlLightLight");
-                }
+                ButtonATIS3.Checked = true;
             }
             else
             {
-                ButtonATIS3.ForeColor = default;
-
-                if (Plugin.ATIS3.SuggestedLines.Any())
-                {
-                    ButtonATIS3.BackColor = Color.Yellow;
-                }
-                else
-                {
-                    ButtonATIS3.BackColor = Color.FromName("Control");
-                }
+                ButtonATIS3.Checked = false;
             }
 
-            if (Number == 4)
+            if (Control.Number == 4)
             {
-                ButtonATIS4.BackColor = Color.FromName("ControlDarkDark");
-
-                if (Plugin.ATIS4.SuggestedLines.Any())
-                {
-                    ButtonATIS4.ForeColor = Color.Yellow;
-                }
-                else
-                {
-                    ButtonATIS4.ForeColor = Color.FromName("ControlLightLight");
-                }
+                ButtonATIS4.Checked = true;
             }
             else
             {
-                ButtonATIS4.ForeColor = default;
-
-                if (Plugin.ATIS4.SuggestedLines.Any())
-                {
-                    ButtonATIS4.BackColor = Color.Yellow;
-                }
-                else
-                {
-                    ButtonATIS4.BackColor = Color.FromName("Control");
-                }
+                ButtonATIS4.Checked = false;
             }
         }
 
@@ -397,6 +351,8 @@ namespace ATISPlugin
         {
             ComboBoxAirport.Enabled = false;
             ButtonCreate.Enabled = false;
+            ComboBoxRate.Visible = true;
+            ButtonRecord.Visible = false;
 
             RefreshForm_NormalATIS();
 
@@ -433,10 +389,6 @@ namespace ATISPlugin
 
             ButtonListen.Enabled = false;
             ButtonBroadcast.Enabled = false;
-            ButtonListen.BackColor = Color.FromName("Control");
-            ButtonListen.ForeColor = default;
-            ButtonBroadcast.BackColor = Color.FromName("Control");
-            ButtonBroadcast.ForeColor = default;
 
             RefreshForm_DisableTextBoxes();
 
@@ -490,10 +442,6 @@ namespace ATISPlugin
 
             ButtonListen.Enabled = false;
             ButtonBroadcast.Enabled = false;
-            ButtonListen.BackColor = Color.FromName("Control");
-            ButtonListen.ForeColor = default;
-            ButtonBroadcast.BackColor = Color.FromName("Control");
-            ButtonBroadcast.ForeColor = default;
 
             RefreshForm_DisableTextBoxes();
 
@@ -831,35 +779,29 @@ namespace ATISPlugin
 
             if (Control.Recording)
             {
-                ButtonRecord.BackColor = Color.FromName("ControlDarkDark");
-                ButtonRecord.ForeColor = Color.FromName("ControlLightLight");
+                ButtonRecord.Checked = true;
             }
             else
             {
-                ButtonRecord.BackColor = Color.FromName("Control");
-                ButtonRecord.ForeColor = default;
+                ButtonRecord.Checked = false;
             }
 
             if (Control.Listening)
             {
-                ButtonListen.BackColor = Color.FromName("ControlDarkDark");
-                ButtonListen.ForeColor = Color.FromName("ControlLightLight");
+                ButtonListen.Checked = true;
             }
             else
             {
-                ButtonListen.BackColor = Color.FromName("Control");
-                ButtonListen.ForeColor = default;
+                ButtonListen.Checked = false;
             }
 
             if (Control.Broadcasting)
             {
-                ButtonBroadcast.BackColor = Color.FromName("ControlDarkDark");
-                ButtonBroadcast.ForeColor = Color.FromName("ControlLightLight");
+                ButtonBroadcast.Checked = true;
             }
             else
             {
-                ButtonBroadcast.BackColor = Color.FromName("Control");
-                ButtonBroadcast.ForeColor = default;
+                ButtonBroadcast.Checked = false;
             }
         }
 
@@ -870,6 +812,7 @@ namespace ATISPlugin
             LabelFrequency.Visible = false;
             ComboBoxLetter.Enabled = true;
             ButtonNext.Enabled = true;
+            ButtonZulu.Checked = false;
 
             TextBox1.Visible = true;
             TextBox2.Visible = true;
@@ -895,11 +838,8 @@ namespace ATISPlugin
             Label10.Visible = true;
             Label11.Visible = true;
             Label12.Visible = true;
-            labelTimeCheck.Visible = true;
+            LabelTimeCheck.Visible = true;
             ComboBoxTimeCheck.Visible = true;
-
-            ButtonZulu.BackColor = Color.FromName("Control");
-            ButtonZulu.ForeColor = default;
         }
 
         private void RefreshForm_ZuluATIS()
@@ -909,6 +849,7 @@ namespace ATISPlugin
             LabelFrequency.Visible = true;
             ComboBoxLetter.Enabled = false;
             ButtonNext.Enabled = false;
+            ButtonZulu.Checked = true;
 
             TextBox1.Visible = false;
             TextBox2.Visible = false;
@@ -934,17 +875,14 @@ namespace ATISPlugin
             Label10.Visible = false;
             Label11.Visible = false;
             Label12.Visible = false;
-            labelTimeCheck.Visible = false;
+            LabelTimeCheck.Visible = false;
             ComboBoxTimeCheck.Visible = false;
-
-            ButtonZulu.BackColor = Color.FromName("ControlDarkDark");
-            ButtonZulu.ForeColor = Color.FromName("ControlLightLight");
         }
 
         private void RefreshForm_ClearWindCalculator()
         {
             LabelWindComponents.Text = "";
-            ComboBoxRunway.SelectedIndex = ComboBoxRunway.FindStringExact("");
+            ComboBoxRunway.SelectedIndex = ComboBoxRunway.Items.IndexOf("");
         }
 
         private void RefreshForm_ResetColours()
@@ -1004,7 +942,9 @@ namespace ATISPlugin
 
         private void ComboBoxAirport_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ICAO = ComboBoxAirport.GetItemText(ComboBoxAirport.SelectedItem);
+            if (ComboBoxAirport.SelectedIndex == -1) return;
+
+            ICAO = ComboBoxAirport.Items[ComboBoxAirport.SelectedIndex];
         }
 
         private async void ButtonDelete_Click(object sender, EventArgs e)
@@ -1065,18 +1005,12 @@ namespace ATISPlugin
         {
             if (!Control.Broadcasting)
             {
-                ButtonBroadcast.BackColor = Color.FromName("ControlDarkDark");
-                ButtonBroadcast.ForeColor = Color.FromName("ControlLightLight");
-
                 if (Saves.Any()) await SaveATIS();
 
                 Control.BroadcastStart();
             }
             else
             {
-                ButtonBroadcast.BackColor = default;
-                ButtonBroadcast.ForeColor = default;
-
                 await Control.BroadcastStop();
             }
 
@@ -1169,9 +1103,11 @@ namespace ATISPlugin
 
         private void ComboBoxLetter_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!(sender is ComboBox comboBox)) return;
+            if (!(sender is DropDownBox comboBox)) return;
 
-            string selectedLetter = (string)comboBox.SelectedItem;
+            if (comboBox.SelectedIndex == -1) return;
+
+            string selectedLetter = comboBox.Items[comboBox.SelectedIndex];
 
             var ok = Char.TryParse(selectedLetter, out Char selectedChar);
 
@@ -1186,9 +1122,11 @@ namespace ATISPlugin
 
         private void ComboBoxVoice_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!(sender is ComboBox comboBox)) return;
+            if (!(sender is DropDownBox comboBox)) return;
 
-            string selectedVoice = (string)comboBox.SelectedItem;
+            if (comboBox.SelectedIndex == -1) return;
+
+            string selectedVoice = comboBox.Items[comboBox.SelectedIndex];
 
             if (selectedVoice == null) return;  
 
@@ -1205,14 +1143,16 @@ namespace ATISPlugin
                 ButtonRecord.Visible = false;
             }
 
-            RefreshForm();
+            //RefreshForm();
         }
 
         private void ComboBoxRate_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!(sender is ComboBox comboBox)) return;
+            if (!(sender is DropDownBox comboBox)) return;
 
-            string rate = (string)comboBox.SelectedItem;
+            if (comboBox.SelectedIndex == -1) return;
+
+            string rate = comboBox.Items[comboBox.SelectedIndex];
 
             switch (rate)
             {
@@ -1235,7 +1175,7 @@ namespace ATISPlugin
                     break;
             }
 
-            RefreshForm();
+            // RefreshForm();
         }
 
         private void ButtonListen_Click(object sender, EventArgs e)
@@ -1279,15 +1219,17 @@ namespace ATISPlugin
 
         private void ComboBoxTimeCheck_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!(sender is ComboBox comboBox)) return;
+            if (!(sender is DropDownBox comboBox)) return;
 
-            var timecheckOK = bool.TryParse((string)comboBox.SelectedItem, out bool timecheck);
+            if (comboBox.SelectedIndex == -1) return;
+
+            var timecheckOK = bool.TryParse(comboBox.Items[comboBox.SelectedIndex], out bool timecheck);
 
             if (!timecheckOK) return;
 
             TimeCheck = timecheck;
 
-            RefreshForm();
+            //RefreshForm();
         }
 
         private void ButtonZulu_Click(object sender, EventArgs e)
@@ -1314,7 +1256,9 @@ namespace ATISPlugin
 
         private void ComboBoxZuluFrequency_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var zuluFrequency = (string)ComboBoxZuluFrequency.SelectedItem;
+            if (ComboBoxZuluFrequency.SelectedIndex == -1) return;
+
+            var zuluFrequency = ComboBoxZuluFrequency.Items[ComboBoxZuluFrequency.SelectedIndex];
 
             if (zuluFrequency == ZuluFrequency) return;
 
@@ -1441,6 +1385,8 @@ namespace ATISPlugin
 
         private double? GetRunwayHeading(string runwayName)
         {
+            if (Control.ICAO == null) return null;
+
             var airport = Airspace2.GetAirport(Control.ICAO);
 
             if (airport == null) return null;

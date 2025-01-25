@@ -1,4 +1,9 @@
-﻿namespace ATISPlugin
+﻿using System;
+using System.Collections.Generic;
+using vatsys;
+using VATSYSControls;
+
+namespace ATISPlugin
 {
     partial class EditorWindow
     {
@@ -28,72 +33,71 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.labelICAO = new System.Windows.Forms.Label();
-            this.ButtonCreate = new System.Windows.Forms.Button();
-            this.ComboBoxAirport = new System.Windows.Forms.ComboBox();
-            this.TextBox1 = new System.Windows.Forms.TextBox();
-            this.TextBox2 = new System.Windows.Forms.TextBox();
-            this.TextBox3 = new System.Windows.Forms.TextBox();
-            this.Label1 = new System.Windows.Forms.Label();
-            this.Label2 = new System.Windows.Forms.Label();
-            this.Label3 = new System.Windows.Forms.Label();
-            this.TextBox5 = new System.Windows.Forms.TextBox();
-            this.TextBox6 = new System.Windows.Forms.TextBox();
-            this.TextBox7 = new System.Windows.Forms.TextBox();
-            this.TextBox8 = new System.Windows.Forms.TextBox();
-            this.TextBox9 = new System.Windows.Forms.TextBox();
-            this.TextBox10 = new System.Windows.Forms.TextBox();
-            this.TextBox11 = new System.Windows.Forms.TextBox();
-            this.TextBox12 = new System.Windows.Forms.TextBox();
-            this.ComboBoxTimeCheck = new System.Windows.Forms.ComboBox();
-            this.Label4 = new System.Windows.Forms.Label();
-            this.TextBox4 = new System.Windows.Forms.TextBox();
-            this.Label5 = new System.Windows.Forms.Label();
-            this.Label6 = new System.Windows.Forms.Label();
-            this.Label7 = new System.Windows.Forms.Label();
-            this.Label8 = new System.Windows.Forms.Label();
-            this.Label10 = new System.Windows.Forms.Label();
-            this.Label9 = new System.Windows.Forms.Label();
-            this.Label11 = new System.Windows.Forms.Label();
-            this.Label12 = new System.Windows.Forms.Label();
-            this.labelTimeCheck = new System.Windows.Forms.Label();
-            this.ComboBoxLetter = new System.Windows.Forms.ComboBox();
-            this.ButtonNext = new System.Windows.Forms.Button();
-            this.labelATIS = new System.Windows.Forms.Label();
-            this.LabelCode = new System.Windows.Forms.Label();
-            this.LabelMETAR = new System.Windows.Forms.Label();
-            this.ButtonSave = new System.Windows.Forms.Button();
-            this.ButtonCancel = new System.Windows.Forms.Button();
-            this.ButtonListen = new System.Windows.Forms.Button();
-            this.ButtonGetMetar = new System.Windows.Forms.Button();
-            this.ButtonBroadcast = new System.Windows.Forms.Button();
-            this.ComboBoxVoice = new System.Windows.Forms.ComboBox();
-            this.ComboBoxRate = new System.Windows.Forms.ComboBox();
-            this.ButtonDelete = new System.Windows.Forms.Button();
-            this.labelVoice = new System.Windows.Forms.Label();
-            this.ButtonATIS1 = new System.Windows.Forms.Button();
-            this.ButtonATIS2 = new System.Windows.Forms.Button();
-            this.ButtonATIS3 = new System.Windows.Forms.Button();
-            this.ButtonATIS4 = new System.Windows.Forms.Button();
-            this.TextBoxZulu = new System.Windows.Forms.TextBox();
-            this.ButtonZulu = new System.Windows.Forms.Button();
-            this.ComboBoxZuluFrequency = new System.Windows.Forms.ComboBox();
-            this.LabelFrequency = new System.Windows.Forms.Label();
-            this.label13 = new System.Windows.Forms.Label();
-            this.ComboBoxRunway = new System.Windows.Forms.ComboBox();
-            this.LabelWindComponents = new System.Windows.Forms.Label();
-            this.ButtonRecord = new System.Windows.Forms.Button();
+            this.LabelICAO = new TextLabel();
+            this.ButtonCreate = new GenericButton();
+            this.ComboBoxAirport = new DropDownBox();
+            this.TextBox1 = new TextField();
+            this.TextBox2 = new TextField();
+            this.TextBox3 = new TextField();
+            this.TextBox4 = new TextField();
+            this.TextBox5 = new TextField();
+            this.TextBox6 = new TextField();
+            this.TextBox7 = new TextField();
+            this.TextBox8 = new TextField();
+            this.TextBox9 = new TextField();
+            this.TextBox10 = new TextField();
+            this.TextBox11 = new TextField();
+            this.TextBox12 = new TextField();
+            this.ComboBoxTimeCheck = new DropDownBox();
+            this.Label1 = new TextLabel();
+            this.Label2 = new TextLabel();
+            this.Label3 = new TextLabel();
+            this.Label4 = new TextLabel();
+            this.Label5 = new TextLabel();
+            this.Label6 = new TextLabel();
+            this.Label7 = new TextLabel();
+            this.Label8 = new TextLabel();
+            this.Label10 = new TextLabel();
+            this.Label9 = new TextLabel();
+            this.Label11 = new TextLabel();
+            this.Label12 = new TextLabel();
+            this.LabelTimeCheck = new TextLabel();
+            this.ComboBoxLetter = new DropDownBox();
+            this.ButtonNext = new GenericButton();
+            this.LabelATIS = new TextLabel();
+            this.LabelCode = new TextLabel();
+            this.LabelMETAR = new TextLabel();
+            this.ButtonSave = new GenericButton();
+            this.ButtonCancel = new GenericButton();
+            this.ButtonListen = new ToggleButton();
+            this.ButtonGetMetar = new GenericButton();
+            this.ButtonBroadcast = new ToggleButton();
+            this.ComboBoxVoice = new DropDownBox();
+            this.ComboBoxRate = new DropDownBox();
+            this.ButtonDelete = new GenericButton();
+            this.LabelVoice = new TextLabel();
+            this.ButtonATIS1 = new ToggleButton();
+            this.ButtonATIS2 = new ToggleButton();
+            this.ButtonATIS3 = new ToggleButton();
+            this.ButtonATIS4 = new ToggleButton();
+            this.TextBoxZulu = new TextField();
+            this.ButtonZulu = new ToggleButton();
+            this.ComboBoxZuluFrequency = new DropDownBox();
+            this.LabelFrequency = new TextLabel();
+            this.label13 = new TextLabel();
+            this.ComboBoxRunway = new DropDownBox();
+            this.LabelWindComponents = new TextLabel();
+            this.ButtonRecord = new ToggleButton();
             this.SuspendLayout();
             // 
             // labelICAO
             // 
-            this.labelICAO.AutoSize = true;
-            this.labelICAO.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.labelICAO.Location = new System.Drawing.Point(102, 66);
-            this.labelICAO.Name = "labelICAO";
-            this.labelICAO.Size = new System.Drawing.Size(64, 17);
-            this.labelICAO.TabIndex = 0;
-            this.labelICAO.Text = "Airport";
+            this.LabelICAO.AutoSize = true;
+            this.LabelICAO.Location = new System.Drawing.Point(102, 66);
+            this.LabelICAO.Name = "labelICAO";
+            this.LabelICAO.Size = new System.Drawing.Size(64, 17);
+            this.LabelICAO.TabIndex = 0;
+            this.LabelICAO.Text = "Airport";
             // 
             // ButtonCreate
             // 
@@ -108,8 +112,6 @@
             // ComboBoxAirport
             // 
             this.ComboBoxAirport.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.ComboBoxAirport.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.ComboBoxAirport.FormattingEnabled = true;
             this.ComboBoxAirport.Location = new System.Drawing.Point(172, 60);
             this.ComboBoxAirport.Name = "ComboBoxAirport";
             this.ComboBoxAirport.Size = new System.Drawing.Size(326, 25);
@@ -253,12 +255,9 @@
             // 
             // ComboBoxTimeCheck
             // 
-            this.ComboBoxTimeCheck.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.ComboBoxTimeCheck.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.ComboBoxTimeCheck.FormattingEnabled = true;
-            this.ComboBoxTimeCheck.Items.AddRange(new object[] {
+            this.ComboBoxTimeCheck.Items = new List<string>{
             "True",
-            "False"});
+            "False"};
             this.ComboBoxTimeCheck.Location = new System.Drawing.Point(172, 600);
             this.ComboBoxTimeCheck.Name = "ComboBoxTimeCheck";
             this.ComboBoxTimeCheck.Size = new System.Drawing.Size(121, 25);
@@ -384,20 +383,18 @@
             // 
             // labelTimeCheck
             // 
-            this.labelTimeCheck.AutoSize = true;
-            this.labelTimeCheck.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.labelTimeCheck.Location = new System.Drawing.Point(78, 604);
-            this.labelTimeCheck.Name = "labelTimeCheck";
-            this.labelTimeCheck.Size = new System.Drawing.Size(88, 17);
-            this.labelTimeCheck.TabIndex = 32;
-            this.labelTimeCheck.Text = "TIME_CHECK";
-            this.labelTimeCheck.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.LabelTimeCheck.AutoSize = true;
+            this.LabelTimeCheck.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.LabelTimeCheck.Location = new System.Drawing.Point(78, 604);
+            this.LabelTimeCheck.Name = "labelTimeCheck";
+            this.LabelTimeCheck.Size = new System.Drawing.Size(88, 17);
+            this.LabelTimeCheck.TabIndex = 32;
+            this.LabelTimeCheck.Text = "TIME_CHECK";
+            this.LabelTimeCheck.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // ComboBoxLetter
             // 
             this.ComboBoxLetter.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.ComboBoxLetter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.ComboBoxLetter.FormattingEnabled = true;
             this.ComboBoxLetter.Location = new System.Drawing.Point(172, 195);
             this.ComboBoxLetter.Name = "ComboBoxLetter";
             this.ComboBoxLetter.Size = new System.Drawing.Size(160, 25);
@@ -416,14 +413,14 @@
             // 
             // labelATIS
             // 
-            this.labelATIS.AutoSize = true;
-            this.labelATIS.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.labelATIS.Location = new System.Drawing.Point(126, 202);
-            this.labelATIS.Name = "labelATIS";
-            this.labelATIS.Size = new System.Drawing.Size(40, 17);
-            this.labelATIS.TabIndex = 35;
-            this.labelATIS.Text = "ATIS";
-            this.labelATIS.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.LabelATIS.AutoSize = true;
+            this.LabelATIS.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.LabelATIS.Location = new System.Drawing.Point(126, 202);
+            this.LabelATIS.Name = "labelATIS";
+            this.LabelATIS.Size = new System.Drawing.Size(40, 17);
+            this.LabelATIS.TabIndex = 35;
+            this.LabelATIS.Text = "ATIS";
+            this.LabelATIS.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // LabelCode
             // 
@@ -470,7 +467,6 @@
             // 
             // ButtonListen
             // 
-            this.ButtonListen.BackColor = System.Drawing.SystemColors.Control;
             this.ButtonListen.Location = new System.Drawing.Point(338, 125);
             this.ButtonListen.Name = "ButtonListen";
             this.ButtonListen.Size = new System.Drawing.Size(160, 28);
@@ -481,7 +477,6 @@
             // 
             // ButtonGetMetar
             // 
-            this.ButtonGetMetar.BackColor = System.Drawing.SystemColors.Control;
             this.ButtonGetMetar.Location = new System.Drawing.Point(172, 125);
             this.ButtonGetMetar.Name = "ButtonGetMetar";
             this.ButtonGetMetar.Size = new System.Drawing.Size(160, 28);
@@ -492,7 +487,6 @@
             // 
             // ButtonBroadcast
             // 
-            this.ButtonBroadcast.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.ButtonBroadcast.Location = new System.Drawing.Point(504, 125);
             this.ButtonBroadcast.Name = "ButtonBroadcast";
             this.ButtonBroadcast.Size = new System.Drawing.Size(160, 28);
@@ -503,10 +497,7 @@
             // 
             // ComboBoxVoice
             // 
-            this.ComboBoxVoice.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.ComboBoxVoice.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ComboBoxVoice.Enabled = false;
-            this.ComboBoxVoice.FormattingEnabled = true;
             this.ComboBoxVoice.Location = new System.Drawing.Point(172, 94);
             this.ComboBoxVoice.Name = "ComboBoxVoice";
             this.ComboBoxVoice.Size = new System.Drawing.Size(326, 25);
@@ -515,16 +506,13 @@
             // 
             // ComboBoxRate
             // 
-            this.ComboBoxRate.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.ComboBoxRate.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ComboBoxRate.Enabled = false;
-            this.ComboBoxRate.FormattingEnabled = true;
-            this.ComboBoxRate.Items.AddRange(new object[] {
+            this.ComboBoxRate.Items = new List<string>(){
             "Extra Fast",
             "Fast",
             "Medium",
             "Slow",
-            "Extra Slow"});
+            "Extra Slow"};
             this.ComboBoxRate.Location = new System.Drawing.Point(504, 94);
             this.ComboBoxRate.Name = "ComboBoxRate";
             this.ComboBoxRate.Size = new System.Drawing.Size(160, 25);
@@ -543,17 +531,16 @@
             // 
             // labelVoice
             // 
-            this.labelVoice.AutoSize = true;
-            this.labelVoice.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.labelVoice.Location = new System.Drawing.Point(118, 97);
-            this.labelVoice.Name = "labelVoice";
-            this.labelVoice.Size = new System.Drawing.Size(48, 17);
-            this.labelVoice.TabIndex = 46;
-            this.labelVoice.Text = "Voice";
+            this.LabelVoice.AutoSize = true;
+            this.LabelVoice.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.LabelVoice.Location = new System.Drawing.Point(118, 97);
+            this.LabelVoice.Name = "labelVoice";
+            this.LabelVoice.Size = new System.Drawing.Size(48, 17);
+            this.LabelVoice.TabIndex = 46;
+            this.LabelVoice.Text = "Voice";
             // 
             // ButtonATIS1
             // 
-            this.ButtonATIS1.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.ButtonATIS1.Location = new System.Drawing.Point(6, 8);
             this.ButtonATIS1.Name = "ButtonATIS1";
             this.ButtonATIS1.Size = new System.Drawing.Size(160, 44);
@@ -564,7 +551,6 @@
             // 
             // ButtonATIS2
             // 
-            this.ButtonATIS2.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.ButtonATIS2.Location = new System.Drawing.Point(172, 8);
             this.ButtonATIS2.Name = "ButtonATIS2";
             this.ButtonATIS2.Size = new System.Drawing.Size(160, 44);
@@ -575,7 +561,6 @@
             // 
             // ButtonATIS3
             // 
-            this.ButtonATIS3.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.ButtonATIS3.Location = new System.Drawing.Point(338, 8);
             this.ButtonATIS3.Name = "ButtonATIS3";
             this.ButtonATIS3.Size = new System.Drawing.Size(160, 44);
@@ -586,7 +571,6 @@
             // 
             // ButtonATIS4
             // 
-            this.ButtonATIS4.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.ButtonATIS4.Location = new System.Drawing.Point(504, 8);
             this.ButtonATIS4.Name = "ButtonATIS4";
             this.ButtonATIS4.Size = new System.Drawing.Size(160, 44);
@@ -620,9 +604,6 @@
             // 
             // ComboBoxZuluFrequency
             // 
-            this.ComboBoxZuluFrequency.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.ComboBoxZuluFrequency.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.ComboBoxZuluFrequency.FormattingEnabled = true;
             this.ComboBoxZuluFrequency.Location = new System.Drawing.Point(172, 600);
             this.ComboBoxZuluFrequency.Name = "ComboBoxZuluFrequency";
             this.ComboBoxZuluFrequency.Size = new System.Drawing.Size(492, 25);
@@ -654,8 +635,6 @@
             // 
             // ComboBoxRunway
             // 
-            this.ComboBoxRunway.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.ComboBoxRunway.FormattingEnabled = true;
             this.ComboBoxRunway.Location = new System.Drawing.Point(172, 681);
             this.ComboBoxRunway.Name = "ComboBoxRunway";
             this.ComboBoxRunway.Size = new System.Drawing.Size(160, 25);
@@ -670,10 +649,10 @@
             this.LabelWindComponents.Name = "LabelWindComponents";
             this.LabelWindComponents.Size = new System.Drawing.Size(320, 17);
             this.LabelWindComponents.TabIndex = 58;
+            this.LabelWindComponents.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             // 
             // ButtonRecord
             // 
-            this.ButtonRecord.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.ButtonRecord.Location = new System.Drawing.Point(504, 92);
             this.ButtonRecord.Name = "ButtonRecord";
             this.ButtonRecord.Size = new System.Drawing.Size(160, 28);
@@ -699,7 +678,7 @@
             this.Controls.Add(this.ButtonATIS3);
             this.Controls.Add(this.ButtonATIS2);
             this.Controls.Add(this.ButtonATIS1);
-            this.Controls.Add(this.labelVoice);
+            this.Controls.Add(this.LabelVoice);
             this.Controls.Add(this.ButtonDelete);
             this.Controls.Add(this.ComboBoxRate);
             this.Controls.Add(this.ComboBoxVoice);
@@ -710,10 +689,10 @@
             this.Controls.Add(this.ButtonSave);
             this.Controls.Add(this.LabelMETAR);
             this.Controls.Add(this.LabelCode);
-            this.Controls.Add(this.labelATIS);
+            this.Controls.Add(this.LabelATIS);
             this.Controls.Add(this.ButtonNext);
             this.Controls.Add(this.ComboBoxLetter);
-            this.Controls.Add(this.labelTimeCheck);
+            this.Controls.Add(this.LabelTimeCheck);
             this.Controls.Add(this.Label12);
             this.Controls.Add(this.Label11);
             this.Controls.Add(this.Label9);
@@ -741,7 +720,7 @@
             this.Controls.Add(this.TextBox1);
             this.Controls.Add(this.ComboBoxAirport);
             this.Controls.Add(this.ButtonCreate);
-            this.Controls.Add(this.labelICAO);
+            this.Controls.Add(this.LabelICAO);
             this.Controls.Add(this.TextBoxZulu);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.HideOnClose = true;
@@ -761,60 +740,60 @@
 
         #endregion
 
-        private System.Windows.Forms.Label labelICAO;
-        private System.Windows.Forms.Button ButtonCreate;
-        private System.Windows.Forms.ComboBox ComboBoxAirport;
-        private System.Windows.Forms.TextBox TextBox1;
-        private System.Windows.Forms.TextBox TextBox2;
-        private System.Windows.Forms.TextBox TextBox3;
-        private System.Windows.Forms.Label Label1;
-        private System.Windows.Forms.Label Label2;
-        private System.Windows.Forms.Label Label3;
-        private System.Windows.Forms.TextBox TextBox5;
-        private System.Windows.Forms.TextBox TextBox6;
-        private System.Windows.Forms.TextBox TextBox7;
-        private System.Windows.Forms.TextBox TextBox8;
-        private System.Windows.Forms.TextBox TextBox9;
-        private System.Windows.Forms.TextBox TextBox10;
-        private System.Windows.Forms.TextBox TextBox11;
-        private System.Windows.Forms.TextBox TextBox12;
-        private System.Windows.Forms.ComboBox ComboBoxTimeCheck;
-        private System.Windows.Forms.Label Label4;
-        private System.Windows.Forms.TextBox TextBox4;
-        private System.Windows.Forms.Label Label5;
-        private System.Windows.Forms.Label Label6;
-        private System.Windows.Forms.Label Label7;
-        private System.Windows.Forms.Label Label8;
-        private System.Windows.Forms.Label Label10;
-        private System.Windows.Forms.Label Label9;
-        private System.Windows.Forms.Label Label11;
-        private System.Windows.Forms.Label Label12;
-        private System.Windows.Forms.Label labelTimeCheck;
-        private System.Windows.Forms.ComboBox ComboBoxLetter;
-        private System.Windows.Forms.Button ButtonNext;
-        private System.Windows.Forms.Label labelATIS;
-        private System.Windows.Forms.Label LabelCode;
-        private System.Windows.Forms.Label LabelMETAR;
-        private System.Windows.Forms.Button ButtonSave;
-        private System.Windows.Forms.Button ButtonCancel;
-        private System.Windows.Forms.Button ButtonListen;
-        private System.Windows.Forms.Button ButtonGetMetar;
-        private System.Windows.Forms.Button ButtonBroadcast;
-        private System.Windows.Forms.ComboBox ComboBoxVoice;
-        private System.Windows.Forms.ComboBox ComboBoxRate;
-        private System.Windows.Forms.Button ButtonDelete;
-        private System.Windows.Forms.Label labelVoice;
-        private System.Windows.Forms.Button ButtonATIS1;
-        private System.Windows.Forms.Button ButtonATIS2;
-        private System.Windows.Forms.Button ButtonATIS3;
-        private System.Windows.Forms.Button ButtonATIS4;
-        private System.Windows.Forms.TextBox TextBoxZulu;
-        private System.Windows.Forms.Button ButtonZulu;
-        private System.Windows.Forms.ComboBox ComboBoxZuluFrequency;
-        private System.Windows.Forms.Label LabelFrequency;
-        private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.ComboBox ComboBoxRunway;
-        private System.Windows.Forms.Label LabelWindComponents;
-        private System.Windows.Forms.Button ButtonRecord;
+        private TextLabel LabelICAO;
+        private GenericButton ButtonCreate;
+        private DropDownBox ComboBoxAirport;
+        private TextField TextBox1;
+        private TextField TextBox2;
+        private TextField TextBox3;
+        private TextField TextBox4;
+        private TextField TextBox5;
+        private TextField TextBox6;
+        private TextField TextBox7;
+        private TextField TextBox8;
+        private TextField TextBox9;
+        private TextField TextBox10;
+        private TextField TextBox11;
+        private TextField TextBox12;
+        private TextLabel Label1;
+        private TextLabel Label2;
+        private TextLabel Label3;
+        private TextLabel Label4;
+        private TextLabel Label5;
+        private TextLabel Label6;
+        private TextLabel Label7;
+        private TextLabel Label8;
+        private TextLabel Label10;
+        private TextLabel Label9;
+        private TextLabel Label11;
+        private TextLabel Label12;
+        private TextLabel LabelTimeCheck;
+        private DropDownBox ComboBoxTimeCheck;
+        private DropDownBox ComboBoxLetter;
+        private GenericButton ButtonNext;
+        private TextLabel LabelATIS;
+        private TextLabel LabelCode;
+        private TextLabel LabelMETAR;
+        private GenericButton ButtonSave;
+        private GenericButton ButtonCancel;
+        private ToggleButton ButtonListen;
+        private GenericButton ButtonGetMetar;
+        private ToggleButton ButtonBroadcast;
+        private DropDownBox ComboBoxVoice;
+        private DropDownBox ComboBoxRate;
+        private GenericButton ButtonDelete;
+        private TextLabel LabelVoice;
+        private ToggleButton ButtonATIS1;
+        private ToggleButton ButtonATIS2;
+        private ToggleButton ButtonATIS3;
+        private ToggleButton ButtonATIS4;
+        private TextField TextBoxZulu;
+        private ToggleButton ButtonZulu;
+        private DropDownBox ComboBoxZuluFrequency;
+        private TextLabel LabelFrequency;
+        private TextLabel label13;
+        private DropDownBox ComboBoxRunway;
+        private TextLabel LabelWindComponents;
+        private ToggleButton ButtonRecord;
     }
 }
