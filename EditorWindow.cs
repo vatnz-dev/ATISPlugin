@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Speech.Synthesis;
 using System.Threading.Tasks;
@@ -33,17 +34,16 @@ namespace ATISPlugin
             Control.PromptRate != Rate || 
             Control.VoiceName != VoiceName;
         private bool TimeCheck { get; set; }
-        public EventHandler RefreshEvent { get; set; }  
+        public EventHandler<RefreshEventArgs> RefreshEvent { get; set; }
         public string VoiceName { get; set; }
         public PromptRate Rate { get; set; } 
         private string ZuluFrequency { get; set; }
         public bool CanRecord => Edits == false && Control.Broadcasting == false ? true : false;
+        private bool Initialized { get; set; }
 
         public EditorWindow()
         {
             InitializeComponent();
-
-            RefreshEvent += OnRefeshEvent;
 
             BackColor = Colours.GetColour(Colours.Identities.WindowBackground);
             ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
@@ -62,6 +62,10 @@ namespace ATISPlugin
             ComboBoxLetter.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
             ComboBoxLetter.FocusColor = Colours.GetColour(Colours.Identities.HighlightedText);
             ComboBoxLetter.Font = MMI.eurofont_winsml;
+
+            Initialized = true;
+
+            RefreshEvent += OnRefeshEvent;
         }
 
         public void Change(int number)
@@ -87,22 +91,23 @@ namespace ATISPlugin
             RefreshForm();
         }
 
-        private void OnRefeshEvent(object sender, EventArgs e)
+        private void OnRefeshEvent(object sender, RefreshEventArgs e)
         {
-            RefreshForm();
+            if (e != null && e.Number != Number)
+            {
+                Change(Number);
+            }
+
+            Invoke(new Action(() => RefreshForm()));
         }
 
         private void EditorWindow_Load(object sender, EventArgs e)
         {
-            LoadOptions();
-
             Change(1);
         }
 
         private void LoadRunways()
         {
-            if (ComboBoxRunway.Items == null) ComboBoxRunway.Items = new List<string>();
-
             ComboBoxRunway.Items.Clear();
 
             ComboBoxRunway.Items.Add("");
@@ -129,8 +134,6 @@ namespace ATISPlugin
 
         private void LoadCodes()
         {
-            if (ComboBoxLetter.Items == null) ComboBoxLetter.Items = new List<string>();
-
             ComboBoxLetter.Items.Clear();
 
             var codeBlock = Plugin.CodeBlocks.FirstOrDefault(x => x.ICAO == ICAO);
@@ -158,8 +161,6 @@ namespace ATISPlugin
         {
             LoadRunways();
 
-            if (ComboBoxAirport.Items == null) ComboBoxAirport.Items = new List<string>();
-
             ComboBoxAirport.Items.Clear();
 
             ComboBoxAirport.Items.Add("");
@@ -180,8 +181,6 @@ namespace ATISPlugin
 
             LoadCodes();
 
-            if (ComboBoxVoice.Items == null) ComboBoxVoice.Items = new List<string>();
-
             ComboBoxVoice.Items.Clear();
 
             foreach (var voice in Control.SpeechSynth.GetInstalledVoices())
@@ -190,8 +189,6 @@ namespace ATISPlugin
             }
 
             ComboBoxVoice.Items.Add(Plugin.ManualVoiceName);
-
-            if (ComboBoxZuluFrequency.Items == null) ComboBoxZuluFrequency.Items = new List<string>();
 
             ComboBoxZuluFrequency.Items.Clear();
 
@@ -253,15 +250,8 @@ namespace ATISPlugin
 
         public void RefreshForm()
         {
-            try
-            {
-                Invoke(new Action(() => _refreshForm()));
-            }
-            catch { }
-        }
+            if (!Initialized) return;
 
-        private void _refreshForm()
-        {
             LabelMETAR.Text = string.Empty;
 
             if (ICAO == null)

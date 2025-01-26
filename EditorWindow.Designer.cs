@@ -34,9 +34,23 @@ namespace ATISPlugin
         /// </summary>
         private void InitializeComponent()
         {
+            this.ComboBoxAirport = new DropDownBox();
+            this.ComboBoxAirport.Items = new List<string>();
+            this.ComboBoxTimeCheck = new DropDownBox();
+            this.ComboBoxTimeCheck.Items = new List<string>();
+            this.ComboBoxLetter = new DropDownBox();
+            this.ComboBoxLetter.Items = new List<string>();
+            this.ComboBoxZuluFrequency = new DropDownBox();
+            this.ComboBoxZuluFrequency.Items = new List<string>();
+            this.ComboBoxRunway = new DropDownBox();
+            this.ComboBoxRunway.Items = new List<string>();
+            this.ComboBoxVoice = new DropDownBox();
+            this.ComboBoxVoice.Items = new List<string>();
+            this.ComboBoxRate = new DropDownBox();
+            this.ComboBoxRate.Items = new List<string>();
+
             this.LabelICAO = new TextLabel();
             this.ButtonCreate = new GenericButton();
-            this.ComboBoxAirport = new DropDownBox();
             this.TextBox1 = new TextField();
             this.TextBox2 = new TextField();
             this.TextBox3 = new TextField();
@@ -49,7 +63,6 @@ namespace ATISPlugin
             this.TextBox10 = new TextField();
             this.TextBox11 = new TextField();
             this.TextBox12 = new TextField();
-            this.ComboBoxTimeCheck = new DropDownBox();
             this.Label1 = new Label();
             this.Label2 = new Label();
             this.Label3 = new Label();
@@ -63,7 +76,6 @@ namespace ATISPlugin
             this.Label11 = new Label();
             this.Label12 = new Label();
             this.LabelTimeCheck = new Label();
-            this.ComboBoxLetter = new DropDownBox();
             this.ButtonNext = new GenericButton();
             this.LabelATIS = new Label();
             this.LabelMETAR = new TextLabel();
@@ -72,8 +84,6 @@ namespace ATISPlugin
             this.ButtonListen = new ToggleButton();
             this.ButtonGetMetar = new GenericButton();
             this.ButtonBroadcast = new ToggleButton();
-            this.ComboBoxVoice = new DropDownBox();
-            this.ComboBoxRate = new DropDownBox();
             this.ButtonDelete = new GenericButton();
             this.LabelVoice = new TextLabel();
             this.ButtonATIS1 = new ToggleButton();
@@ -82,10 +92,8 @@ namespace ATISPlugin
             this.ButtonATIS4 = new ToggleButton();
             this.TextBoxZulu = new TextField();
             this.ButtonZulu = new ToggleButton();
-            this.ComboBoxZuluFrequency = new DropDownBox();
             this.LabelFrequency = new Label();
             this.LabelWindCalculator = new TextLabel();
-            this.ComboBoxRunway = new DropDownBox();
             this.LabelWindComponents = new Label();
             this.ButtonRecord = new ToggleButton();
             this.SuspendLayout();

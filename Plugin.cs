@@ -22,7 +22,7 @@ namespace ATISPlugin
         public string Name => "ATIS Editor";
         public static string DisplayName => "ATIS Editor";
 
-        public static readonly Version Version = new Version(3, 8);
+        public static readonly Version Version = new Version(3, 9);
         private static readonly string VersionUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Version.json";
         private static readonly string ZuluUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Zulu.json";
         private static readonly string CodesUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Codes.json";
@@ -295,11 +295,13 @@ namespace ATISPlugin
 
         private void OnMETARUpdate(int number, bool updated)
         {
+            var editorOpen = IsEditorOpen();
+
             if (!updated)
             {
                 if (IsEditorOpen() && Editor.Number == number)
                 {
-                    Editor.RefreshEvent.Invoke(null, null);
+                    Editor.RefreshEvent.Invoke(null, new RefreshEventArgs(number));
                 }
 
                 return;
@@ -307,19 +309,20 @@ namespace ATISPlugin
 
             if (!IsEditorOpen())
             {
-                ShowEditorWindow();
+                MMI.InvokeOnGUI(() => ShowEditorWindow());
 
-                Editor.Change(number);
+                Editor.RefreshEvent.Invoke(null, new RefreshEventArgs(number));
 
                 PlayUpdateSound();
-            }
 
-            if (Editor.Number == number)
-            {
-                Editor.RefreshEvent.Invoke(null, null);
+                return;
             }
             else
             {
+                Editor.RefreshEvent.Invoke(null, null);
+
+                if (Editor.Number == number) return;
+
                 PlayUpdateSound();
             }
         }
@@ -348,7 +351,7 @@ namespace ATISPlugin
             ShowEditorWindow();
         }
 
-        private static bool IsEditorOpen() => Editor.Visible ? true : false;
+        private static bool IsEditorOpen() => Editor != null && !Editor.IsDisposed && Editor.Visible;
 
         private static void ShowEditorWindow()
         {
@@ -359,20 +362,12 @@ namespace ATISPlugin
                 return;
             }
 
-            try
+            if (Editor == null || Editor.IsDisposed)
             {
-                MMI.InvokeOnGUI((MethodInvoker)delegate ()
-                {
-                    if (Editor == null || Editor.IsDisposed)
-                    {
-                        Editor = new EditorWindow();
-                    }
-                    else if (Editor.Visible) return;
-
-                    Editor.Show(Form.ActiveForm);
-                });
+                Editor = new EditorWindow();
             }
-            catch { }
+
+            Editor.Show(Form.ActiveForm);
         }
 
         public void OnFDRUpdate(FDP2.FDR updated)

@@ -76,6 +76,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="RefreshEventHandler.cs" />
     <Compile Include="ToggleButton.cs">
       <SubType>Component</SubType>
     </Compile>
