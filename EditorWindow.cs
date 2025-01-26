@@ -126,6 +126,33 @@ namespace ATISPlugin
             }
         }
 
+        private void LoadCodes()
+        {
+            if (ComboBoxLetter.Items == null) ComboBoxLetter.Items = new List<string>();
+
+            ComboBoxLetter.Items.Clear();
+
+            var codeBlock = Plugin.CodeBlocks.FirstOrDefault(x => x.ICAO == ICAO);
+
+            if (codeBlock == null)
+            {
+                for (char c = 'A'; c <= 'Y'; c++)
+                {
+                    ComboBoxLetter.Items.Add(c.ToString());
+                }
+            }
+            else
+            {
+                var codes = codeBlock.Codes.Split(',');
+                foreach (var code in codes)
+                {
+                    ComboBoxLetter.Items.Add(code);
+                }
+            }
+
+            ComboBoxLetter.SelectedIndex = 0;
+        }
+
         private void LoadOptions()
         {
             LoadRunways();
@@ -150,27 +177,7 @@ namespace ATISPlugin
                 }
             }
 
-            if (ComboBoxLetter.Items == null) ComboBoxLetter.Items = new List<string>();
-
-            ComboBoxLetter.Items.Clear();
-
-            var codeBlock = Plugin.CodeBlocks.FirstOrDefault(x => x.ICAO == ICAO);
-
-            if (codeBlock == null)
-            {
-                for (char c = 'A'; c <= 'Y'; c++)
-                {
-                    ComboBoxLetter.Items.Add(c.ToString());
-                }
-            }
-            else
-            {
-                var codes = codeBlock.Codes.Split(',');
-                foreach (var code in codes)
-                {
-                    ComboBoxLetter.Items.Add(code);
-                }
-            }
+            LoadCodes();
 
             if (ComboBoxVoice.Items == null) ComboBoxVoice.Items = new List<string>();
 
@@ -1022,10 +1029,15 @@ namespace ATISPlugin
             if (icao.Length == 4)
             {
                 ICAO = icao;
+
+                LoadCodes();
+
                 return;
             }
 
             ICAO = ComboBoxAirport.Items[ComboBoxAirport.SelectedIndex].Substring(0, 4);
+
+            LoadCodes();
         }
 
         private async void ButtonDelete_Click(object sender, EventArgs e)
