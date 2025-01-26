@@ -22,10 +22,10 @@ namespace ATISPlugin
         public string Name => "ATIS Editor";
         public static string DisplayName => "ATIS Editor";
 
-        public static readonly Version Version = new Version(3, 5);
+        public static readonly Version Version = new Version(3, 6);
         private static readonly string VersionUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Version.json";
-
         private static readonly string ZuluUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Zulu.json";
+        private static readonly string CodesUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Codes.json";
 
         private static readonly HttpClient Client = new HttpClient();
 
@@ -48,6 +48,7 @@ namespace ATISPlugin
         public static string DatasetPath => Path.Combine(Helpers.GetFilesFolder(), "Profiles", ProfileName());
         public static ATIS ATISData { get; set; }
         public static List<ZuluInfo> ZuluInfo { get; set; } = new List<ZuluInfo>();
+        public static List<CodeBlock> CodeBlocks { get; set; } = new List<CodeBlock>();
 
         public static SoundPlayer SoundPlayer { get; set; } = new SoundPlayer();
         private static Timer METARTimer { get; set; } = new Timer();
@@ -132,6 +133,8 @@ namespace ATISPlugin
 
             _ = GetZuluInfo();
 
+            _ = GetCodeBlocks();
+
             _ = CheckVersion();
 
             MET.Instance.ProductsChanged += METARChanged;
@@ -178,6 +181,25 @@ namespace ATISPlugin
                 Errors.Add(new Exception("A new version of the plugin is available."), DisplayName);
             }
             catch { }
+        }
+
+        private static async Task GetCodeBlocks()
+        {
+            try
+            {
+                var response = await Client.GetStringAsync(CodesUrl);
+
+                var codeBlocks = JsonConvert.DeserializeObject<CodeBlock[]>(response);
+
+                foreach (var codeBlock in codeBlocks)
+                {
+                    CodeBlocks.Add(codeBlock);
+                }
+            }
+            catch (Exception ex)
+            {
+                Errors.Add(new Exception(ex.Message), DisplayName);
+            }
         }
 
         private static async Task GetZuluInfo()

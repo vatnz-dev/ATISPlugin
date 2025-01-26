@@ -79,10 +79,12 @@
     <Compile Include="ToggleButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="CodeBlock.cs" />
     <Compile Include="ZuluInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Codes.json" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

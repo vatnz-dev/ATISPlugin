@@ -1,8 +1,8 @@
 ﻿namespace ATISPlugin
 {
-    public class ZuluInfo
+    public class CodeBlock
     {
         public string ICAO { get; set; }
-        public string Text { get; set; }
+        public string Codes { get; set; }
     }
 }

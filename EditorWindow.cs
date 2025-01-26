@@ -154,9 +154,22 @@ namespace ATISPlugin
 
             ComboBoxLetter.Items.Clear();
 
-            for (char c = 'A'; c <= 'Y'; c++)
+            var codeBlock = Plugin.CodeBlocks.FirstOrDefault(x => x.ICAO == ICAO);
+
+            if (codeBlock == null)
             {
-                ComboBoxLetter.Items.Add(c.ToString());
+                for (char c = 'A'; c <= 'Y'; c++)
+                {
+                    ComboBoxLetter.Items.Add(c.ToString());
+                }
+            }
+            else
+            {
+                var codes = codeBlock.Codes.Split(',');
+                foreach (var code in codes)
+                {
+                    ComboBoxLetter.Items.Add(code);
+                }
             }
 
             if (ComboBoxVoice.Items == null) ComboBoxVoice.Items = new List<string>();
