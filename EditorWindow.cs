@@ -50,7 +50,7 @@ namespace ATISPlugin
             ComboBoxTimeCheck.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
             ComboBoxTimeCheck.FocusColor = Colours.GetColour(Colours.Identities.HighlightedText);
             ComboBoxTimeCheck.Font = MMI.eurofont_winsml;
-.
+
             ComboBoxAirport.BackColor = Colours.GetColour(Colours.Identities.WindowBackground);
             ComboBoxAirport.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
             ComboBoxAirport.FocusColor = Colours.GetColour(Colours.Identities.HighlightedText);
