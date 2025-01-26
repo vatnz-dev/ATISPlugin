@@ -23,6 +23,7 @@ namespace ATISPlugin
         }
         private string ICAO { get; set; }
         private char ID { get; set; }
+        private Airspace2.Airport Airport => Airspace2.GetAirport(ICAO);
         public int Number { get; private set; } = 1;
         private Dictionary<string, string> Saves { get; set; } = new Dictionary<string, string>();
         private bool Edits => Saves.Any() || 
@@ -137,7 +138,16 @@ namespace ATISPlugin
 
             foreach (var freq in Plugin.ATISData.Frequencies.OrderBy(x => x.Airport))
             {
-                ComboBoxAirport.Items.Add(freq.Airport);
+                var airport = Airspace2.GetAirport(freq.Airport);
+
+                if (airport == null)
+                {
+                    ComboBoxAirport.Items.Add(freq.Airport);
+                }
+                else
+                {
+                    ComboBoxAirport.Items.Add($"{freq.Airport} - {airport.FullName}");
+                }
             }
 
             if (ComboBoxLetter.Items == null) ComboBoxLetter.Items = new List<string>();
@@ -979,11 +989,9 @@ namespace ATISPlugin
 
             if (frequency == null) return;
 
-            var airport = Airspace2.GetAirport(ICAO.ToUpper());
+            if (Airport == null) return;
 
-            if (airport == null) return;
-
-            await Control.Create(ICAO, frequency.Frequency.ToString(), airport.LatLong);
+            await Control.Create(ICAO, frequency.Frequency.ToString(), Airport.LatLong);
 
             LoadRunways();
 
@@ -994,7 +1002,17 @@ namespace ATISPlugin
         {
             if (ComboBoxAirport.SelectedIndex == -1) return;
 
-            ICAO = ComboBoxAirport.Items[ComboBoxAirport.SelectedIndex];
+            if (ComboBoxAirport.SelectedIndex == 0) return;
+
+            var icao = ComboBoxAirport.Items[ComboBoxAirport.SelectedIndex];
+
+            if (icao.Length == 4)
+            {
+                ICAO = icao;
+                return;
+            }
+
+            ICAO = ComboBoxAirport.Items[ComboBoxAirport.SelectedIndex].Substring(0, 4);
         }
 
         private async void ButtonDelete_Click(object sender, EventArgs e)
@@ -1192,8 +1210,6 @@ namespace ATISPlugin
                 ComboBoxRate.Visible = true;
                 ButtonRecord.Visible = false;
             }
-
-            //RefreshForm();
         }
 
         private void ComboBoxRate_SelectedIndexChanged(object sender, EventArgs e)
@@ -1224,8 +1240,6 @@ namespace ATISPlugin
                 default:
                     break;
             }
-
-            // RefreshForm();
         }
 
         private void ButtonListen_Click(object sender, EventArgs e)
@@ -1278,8 +1292,6 @@ namespace ATISPlugin
             if (!timecheckOK) return;
 
             TimeCheck = timecheck;
-
-            //RefreshForm();
         }
 
         private void ButtonZulu_Click(object sender, EventArgs e)

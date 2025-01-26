@@ -22,7 +22,7 @@ namespace ATISPlugin
         public string Name => "ATIS Editor";
         public static string DisplayName => "ATIS Editor";
 
-        public static readonly Version Version = new Version(3, 4);
+        public static readonly Version Version = new Version(3, 5);
         private static readonly string VersionUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Version.json";
 
         private static readonly string ZuluUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Zulu.json";
@@ -153,9 +153,7 @@ namespace ATISPlugin
 
             var updated = atis.UpdateMetar(metar.Text);
 
-            if (!updated) return;
-
-            OnMETARUpdate(atis.Number);
+            OnMETARUpdate(atis.Number, updated);
         }
 
         private ATISControl GetATIS(string icao)
@@ -273,8 +271,18 @@ namespace ATISPlugin
             SoundPlayer.Play();
         }
 
-        private void OnMETARUpdate(int number)
+        private void OnMETARUpdate(int number, bool updated)
         {
+            if (!updated)
+            {
+                if (IsEditorOpen() && Editor.Number == number)
+                {
+                    Editor.RefreshEvent.Invoke(null, null);
+                }
+
+                return;
+            }
+
             if (!IsEditorOpen())
             {
                 ShowEditorWindow();
