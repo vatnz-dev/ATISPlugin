@@ -22,7 +22,7 @@ namespace ATISPlugin
         public string Name => "ATIS Editor";
         public static string DisplayName => "ATIS Editor";
 
-        public static readonly Version Version = new Version(3, 7);
+        public static readonly Version Version = new Version(3, 8);
         private static readonly string VersionUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Version.json";
         private static readonly string ZuluUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Zulu.json";
         private static readonly string CodesUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Codes.json";
@@ -359,13 +359,20 @@ namespace ATISPlugin
                 return;
             }
 
-            if (Editor == null || Editor.IsDisposed)
+            try
             {
-                Editor = new EditorWindow();
-            }
-            else if (Editor.Visible) return;
+                MMI.InvokeOnGUI((MethodInvoker)delegate ()
+                {
+                    if (Editor == null || Editor.IsDisposed)
+                    {
+                        Editor = new EditorWindow();
+                    }
+                    else if (Editor.Visible) return;
 
-            Editor.Show(Form.ActiveForm);
+                    Editor.Show(Form.ActiveForm);
+                });
+            }
+            catch { }
         }
 
         public void OnFDRUpdate(FDP2.FDR updated)
