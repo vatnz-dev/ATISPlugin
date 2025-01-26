@@ -22,7 +22,7 @@ namespace ATISPlugin
         public string Name => "ATIS Editor";
         public static string DisplayName => "ATIS Editor";
 
-        public static readonly Version Version = new Version(3, 3);
+        public static readonly Version Version = new Version(3, 4);
         private static readonly string VersionUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Version.json";
 
         private static readonly string ZuluUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Zulu.json";
@@ -62,7 +62,7 @@ namespace ATISPlugin
             {
                 return;
             }
-
+            
             vatsys.ATIS.Disable();
 
             try

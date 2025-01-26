@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Speech.Synthesis;
 using System.Threading.Tasks;
@@ -51,7 +50,7 @@ namespace ATISPlugin
             ComboBoxTimeCheck.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
             ComboBoxTimeCheck.FocusColor = Colours.GetColour(Colours.Identities.HighlightedText);
             ComboBoxTimeCheck.Font = MMI.eurofont_winsml;
-
+.
             ComboBoxAirport.BackColor = Colours.GetColour(Colours.Identities.WindowBackground);
             ComboBoxAirport.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
             ComboBoxAirport.FocusColor = Colours.GetColour(Colours.Identities.HighlightedText);
@@ -133,6 +132,8 @@ namespace ATISPlugin
             if (ComboBoxAirport.Items == null) ComboBoxAirport.Items = new List<string>();
 
             ComboBoxAirport.Items.Clear();
+
+            ComboBoxAirport.Items.Add("");
 
             foreach (var freq in Plugin.ATISData.Frequencies.OrderBy(x => x.Airport))
             {
@@ -232,7 +233,14 @@ namespace ATISPlugin
         {
             LabelMETAR.Text = string.Empty;
 
-            ComboBoxAirport.SelectedIndex = ComboBoxAirport.Items.IndexOf(ICAO);
+            if (ICAO == null)
+            {
+                ComboBoxAirport.SelectedIndex = ComboBoxAirport.Items.IndexOf("");
+            }
+            else
+            {
+                ComboBoxAirport.SelectedIndex = ComboBoxAirport.Items.IndexOf(ICAO);
+            }
 
             ComboBoxLetter.SelectedIndex = ComboBoxLetter.Items.IndexOf(ID.ToString());
 
@@ -310,6 +318,42 @@ namespace ATISPlugin
                 ButtonATIS4.Text = "ATIS #4";
             }
 
+            if (Number != 1 && Plugin.ATIS1.HasUpdates)
+            {
+                ButtonATIS1.ForeColor = Colours.GetColour(Colours.Identities.Warning);
+            }
+            else
+            {
+                ButtonATIS1.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
+            }
+
+            if (Number != 2 && Plugin.ATIS2.HasUpdates)
+            {
+                ButtonATIS2.ForeColor = Colours.GetColour(Colours.Identities.Warning);
+            }
+            else
+            {
+                ButtonATIS2.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
+            }
+
+            if (Number != 3 && Plugin.ATIS3.HasUpdates)
+            {
+                ButtonATIS3.ForeColor = Colours.GetColour(Colours.Identities.Warning);
+            }
+            else
+            {
+                ButtonATIS3.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
+            }
+
+            if (Number != 4 && Plugin.ATIS4.HasUpdates)
+            {
+                ButtonATIS4.ForeColor = Colours.GetColour(Colours.Identities.Warning);
+            }
+            else
+            {
+                ButtonATIS4.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
+            }
+
             if (Control.Number == 1)
             {
                 ButtonATIS1.Checked = true;
@@ -381,7 +425,6 @@ namespace ATISPlugin
             TextBox12.Text = string.Empty;
             TextBoxZulu.Text = string.Empty;
 
-            LabelCode.Text = string.Empty;
             LabelMETAR.Text = string.Empty;
 
             ButtonSave.Enabled = false;
@@ -434,7 +477,6 @@ namespace ATISPlugin
             TextBox12.Text = string.Empty;
             TextBoxZulu.Text = string.Empty;
 
-            LabelCode.Text = string.Empty;
             LabelMETAR.Text = string.Empty;
 
             ButtonSave.Enabled = false;
@@ -582,9 +624,16 @@ namespace ATISPlugin
 
             RefreshForm_EnableTextBoxes();
 
-            LabelCode.Text = Control.ICAO;
-
             LabelMETAR.Text = Control.METARRaw;
+
+            if (!Control.IsZulu && Control.HasUpdates && ID != Control.ID)
+            {
+                LabelATIS.ForeColor = Colours.GetColour(Colours.Identities.Warning);
+            }
+            else
+            {
+                LabelATIS.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
+            }
 
             foreach (var line in Control.Lines)
             {
@@ -599,11 +648,11 @@ namespace ATISPlugin
                         else if (suggestedLine != null)
                         {
                             TextBox1.Text = suggestedLine.Value;
-                            Label1.BackColor = Color.Yellow;
+                            Label1.ForeColor = Colours.GetColour(Colours.Identities.Warning);
                         }
                         else
                         {
-                            Label1.BackColor = default;
+                            Label1.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText); 
                         }
                         break;
                     case 2:
@@ -611,11 +660,11 @@ namespace ATISPlugin
                         else if (suggestedLine != null)
                         {
                             TextBox2.Text = suggestedLine.Value;
-                            Label2.BackColor = Color.Yellow;
+                            Label2.ForeColor = Colours.GetColour(Colours.Identities.Warning);
                         }
                         else
                         {
-                            Label2.BackColor = default;
+                            Label2.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
                         }
                         break;
                     case 3:
@@ -623,11 +672,11 @@ namespace ATISPlugin
                         else if (suggestedLine != null)
                         {
                             TextBox3.Text = suggestedLine.Value;
-                            Label3.BackColor = Color.Yellow;
+                            Label3.ForeColor = Colours.GetColour(Colours.Identities.Warning);
                         }
                         else
                         {
-                            Label3.BackColor = default;
+                            Label3.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
                         }
                         break;
                     case 4:
@@ -635,11 +684,11 @@ namespace ATISPlugin
                         else if (suggestedLine != null)
                         {
                             TextBox4.Text = suggestedLine.Value;
-                            Label4.BackColor = Color.Yellow;
+                            Label4.ForeColor = Colours.GetColour(Colours.Identities.Warning);
                         }
                         else
                         {
-                            Label4.BackColor = default;
+                            Label4.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
                         }
                         break;
                     case 5:
@@ -647,11 +696,11 @@ namespace ATISPlugin
                         else if (suggestedLine != null)
                         {
                             TextBox5.Text = suggestedLine.Value;
-                            Label5.BackColor = Color.Yellow;
+                            Label5.ForeColor = Colours.GetColour(Colours.Identities.Warning);
                         }
                         else
                         {
-                            Label5.BackColor = default;
+                            Label5.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
                         }
                         break;
                     case 6:
@@ -659,11 +708,11 @@ namespace ATISPlugin
                         else if (suggestedLine != null)
                         {
                             TextBox6.Text = suggestedLine.Value;
-                            Label6.BackColor = Color.Yellow;
+                            Label6.ForeColor = Colours.GetColour(Colours.Identities.Warning);
                         }
                         else
                         {
-                            Label6.BackColor = default;
+                            Label6.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
                         }
                         break;
                     case 7:
@@ -671,11 +720,11 @@ namespace ATISPlugin
                         else if (suggestedLine != null)
                         {
                             TextBox7.Text = suggestedLine.Value;
-                            Label7.BackColor = Color.Yellow;
+                            Label7.ForeColor = Colours.GetColour(Colours.Identities.Warning);
                         }
                         else
                         {
-                            Label7.BackColor = default;
+                            Label7.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
                         }
                         break;
                     case 8:
@@ -683,11 +732,11 @@ namespace ATISPlugin
                         else if (suggestedLine != null)
                         {
                             TextBox8.Text = suggestedLine.Value;
-                            Label8.BackColor = Color.Yellow;
+                            Label8.ForeColor = Colours.GetColour(Colours.Identities.Warning);
                         }
                         else
                         {
-                            Label8.BackColor = default;
+                            Label8.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
                         }
                         break;
                     case 9:
@@ -695,11 +744,11 @@ namespace ATISPlugin
                         else if (suggestedLine != null)
                         {
                             TextBox9.Text = suggestedLine.Value;
-                            Label9.BackColor = Color.Yellow;
+                            Label9.ForeColor = Colours.GetColour(Colours.Identities.Warning);
                         }
                         else
                         {
-                            Label9.BackColor = default;
+                            Label9.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
                         }
                         break;
                     case 10:
@@ -707,11 +756,11 @@ namespace ATISPlugin
                         else if (suggestedLine != null)
                         {
                             TextBox10.Text = suggestedLine.Value;
-                            Label10.BackColor = Color.Yellow;
+                            Label10.ForeColor = Colours.GetColour(Colours.Identities.Warning);
                         }
                         else
                         {
-                            Label10.BackColor = default;
+                            Label10.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
                         }
                         break;
                     case 11:
@@ -719,11 +768,11 @@ namespace ATISPlugin
                         else if (suggestedLine != null)
                         {
                             TextBox11.Text = suggestedLine.Value;
-                            Label11.BackColor = Color.Yellow;
+                            Label11.ForeColor = Colours.GetColour(Colours.Identities.Warning);
                         }
                         else
                         {
-                            Label11.BackColor = default;
+                            Label11.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
                         }
                         break;
                     case 12:
@@ -731,11 +780,11 @@ namespace ATISPlugin
                         else if (suggestedLine != null)
                         {
                             TextBox12.Text = suggestedLine.Value;
-                            Label12.BackColor = Color.Yellow;
+                            Label12.ForeColor = Colours.GetColour(Colours.Identities.Warning);
                         }
                         else
                         {
-                            Label12.BackColor = default;
+                            Label12.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
                         }
                         break;
                     case 13:
@@ -887,18 +936,19 @@ namespace ATISPlugin
 
         private void RefreshForm_ResetColours()
         {
-            Label1.BackColor = default;
-            Label2.BackColor = default;
-            Label3.BackColor = default;
-            Label4.BackColor = default;
-            Label5.BackColor = default;
-            Label6.BackColor = default;
-            Label7.BackColor = default;
-            Label8.BackColor = default;
-            Label9.BackColor = default;
-            Label10.BackColor = default;
-            Label11.BackColor = default;
-            Label12.BackColor = default;
+            Label1.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText); 
+            Label2.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
+            Label3.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
+            Label4.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
+            Label5.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
+            Label6.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
+            Label7.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
+            Label8.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
+            Label9.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
+            Label10.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
+            Label11.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
+            Label12.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
+            LabelATIS.ForeColor = Colours.GetColour(Colours.Identities.InteractiveText);
         }
 
         private void GetMetar()
@@ -1235,6 +1285,8 @@ namespace ATISPlugin
         private void ButtonZulu_Click(object sender, EventArgs e)
         {
             ID = 'Z';
+
+            Saves.Clear();
 
             if (!Control.IsZulu)
             {
