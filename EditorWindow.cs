@@ -23,6 +23,7 @@ namespace ATISPlugin
         }
         private string ICAO { get; set; }
         private char ID { get; set; }
+        private string DiplayName => Airport == null ? ICAO : $"{ICAO} - {Airport.FullName}";
         private Airspace2.Airport Airport => Airspace2.GetAirport(ICAO);
         public int Number { get; private set; } = 1;
         private Dictionary<string, string> Saves { get; set; } = new Dictionary<string, string>();
@@ -269,16 +270,23 @@ namespace ATISPlugin
             }
             else
             {
-                ComboBoxAirport.SelectedIndex = ComboBoxAirport.Items.IndexOf(ICAO);
+                var index = ComboBoxAirport.Items.IndexOf(DiplayName);
+
+                if (ComboBoxAirport.SelectedIndex != index) ComboBoxAirport.SelectedIndex = ComboBoxAirport.Items.IndexOf(DiplayName);
             }
 
             ComboBoxLetter.SelectedIndex = ComboBoxLetter.Items.IndexOf(ID.ToString());
 
-            ComboBoxVoice.SelectedIndex = ComboBoxVoice.Items.IndexOf(VoiceName);
+            if (VoiceName != null)
+            {
+                ComboBoxVoice.SelectedIndex = ComboBoxVoice.Items.IndexOf(VoiceName);
+            }
 
             ComboBoxRate.SelectedIndex = ComboBoxRate.Items.IndexOf(Rate.ToString());
 
             ComboBoxTimeCheck.SelectedIndex = ComboBoxTimeCheck.Items.IndexOf(TimeCheck.ToString());
+
+            if (ComboBoxZuluFrequency.Items == null) ComboBoxZuluFrequency.Items = new List<string>();
 
             ComboBoxZuluFrequency.Items.Clear();
 
@@ -996,7 +1004,7 @@ namespace ATISPlugin
 
             if (Convert.ToUInt16(ID) >= 90) ID = 'A';
 
-            RefreshForm();
+            //RefreshForm();
         }
 
         private async void ButtonCreate_Click(object sender, EventArgs e)
@@ -1181,11 +1189,13 @@ namespace ATISPlugin
             if (Edits && ID == Control.ID && !Control.IsZulu)
             {
                 IncreaseID();
+                ButtonSave.Enabled = true;
+                ButtonCancel.Enabled = true;
             }
             else if (Edits && Control.IsZulu)
             {
                 ButtonSave.Enabled = true;
-                ButtonCancel.Enabled = true; 
+                ButtonCancel.Enabled = true;
             }
 
             if (line.Name.Contains("WIND"))
@@ -1354,8 +1364,6 @@ namespace ATISPlugin
             ZuluFrequency = zuluFrequency;
 
             GenerateZulu();
-
-            RefreshForm();
         }
 
         private void GenerateZulu()
