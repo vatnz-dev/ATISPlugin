@@ -253,7 +253,7 @@ namespace ATISPlugin
             "False"};
             this.ComboBoxTimeCheck.Location = new System.Drawing.Point(172, 600);
             this.ComboBoxTimeCheck.Name = "ComboBoxTimeCheck";
-            this.ComboBoxTimeCheck.Size = new System.Drawing.Size(121, 25);
+            this.ComboBoxTimeCheck.Size = new System.Drawing.Size(160, 25);
             this.ComboBoxTimeCheck.TabIndex = 17;
             this.ComboBoxTimeCheck.SelectedIndexChanged += new System.EventHandler(this.ComboBoxTimeCheck_SelectedIndexChanged);
             // 
@@ -591,7 +591,7 @@ namespace ATISPlugin
             this.LabelWindCalculator.Location = new System.Drawing.Point(6, 684);
             this.LabelWindCalculator.MinimumSize = new System.Drawing.Size(160, 17);
             this.LabelWindCalculator.Name = "label13";
-            this.LabelWindCalculator.Size = new System.Drawing.Size(160, 17);
+            this.LabelWindCalculator.Size = new System.Drawing.Size(160, 25);
             this.LabelWindCalculator.TabIndex = 56;
             this.LabelWindCalculator.Text = "Wind Calculator";
             this.LabelWindCalculator.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -692,7 +692,7 @@ namespace ATISPlugin
             this.Name = "EditorWindow";
             this.Resizeable = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "ATIS Editor";
+            this.Text = $"ATIS Editor - v{Plugin.Version.Major}.{Plugin.Version.Minor}";
             this.TitleTextColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.Load += new System.EventHandler(this.EditorWindow_Load);
             this.ResumeLayout(false);

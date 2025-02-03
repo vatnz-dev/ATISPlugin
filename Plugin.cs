@@ -22,7 +22,7 @@ namespace ATISPlugin
         public string Name => "ATIS Editor";
         public static string DisplayName => "ATIS Editor";
 
-        public static readonly Version Version = new Version(3, 9);
+        public static readonly Version Version = new Version(3, 10);
         private static readonly string VersionUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Version.json";
         private static readonly string ZuluUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Zulu.json";
         private static readonly string CodesUrl = "https://raw.githubusercontent.com/badvectors/ATISPlugin/master/Codes.json";
@@ -38,7 +38,7 @@ namespace ATISPlugin
 
         private static EditorWindow Editor;
 
-        private static string ProfileName()
+        public static string ProfileName()
         {
             if (Profile.Name.Contains("Australia")) return "Australia";
             else if (Profile.Name.Contains("VATNZ")) return "New Zealand";
@@ -301,7 +301,7 @@ namespace ATISPlugin
             {
                 if (IsEditorOpen() && Editor.Number == number)
                 {
-                    Editor.RefreshEvent.Invoke(null, new RefreshEventArgs(number));
+                    Editor?.RefreshEvent.Invoke(null, new RefreshEventArgs(number));
                 }
 
                 return;
@@ -309,9 +309,9 @@ namespace ATISPlugin
 
             if (!IsEditorOpen())
             {
-                MMI.InvokeOnGUI(() => ShowEditorWindow());
+                ShowEditorWindow();
 
-                Editor.RefreshEvent.Invoke(null, new RefreshEventArgs(number));
+                Editor?.RefreshEvent.Invoke(null, new RefreshEventArgs(number));
 
                 PlayUpdateSound();
 
@@ -319,9 +319,9 @@ namespace ATISPlugin
             }
             else
             {
-                Editor.RefreshEvent.Invoke(null, null);
+                Editor?.RefreshEvent.Invoke(null, null);
 
-                if (Editor.Number == number) return;
+                if (Editor?.Number == number) return;
 
                 PlayUpdateSound();
             }
@@ -367,7 +367,7 @@ namespace ATISPlugin
                 Editor = new EditorWindow();
             }
 
-            Editor.Show(Form.ActiveForm);
+            MMI.InvokeOnGUI(() => Editor.Show(Form.ActiveForm));
         }
 
         public void OnFDRUpdate(FDP2.FDR updated)

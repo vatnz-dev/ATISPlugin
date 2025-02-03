@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Speech.Synthesis;
 using System.Threading.Tasks;
@@ -154,6 +153,17 @@ namespace ATISPlugin
                 }
             }
 
+            if (ID == 'Z')
+            {
+                ComboBoxLetter.SelectedIndex = 0;
+
+                return;
+            }
+
+            var codeValid = ComboBoxLetter.Items.IndexOf(ID.ToString()) != -1;
+
+            if (codeValid) return;
+
             ComboBoxLetter.SelectedIndex = 0;
         }
 
@@ -251,6 +261,15 @@ namespace ATISPlugin
         public void RefreshForm()
         {
             if (!Initialized) return;
+
+            if (Plugin.ProfileName() == "New Zealand")
+            {
+                ButtonZulu.Visible = false;
+            }
+            else
+            {
+                ButtonZulu.Visible = true;
+            }
 
             LabelMETAR.Text = string.Empty;
 
@@ -994,7 +1013,7 @@ namespace ATISPlugin
 
             if (Convert.ToUInt16(ID) >= 90) ID = 'A';
 
-            //RefreshForm();
+            ComboBoxLetter.SelectedIndex = ComboBoxLetter.Items.IndexOf(ID.ToString());
         }
 
         private async void ButtonCreate_Click(object sender, EventArgs e)
@@ -1221,9 +1240,12 @@ namespace ATISPlugin
 
             string selectedVoice = comboBox.Items[comboBox.SelectedIndex];
 
-            if (selectedVoice == null) return;  
+            if (selectedVoice == null || selectedVoice == VoiceName) return;  
 
             VoiceName =  selectedVoice;
+
+            ButtonSave.Enabled = true;
+            ButtonCancel.Enabled = true;
 
             if (VoiceName == Plugin.ManualVoiceName)
             {
@@ -1243,28 +1265,37 @@ namespace ATISPlugin
 
             if (comboBox.SelectedIndex == -1) return;
 
-            string rate = comboBox.Items[comboBox.SelectedIndex];
+            string rateString = comboBox.Items[comboBox.SelectedIndex];
 
-            switch (rate)
+            var rate = PromptRate.Medium;
+
+            switch (rateString)
             {
                 case "Extra Fast":
-                    Rate = PromptRate.ExtraFast;
+                    rate = PromptRate.ExtraFast;
                     break;
                 case "Fast":
-                    Rate = PromptRate.Fast;
+                    rate = PromptRate.Fast;
                     break;
                 case "Medium":
-                    Rate = PromptRate.Medium;
+                    rate = PromptRate.Medium;
                     break;
                 case "Slow":
-                    Rate = PromptRate.Slow;
+                    rate = PromptRate.Slow;
                     break;
                 case "Extra Slow":
-                    Rate = PromptRate.ExtraSlow;
+                    rate = PromptRate.ExtraSlow;
                     break;
                 default:
                     break;
             }
+
+            if (rate == Rate) return;
+
+            Rate = rate;
+
+            ButtonSave.Enabled = true;
+            ButtonCancel.Enabled = true;
         }
 
         private void ButtonListen_Click(object sender, EventArgs e)
@@ -1316,7 +1347,12 @@ namespace ATISPlugin
 
             if (!timecheckOK) return;
 
+            if (TimeCheck == timecheck) return;
+
             TimeCheck = timecheck;
+
+            ButtonSave.Enabled = true;
+            ButtonCancel.Enabled = true;
         }
 
         private void ButtonZulu_Click(object sender, EventArgs e)
