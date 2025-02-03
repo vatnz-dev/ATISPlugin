@@ -150,6 +150,7 @@
     </Reference>
     <Reference Include="VATSYSControls">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\vatSys\bin\VATSYSControls.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
