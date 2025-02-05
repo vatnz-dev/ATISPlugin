@@ -424,6 +424,39 @@ namespace ATISPlugin
                 suggestedLines.Add(suggestLine);
             }
 
+            var weatherLine = Lines.FirstOrDefault(x => x.METARField == METARField.Weather);
+
+            var visLine = Lines.FirstOrDefault(x => x.METARField == METARField.Visibility);
+
+            var cloudLine = Lines.FirstOrDefault(x => x.METARField == METARField.Cloud);
+
+            if (weatherLine != null && weatherLine.Value == "CAVOK" && visLine != null && cloudLine != null)
+            {
+                if (!string.IsNullOrWhiteSpace(cloudLine.Value))
+                {
+                    var suggestLine = new ATISLine(cloudLine.Name, 0, cloudLine.Type, cloudLine.NameSpoken, cloudLine.NumbersGrouped, string.Empty, cloudLine.METARField);
+
+                    suggestedLines.Add(suggestLine);
+                }
+
+                if (!string.IsNullOrWhiteSpace(visLine.Value))
+                {
+                    var suggestLine = new ATISLine(visLine.Name, 0, visLine.Type, visLine.NameSpoken, visLine.NumbersGrouped, string.Empty, visLine.METARField);
+
+                    suggestedLines.Add(suggestLine);
+                }
+            }
+
+            if (weatherLine != null &&
+                (visLine != null || visLine.Value != "GT 10KM") &&
+                cloudLine != null &&
+                weatherLine.Value == "CAVOK")
+            {
+                var suggestLine = new ATISLine(weatherLine.Name, 0, weatherLine.Type, weatherLine.NameSpoken, weatherLine.NumbersGrouped, string.Empty, weatherLine.METARField);
+
+                suggestedLines.Add(suggestLine);
+            }
+
             SuggestedLines = suggestedLines;
 
             if (!SuggestedLines.Any()) return false;
@@ -452,8 +485,6 @@ namespace ATISPlugin
             }
 
             var phonemeReplacements = Plugin.ATISData.Translations.Where(x => !string.IsNullOrWhiteSpace(x.String) && !string.IsNullOrWhiteSpace(x.Alphabet));
-
-            // RWY 34L AND R FOR ARR AND DEPS
 
             foreach (KeyValuePair<string, string> keyValuePair in (IEnumerable<KeyValuePair<string, string>>)stringReplacements.Where<KeyValuePair<string, string>>((Func<KeyValuePair<string, string>, bool>)(s => s.Key.Contains(" "))).OrderByDescending<KeyValuePair<string, string>, int>((Func<KeyValuePair<string, string>, int>)(s => s.Key.Length)))
                 text = text.Replace(keyValuePair.Key, keyValuePair.Value);
@@ -495,7 +526,12 @@ namespace ATISPlugin
                 }
 
                 foreach (var stringReplacement in stringReplacements)
+                {
+                    var isMatch = Regex.IsMatch(input, stringReplacement.Key);
+                    if (!isMatch) continue;
                     input = Regex.Replace(input, "\\b" + Regex.Escape(stringReplacement.Key) + "\\b", stringReplacement.Value);
+                    break;
+                }
 
                 if (input == word && !phonemeReplacements.Any(x => x.String == word))
                     input = word.ToLowerInvariant();
