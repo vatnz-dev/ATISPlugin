@@ -1229,7 +1229,8 @@ namespace ATISPlugin
 
             ID = selectedChar;
 
-            RefreshForm();
+            ButtonSave.Enabled = true;
+            ButtonCancel.Enabled = true;
         }
 
         private void ComboBoxVoice_SelectedIndexChanged(object sender, EventArgs e)

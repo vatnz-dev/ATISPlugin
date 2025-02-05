@@ -437,16 +437,48 @@ namespace ATISPlugin
 
             if (text == null) return null;
 
+            var stringReplacements = new Dictionary<string, string>();
+
+            var regexReplacements = new Dictionary<string, string>();
+
+            foreach (var item in Plugin.ATISData.Translations.Where(x => !string.IsNullOrWhiteSpace(x.String)).OrderByDescending(x => x.String.Length))
+            {
+                stringReplacements.Add(item.String, item.Spoken);
+            }
+
+            foreach (var item in Plugin.ATISData.Translations.Where(x => !string.IsNullOrWhiteSpace(x.Regex)).OrderByDescending(x => x.Regex.Length))
+            {
+                regexReplacements.Add(item.Regex, item.Spoken);
+            }
+
+            var phonemeReplacements = Plugin.ATISData.Translations.Where(x => !string.IsNullOrWhiteSpace(x.String) && !string.IsNullOrWhiteSpace(x.Alphabet));
+
+            // RWY 34L AND R FOR ARR AND DEPS
+
+            foreach (KeyValuePair<string, string> keyValuePair in (IEnumerable<KeyValuePair<string, string>>)stringReplacements.Where<KeyValuePair<string, string>>((Func<KeyValuePair<string, string>, bool>)(s => s.Key.Contains(" "))).OrderByDescending<KeyValuePair<string, string>, int>((Func<KeyValuePair<string, string>, int>)(s => s.Key.Length)))
+                text = text.Replace(keyValuePair.Key, keyValuePair.Value);
+
+            foreach (KeyValuePair<string, string> keyValuePair in (IEnumerable<KeyValuePair<string, string>>)regexReplacements.Where<KeyValuePair<string, string>>((Func<KeyValuePair<string, string>, bool>)(s => s.Key.Contains(" ") || s.Key.Contains("\\s"))).OrderByDescending<KeyValuePair<string, string>, int>((Func<KeyValuePair<string, string>, int>)(s => s.Key.Length)))
+                text = Regex.Replace(text, keyValuePair.Key, keyValuePair.Value);
+
             var output = new List<string>();
 
             foreach (var word in Regex.Split(text, "\\s+"))
             {
                 var input = word;
 
-                foreach (var regexReplacement in Plugin.ATISData.Translations.Where(x => !string.IsNullOrWhiteSpace(x.Regex)))
+                KeyValuePair<string, string> keyValuePair = new KeyValuePair<string, string>((string)null, (string)null);
+
+                foreach (var regexReplacement in regexReplacements.OrderByDescending(x => x.Key.Length))
                 {
-                    if (Regex.IsMatch(input, regexReplacement.Regex))
-                        input = Regex.Replace(input, regexReplacement.Regex, regexReplacement.Spoken);
+                    if (Regex.IsMatch(input, regexReplacement.Key))
+                        keyValuePair = regexReplacement;
+
+                    if (keyValuePair.Key == null) continue;
+
+                    input = Regex.Replace(input, keyValuePair.Key, keyValuePair.Value);
+
+                    break;
                 }
 
                 if (!groupNumbers)
@@ -462,15 +494,18 @@ namespace ATISPlugin
                     input = Regex.Replace(Regex.Replace(input, "(\\d{1,2})([0]{3})", "$1 thousand"), "(\\d{1,2})(\\d)([0]{2})", "$1 thousand $2 hundred");
                 }
 
-                foreach (var stringReplacement in Plugin.ATISData.Translations.Where(x => !string.IsNullOrWhiteSpace(x.String)))
-                    input = Regex.Replace(input, "\\b" + Regex.Escape(stringReplacement.String) + "\\b", stringReplacement.Spoken);
+                foreach (var stringReplacement in stringReplacements)
+                    input = Regex.Replace(input, "\\b" + Regex.Escape(stringReplacement.Key) + "\\b", stringReplacement.Value);
+
+                if (input == word && !phonemeReplacements.Any(x => x.String == word))
+                    input = word.ToLowerInvariant();
 
                 output.Add(input);
             }
 
             foreach (var word in output)
             {
-                var phonemeReplacement = Plugin.ATISData.Translations.Where(x => !string.IsNullOrWhiteSpace(x.String) && !string.IsNullOrWhiteSpace(x.Alphabet)).FirstOrDefault(x => x.String == word);
+                var phonemeReplacement = phonemeReplacements.FirstOrDefault(x => x.String == word);
 
                 if (phonemeReplacement == null)
                 {
