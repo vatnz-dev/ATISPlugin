@@ -426,11 +426,17 @@ namespace ATISPlugin
 
             var weatherLine = Lines.FirstOrDefault(x => x.METARField == METARField.Weather);
 
-            var visLine = Lines.FirstOrDefault(x => x.METARField == METARField.Visibility);
+            var suggestedWeather = suggestedLines.FirstOrDefault(x => x.METARField == METARField.Weather);
+
+            var visibilityLine = Lines.FirstOrDefault(x => x.METARField == METARField.Visibility);
+
+            var suggestedVisibility = suggestedLines.FirstOrDefault(x => x.METARField == METARField.Visibility);
 
             var cloudLine = Lines.FirstOrDefault(x => x.METARField == METARField.Cloud);
 
-            if (weatherLine != null && weatherLine.Value == "CAVOK" && visLine != null && cloudLine != null)
+            var suggestedCloud = suggestedLines.FirstOrDefault(x => x.METARField == METARField.Cloud);
+
+            if (suggestedWeather != null && suggestedWeather.Value == "CAVOK" && visibilityLine != null && cloudLine != null)
             {
                 if (!string.IsNullOrWhiteSpace(cloudLine.Value))
                 {
@@ -439,17 +445,29 @@ namespace ATISPlugin
                     suggestedLines.Add(suggestLine);
                 }
 
-                if (!string.IsNullOrWhiteSpace(visLine.Value))
+                if (!string.IsNullOrWhiteSpace(visibilityLine.Value))
                 {
-                    var suggestLine = new ATISLine(visLine.Name, 0, visLine.Type, visLine.NameSpoken, visLine.NumbersGrouped, string.Empty, visLine.METARField);
+                    var suggestLine = new ATISLine(visibilityLine.Name, 0, visibilityLine.Type, visibilityLine.NameSpoken, visibilityLine.NumbersGrouped, string.Empty, visibilityLine.METARField);
 
                     suggestedLines.Add(suggestLine);
                 }
             }
 
             if (weatherLine != null &&
-                (visLine != null || visLine.Value != "GT 10KM") &&
+                visibilityLine != null && 
+                visibilityLine.Value != "GT 10KM" &&
                 cloudLine != null &&
+                weatherLine.Value == "CAVOK")
+            {
+                var suggestLine = new ATISLine(weatherLine.Name, 0, weatherLine.Type, weatherLine.NameSpoken, weatherLine.NumbersGrouped, string.Empty, weatherLine.METARField);
+
+                suggestedLines.Add(suggestLine);
+            }
+
+            if (weatherLine != null &&
+                suggestedVisibility != null && 
+                suggestedVisibility.Value != "GT 10KM" &&
+                suggestedCloud != null &&
                 weatherLine.Value == "CAVOK")
             {
                 var suggestLine = new ATISLine(weatherLine.Name, 0, weatherLine.Type, weatherLine.NameSpoken, weatherLine.NumbersGrouped, string.Empty, weatherLine.METARField);

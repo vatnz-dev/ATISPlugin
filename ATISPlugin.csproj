@@ -5,14 +5,17 @@
 		<AssemblyName>ATISPlugin</AssemblyName>
 		<PlatformTarget>x86</PlatformTarget>
 		<ProgramFilesX86>$(MSBuildProgramFiles32)</ProgramFilesX86>
+		<BaseOutputPath>C:\Users\ajdun\OneDrive\Documents\vatSys Files\Profiles\Australia\Plugins\ATIS</BaseOutputPath>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<Reference Include="vatSys">
 			<HintPath>$(ProgramFilesX86)\vatSys\bin\vatSys.exe</HintPath>
+			<Private>False</Private>
 		</Reference>
 		<Reference Include="VATSYSControls">
 			<HintPath>$(ProgramFilesX86)\vatSys\bin\VATSYSControls.dll</HintPath>
+			<Private>False</Private>
 		</Reference>
 		<Reference Include="System" />
 		<Reference Include="System.ComponentModel.Composition" />
@@ -28,5 +31,10 @@
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="NAudio" Version="2.2.1" />
 		<PackageReference Include="NAudio.WinForms" Version="2.2.1" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Update="Version.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 </Project>
