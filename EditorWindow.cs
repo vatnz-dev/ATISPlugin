@@ -318,7 +318,7 @@ namespace ATISPlugin
                     ComboBoxZuluFrequency.SelectedIndex = ComboBoxZuluFrequency.Items.IndexOf(ZuluFrequency);
                 }
 
-                RefeshForm_TopButtons();
+                RefreshForm_TopButtons();
 
                 if (Network.IsConnected && Control?.ICAO == null)
                 {
@@ -338,7 +338,7 @@ namespace ATISPlugin
             }));
         }
 
-        private void RefeshForm_TopButtons()
+        private void RefreshForm_TopButtons()
         {
             if (Plugin.ATIS1.ICAO != null)
             {

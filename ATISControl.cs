@@ -48,6 +48,7 @@ namespace ATISPlugin
         private SpeechAudioFormatInfo SpeechFormat { get; set; }
         public string METARRaw { get; set; }
         public string METARLastRaw { get; set; }
+        public string METARNewRaw { get; set; }
         private WaveFormat WaveForm { get; set; } = new WaveFormat(44100, 1);
         public PromptRate PromptRate { get; set; } = PromptRate.Medium;
         public InstalledVoice InstalledVoice => SpeechSynth.GetInstalledVoices().FirstOrDefault(x => x.VoiceInfo.Name == VoiceName);
@@ -238,6 +239,10 @@ namespace ATISPlugin
             ID = id;
             TimeCheck = timeCheck;
 
+            METARLastRaw = METARRaw;
+
+            METARRaw = METARNewRaw;
+
             foreach (var line in Lines)
             {
                 line.Changed = false;
@@ -396,10 +401,8 @@ namespace ATISPlugin
             if (metar == METARRaw) return false;
 
             if (IsZulu && !string.IsNullOrWhiteSpace(METARRaw)) return false;
-
-            METARLastRaw = METARRaw;
-
-            METARRaw = metar;
+            
+            METARNewRaw = metar;
 
             var updatedLines = new METAR().Process(metar);
 
@@ -426,53 +429,40 @@ namespace ATISPlugin
 
             var weatherLine = Lines.FirstOrDefault(x => x.METARField == METARField.Weather);
 
-            var suggestedWeather = suggestedLines.FirstOrDefault(x => x.METARField == METARField.Weather);
-
             var visibilityLine = Lines.FirstOrDefault(x => x.METARField == METARField.Visibility);
-
-            var suggestedVisibility = suggestedLines.FirstOrDefault(x => x.METARField == METARField.Visibility);
 
             var cloudLine = Lines.FirstOrDefault(x => x.METARField == METARField.Cloud);
 
+            var suggestedWeather = suggestedLines.FirstOrDefault(x => x.METARField == METARField.Weather);
+
+            var suggestedVisibility = suggestedLines.FirstOrDefault(x => x.METARField == METARField.Visibility);
+
             var suggestedCloud = suggestedLines.FirstOrDefault(x => x.METARField == METARField.Cloud);
 
-            if (suggestedWeather != null && suggestedWeather.Value == "CAVOK" && visibilityLine != null && cloudLine != null)
+            // Was CAVOK and now not.
+            if (weatherLine != null && weatherLine.Value == "CAVOK")
             {
-                if (!string.IsNullOrWhiteSpace(cloudLine.Value))
+                if (suggestedCloud != null && !string.IsNullOrWhiteSpace(suggestedCloud.Value))
                 {
-                    var suggestLine = new ATISLine(cloudLine.Name, 0, cloudLine.Type, cloudLine.NameSpoken, cloudLine.NumbersGrouped, string.Empty, cloudLine.METARField);
-
-                    suggestedLines.Add(suggestLine);
+                    suggestedLines.Add(new ATISLine(weatherLine.Name, 0, weatherLine.Type, weatherLine.NameSpoken, weatherLine.NumbersGrouped, string.Empty, weatherLine.METARField));
                 }
-
-                if (!string.IsNullOrWhiteSpace(visibilityLine.Value))
+                else if (suggestedVisibility != null && !string.IsNullOrWhiteSpace(suggestedVisibility.Value))
                 {
-                    var suggestLine = new ATISLine(visibilityLine.Name, 0, visibilityLine.Type, visibilityLine.NameSpoken, visibilityLine.NumbersGrouped, string.Empty, visibilityLine.METARField);
-
-                    suggestedLines.Add(suggestLine);
+                    suggestedLines.Add(new ATISLine(weatherLine.Name, 0, weatherLine.Type, weatherLine.NameSpoken, weatherLine.NumbersGrouped, string.Empty, weatherLine.METARField));
                 }
             }
 
-            if (weatherLine != null &&
-                visibilityLine != null && 
-                visibilityLine.Value != "GT 10KM" &&
-                cloudLine != null &&
-                weatherLine.Value == "CAVOK")
+            // Was no CAVOK and now is.
+            if (suggestedWeather != null && suggestedWeather.Value == "CAVOK")
             {
-                var suggestLine = new ATISLine(weatherLine.Name, 0, weatherLine.Type, weatherLine.NameSpoken, weatherLine.NumbersGrouped, string.Empty, weatherLine.METARField);
-
-                suggestedLines.Add(suggestLine);
-            }
-
-            if (weatherLine != null &&
-                suggestedVisibility != null && 
-                suggestedVisibility.Value != "GT 10KM" &&
-                suggestedCloud != null &&
-                weatherLine.Value == "CAVOK")
-            {
-                var suggestLine = new ATISLine(weatherLine.Name, 0, weatherLine.Type, weatherLine.NameSpoken, weatherLine.NumbersGrouped, string.Empty, weatherLine.METARField);
-
-                suggestedLines.Add(suggestLine);
+                if (visibilityLine != null && !string.IsNullOrWhiteSpace(visibilityLine.Value))
+                {
+                    suggestedLines.Add(new ATISLine(visibilityLine.Name, 0, visibilityLine.Type, visibilityLine.NameSpoken, visibilityLine.NumbersGrouped, string.Empty, visibilityLine.METARField));
+                }
+                if (cloudLine != null && !string.IsNullOrWhiteSpace(cloudLine.Value))
+                {
+                    suggestedLines.Add(new ATISLine(cloudLine.Name, 0, cloudLine.Type, cloudLine.NameSpoken, cloudLine.NumbersGrouped, string.Empty, cloudLine.METARField));
+                }
             }
 
             SuggestedLines = suggestedLines;
