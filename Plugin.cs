@@ -358,7 +358,6 @@ namespace ATISPlugin
             if (ATISData == null)
             {
                 Errors.Add(new Exception("Plugin was not started due to missing data."), DisplayName);
-
                 return;
             }
 
@@ -367,7 +366,17 @@ namespace ATISPlugin
                 Editor = new EditorWindow();
             }
 
-            MMI.InvokeOnGUI(() => Editor.Show(Form.ActiveForm));
+            MMI.InvokeOnGUI(() =>
+            {
+                if (!Editor.Visible)
+                {
+                    Editor.Show();
+                }
+                else
+                {
+                    Editor.BringToFront();
+                }
+            });
         }
 
         public void OnFDRUpdate(FDP2.FDR updated)
