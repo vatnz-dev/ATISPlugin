@@ -48,7 +48,6 @@ namespace ATISPlugin
         private SpeechAudioFormatInfo SpeechFormat { get; set; }
         public string METARRaw { get; set; }
         public string METARLastRaw { get; set; }
-        public string METARNewRaw { get; set; }
         private WaveFormat WaveForm { get; set; } = new WaveFormat(44100, 1);
         public PromptRate PromptRate { get; set; } = PromptRate.Medium;
         public InstalledVoice InstalledVoice => SpeechSynth.GetInstalledVoices().FirstOrDefault(x => x.VoiceInfo.Name == VoiceName);
@@ -239,10 +238,6 @@ namespace ATISPlugin
             ID = id;
             TimeCheck = timeCheck;
 
-            METARLastRaw = METARRaw;
-
-            METARRaw = METARNewRaw;
-
             foreach (var line in Lines)
             {
                 line.Changed = false;
@@ -402,7 +397,9 @@ namespace ATISPlugin
 
             if (IsZulu && !string.IsNullOrWhiteSpace(METARRaw)) return false;
             
-            METARNewRaw = metar;
+            METARLastRaw = METARRaw;
+
+            METARRaw = metar;
 
             var updatedLines = new METAR().Process(metar);
 
