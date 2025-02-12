@@ -59,6 +59,9 @@ namespace ATISPlugin
         public event EventHandler StatusChanged;
         private readonly Timer LoopTimer;
 
+        private Dictionary<string, string> StringReplacements = new Dictionary<string, string>();
+        private Dictionary<string, string> RegexReplacements = new Dictionary<string, string>();
+
         public ATISControl()
         {
             SetupATISLines();
@@ -84,6 +87,16 @@ namespace ATISPlugin
             else
             {
                 VoiceName = Plugin.ManualVoiceName;
+            }
+
+            foreach (var item in Plugin.ATISData.Translations.Where(x => !string.IsNullOrWhiteSpace(x.String)).OrderByDescending(x => x.String.Length))
+            {
+                StringReplacements.Add(item.String, item.Spoken);
+            }
+
+            foreach (var item in Plugin.ATISData.Translations.Where(x => !string.IsNullOrWhiteSpace(x.Regex)).OrderByDescending(x => x.Regex.Length))
+            {
+                RegexReplacements.Add(item.Regex, item.Spoken);
             }
         }
 
@@ -475,26 +488,12 @@ namespace ATISPlugin
 
             if (text == null) return null;
 
-            var stringReplacements = new Dictionary<string, string>();
-
-            var regexReplacements = new Dictionary<string, string>();
-
-            foreach (var item in Plugin.ATISData.Translations.Where(x => !string.IsNullOrWhiteSpace(x.String)).OrderByDescending(x => x.String.Length))
-            {
-                stringReplacements.Add(item.String, item.Spoken);
-            }
-
-            foreach (var item in Plugin.ATISData.Translations.Where(x => !string.IsNullOrWhiteSpace(x.Regex)).OrderByDescending(x => x.Regex.Length))
-            {
-                regexReplacements.Add(item.Regex, item.Spoken);
-            }
-
             var phonemeReplacements = Plugin.ATISData.Translations.Where(x => !string.IsNullOrWhiteSpace(x.String) && !string.IsNullOrWhiteSpace(x.Alphabet));
 
-            foreach (KeyValuePair<string, string> keyValuePair in (IEnumerable<KeyValuePair<string, string>>)stringReplacements.Where<KeyValuePair<string, string>>((Func<KeyValuePair<string, string>, bool>)(s => s.Key.Contains(" "))).OrderByDescending<KeyValuePair<string, string>, int>((Func<KeyValuePair<string, string>, int>)(s => s.Key.Length)))
+            foreach (KeyValuePair<string, string> keyValuePair in StringReplacements.Where(s => s.Key.Contains(" ")).OrderByDescending(s => s.Key.Length))
                 text = text.Replace(keyValuePair.Key, keyValuePair.Value);
 
-            foreach (KeyValuePair<string, string> keyValuePair in (IEnumerable<KeyValuePair<string, string>>)regexReplacements.Where<KeyValuePair<string, string>>((Func<KeyValuePair<string, string>, bool>)(s => s.Key.Contains(" ") || s.Key.Contains("\\s"))).OrderByDescending<KeyValuePair<string, string>, int>((Func<KeyValuePair<string, string>, int>)(s => s.Key.Length)))
+            foreach (KeyValuePair<string, string> keyValuePair in RegexReplacements.Where(s => s.Key.Contains(" ") || s.Key.Contains("\\s")).OrderByDescending(s => s.Key.Length))
                 text = Regex.Replace(text, keyValuePair.Key, keyValuePair.Value);
 
             var output = new List<string>();
@@ -503,9 +502,9 @@ namespace ATISPlugin
             {
                 var input = word;
 
-                KeyValuePair<string, string> keyValuePair = new KeyValuePair<string, string>((string)null, (string)null);
+                KeyValuePair<string, string> keyValuePair = new KeyValuePair<string, string>(null, null);
 
-                foreach (var regexReplacement in regexReplacements.OrderByDescending(x => x.Key.Length))
+                foreach (var regexReplacement in RegexReplacements.OrderByDescending(x => x.Key.Length))
                 {
                     if (Regex.IsMatch(input, regexReplacement.Key))
                         keyValuePair = regexReplacement;
@@ -521,7 +520,7 @@ namespace ATISPlugin
                 {
                     foreach (Match match in Regex.Matches(input, "(\\s|^|\\.|\\,)\\d+(\\s|$|\\.|\\,)").Cast<Match>())
                     {
-                        string newValue = match.Value.Aggregate<char, string>(string.Empty, (Func<string, char, string>)((c, i) => i != ' ' ? c + i.ToString() + " " : c + i.ToString()));
+                        string newValue = match.Value.Aggregate(string.Empty, (c, i) => i != ' ' ? c + i.ToString() + " " : c + i.ToString());
                         input = input.Replace(match.Value, newValue);
                     }
                 }
@@ -530,7 +529,7 @@ namespace ATISPlugin
                     input = Regex.Replace(Regex.Replace(input, "(\\d{1,2})([0]{3})", "$1 thousand"), "(\\d{1,2})(\\d)([0]{2})", "$1 thousand $2 hundred");
                 }
 
-                foreach (var stringReplacement in stringReplacements)
+                foreach (var stringReplacement in StringReplacements)
                 {
                     var isMatch = Regex.IsMatch(input, stringReplacement.Key);
                     if (!isMatch) continue;
