@@ -545,7 +545,7 @@ namespace ATISPlugin
 
             foreach (var word in output)
             {
-                var phonemeReplacement = phonemeReplacements.FirstOrDefault(x => x.String == word);
+                var phonemeReplacement = phonemeReplacements.FirstOrDefault(x => x.Spoken == word);
 
                 if (phonemeReplacement == null)
                 {
