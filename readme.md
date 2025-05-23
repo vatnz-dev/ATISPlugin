@@ -1,6 +1,6 @@
 # ATISPlugin
 
-Support for up to four ATIS in [vatSys](https://virtualairtrafficsystem.com/).
+Support for up to four simultaneous ATIS connections in [vatSys](https://virtualairtrafficsystem.com/).
 
 Note VATSIM code of conduct C7(a): A controller may make no more than four additional connections to the VATSIM Network to provide an airport voice ATIS at facilities which have an ATIS in real life.
 
